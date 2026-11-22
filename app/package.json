@@ -1,6 +1,9 @@
 {
   "name": "app",
   "type": "module",
+  "scripts": {
+    "check:screen": "node scripts/check-screen.mjs"
+  },
   "workspaces": [
     ".wasp/out/*",
     ".wasp/out/sdk/wasp"
