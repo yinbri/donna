@@ -44,7 +44,6 @@ export function FounderHome() {
   // No ?role= means the overview across every role at the company.
   const role = roles.find((r) => r.id === params.get('role'));
   const overview = !role;
-  const scheduleTab = overview && params.get('view') === 'overview';
   const company = role?.companyName ?? roles[0]?.companyName;
   const companyRoles = roles.filter((r) => r.companyName === company);
   const companyIds = new Set(companyRoles.map((r) => r.id));
@@ -83,7 +82,7 @@ export function FounderHome() {
                 {founder ? `, ${founder}` : ''}
               </h1>
               <p className="dash-sub">
-                {scheduleTab ? `Overview · ${company ?? 'your company'}` : overview ? `All roles at ${company ?? 'your company'}` : role.title}
+                {overview ? `Overview · all roles at ${company ?? 'your company'}` : role.title}
                 <span aria-hidden="true">·</span>
                 {needsAll ? `${needsAll} ${needsAll === 1 ? 'person needs' : 'people need'} you today` : 'Nothing waiting on you'}
               </p>
@@ -93,10 +92,10 @@ export function FounderHome() {
             </Link>
           </header>
 
-          {scheduleTab ? (
-            <Schedule candidates={inCompany} roles={companyRoles} />
-          ) : overview ? (
-            <Overview candidates={inCompany} roles={companyRoles} onOpenRole={(id) => navigate(`/founder?role=${id}`)} />
+          {overview ? (
+            <Overview candidates={inCompany} roles={companyRoles} onOpenRole={(id) => navigate(`/founder?role=${id}`)}>
+              <Schedule candidates={inCompany} roles={companyRoles} />
+            </Overview>
           ) : (
             <>
               <div className="pipeline">

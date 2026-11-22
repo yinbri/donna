@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, NavLink, useNavigate, useSearchParams } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { BrandMark, useTheme } from '../components/Shell';
 import { Avatar, founderAvatarId } from './Avatar';
 import type { Role } from '../server/contracts';
@@ -28,8 +28,7 @@ export function initials(name: string) {
 
 /* 16px line icons, one stroke weight, so the rail reads like Claude / ChatGPT / Notion. */
 const ICONS = {
-  calendar: 'M3 5.5A2.5 2.5 0 0 1 5.5 3h9A2.5 2.5 0 0 1 17 5.5v9a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 3 14.5zM3 8h14M7 1.5v3M13 1.5v3',
-  roles: 'M3 4.5h14M3 10h14M3 15.5h14',
+  overview: 'M3.5 3.5h5v5h-5zM11.5 3.5h5v5h-5zM3.5 11.5h5v5h-5zM11.5 11.5h5v5h-5z',
   link: 'M8.5 11.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5l-1 1M11.5 8.5a3.5 3.5 0 0 0-5 0L4 11a3.5 3.5 0 0 0 5 5l1-1',
   candidate: 'M10 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3.5 17a6.5 6.5 0 0 1 13 0',
   rail: 'M3 5.5A2.5 2.5 0 0 1 5.5 3h9A2.5 2.5 0 0 1 17 5.5v9a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 3 14.5zM8 3v14',
@@ -79,11 +78,10 @@ export function FounderLayout({
   children: ReactNode;
 }) {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
   const { theme, toggle } = useTheme();
   const [collapsed, toggleCollapsed] = useCollapsed();
-  const onOverview = params.get('view') === 'overview' && !activeId;
-  const onAllRoles = !role && !activeId && !onOverview;
+  // One Overview page: KPIs, calendar and the all-roles analytics. Old ?view=overview links land here too.
+  const onOverview = !role && !activeId;
   const companies = [...new Set(roles.map((r) => r.companyName))];
   const company = role?.companyName ?? companies[0];
   const companyRoles = roles.filter((r) => r.companyName === company);
@@ -128,13 +126,9 @@ export function FounderLayout({
         </label>
 
         <nav className="rail-nav" aria-label="Views">
-          <Link to="/founder?view=overview" className={`rail-item${onOverview ? ' on' : ''}`} aria-current={onOverview ? 'page' : undefined} title="Overview">
-            <Icon name="calendar" />
+          <Link to="/founder" className={`rail-item${onOverview ? ' on' : ''}`} aria-current={onOverview ? 'page' : undefined} title="Overview">
+            <Icon name="overview" />
             <span className="rail-hide">Overview</span>
-          </Link>
-          <Link to="/founder" className={`rail-item${onAllRoles ? ' on' : ''}`} aria-current={onAllRoles ? 'page' : undefined} title="All roles">
-            <Icon name="roles" />
-            <span className="rail-hide">All roles</span>
             <span className="rail-count rail-hide">{candidates.filter((c) => companyIds.has(c.roleId)).length}</span>
           </Link>
           <NavLink to="/apply" className="rail-item" title="Share screen link">

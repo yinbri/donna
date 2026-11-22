@@ -70,7 +70,7 @@ function Axis() {
   );
 }
 
-export function Overview({ candidates, roles, onOpenRole }: { candidates: UICandidate[]; roles: Role[]; onOpenRole: (id: string) => void }) {
+export function Overview({ candidates, roles, onOpenRole, children }: { candidates: UICandidate[]; roles: Role[]; onOpenRole: (id: string) => void; children?: ReactNode }) {
   const scored = candidates.filter((c) => c.evaluation);
   const researched = candidates.filter((c) => c.dossier);
   const screened = candidates.filter((c) => c.durationSecs || c.evaluation);
@@ -132,6 +132,8 @@ export function Overview({ candidates, roles, onOpenRole }: { candidates: UICand
           </div>
         ))}
       </div>
+
+      {children /* the calendar and upcoming events sit between the KPIs and the analytics */}
 
       <div className="ov-grid">
         <Section title="Funnel" note="all roles">
