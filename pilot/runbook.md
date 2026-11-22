@@ -14,24 +14,23 @@ Owner: Dev 4. Mechanics for running the app (Wasp, tunnels, caffeinate, QR) are 
 
 ## 2. Exact copy on the candidate page
 
-Banner (already in `app/src/HomePage.tsx`; keep it on the apply screen too):
+Banner: on main as fine print on `/` and `/apply` ("Unofficial hackathon demo. This is not an application to the company.").
 
-> Unofficial hackathon demo. This is not an application to the company.
+Consent box: on main in `app/src/candidate/ApplyPage.tsx`. It is Brian's file. Submit is refused until the box is ticked. The current text says the call is recorded and scored by an AI, and that the lookup uses only what the candidate entered. **Before the pilot goes live, ask Brian for two changes:**
 
-Consent box (unticked by default; Apply stays disabled until it is ticked):
+1. It says "my first name and highlights may be shown to the company's founder". For pilot strangers that suggests a real founder sees them, which they don't; this is unofficial. Suggested replacement: "my first name and highlights are shown on Team 10's demo founder view, not sent to the company".
+2. Add: "Team 10 deletes my answers after the event." Section 8 step 5 does the deletion.
 
-> I agree to a recorded voice screen with Donna, an AI. Donna looks up only the GitHub and LinkedIn I typed above, and only after I tick this box. This is an unofficial hackathon demo, not an application to the company. Team 10 sees my answers and deletes them after the event.
-
-These match the guardrails in AGENTS.md. Donna's first sentence says she is an AI and the call is recorded. She never asks about protected topics and never promises an outcome. The consent box and Donna's opening line are Brian's files. Send him this text.
+These keep it in line with the guardrails in AGENTS.md. Donna's first sentence says she is an AI and the call is recorded. She never asks about protected topics and never promises an outcome.
 
 ## 3. Get the URL and QR
 
 1. Follow dev2/RUNBOOK.md sections 1 to 3 on the Mac (`wasp start`, `./scripts/public-url.sh`, restart with `--client-url` / `--server-url`, `caffeinate -dimsu`).
-2. The URL phones open is the **web** tunnel URL (`https://<web>.trycloudflare.com`). The app's candidate page is `/` (no `/apply` route exists yet). If Brian adds one, use that path.
+2. The URL phones open is the **web** tunnel URL (`https://<web>.trycloudflare.com`). Candidates start at `/apply` (Brian's page, on main since merge #5).
 3. Make a QR PNG from any machine with Node. Verified with `qrcode@1.5.4` on Windows:
 
    ```bash
-   npx qrcode -o pilot/qr.png -w 600 "https://<web>.trycloudflare.com/"
+   npx qrcode -o pilot/qr.png -w 600 "https://<web>.trycloudflare.com/apply"
    ```
 
    Or use Chrome on the Mac: right-click the page and choose "Create QR code for this page".
@@ -57,7 +56,7 @@ Where: the hackathon Discord or Slack, and a printed or on-screen QR at our tabl
 
 If the tunnel is down, phones can't get mic access, or the venue network blocks it:
 
-1. Open `http://localhost:3000/` on a team laptop (the Mac, or any laptop running the app) in Chrome.
+1. Open `http://localhost:3000/apply` on a team laptop (the Mac, or any laptop running the app) in Chrome.
 2. Hand the candidate the laptop plus headphones with a mic. Localhost counts as a secure context, so the mic works without HTTPS.
 3. Same consent box, same banner. A team member stays nearby but does not coach.
 
