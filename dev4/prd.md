@@ -1,10 +1,10 @@
-# Dev 4 PRD: Trust + ops + submission
+# Dev 4 PRD: Trust + ops
 
 **Owner:** Dev 4 · **Branch:** `lane/trust-ops` · **Guide:** [guide.md](guide.md)
 
 ## Problem
 
-Founders won't hand an AI their calendar and email unless they can see that it can't act without them, and see everything it did. This lane makes that guarantee real and demonstrable: Alter holds the credentials and enforces approval outside the model; TraceRoot records every step. The same owner keeps the team on the clock and gets the submission in.
+Founders won't hand an AI their calendar and email unless they can see that it can't act without them, and see everything it did. This lane makes that guarantee real and demonstrable: Alter holds the credentials and enforces approval outside the model; TraceRoot records every step. The same owner keeps the team on the clock.
 
 ## Goals
 
@@ -12,7 +12,6 @@ Founders won't hand an AI their calendar and email unless they can see that it c
 2. Approve → a real calendar event and invite email in the candidate's inbox.
 3. One TraceRoot trace per candidate, linked from the candidate page.
 4. Real sponsor roles seeded, so the demo and the pilot screen for real openings.
-5. A clean submission before 2:55: link, 2-minute video and every partner tool.
 
 ## Non-goals
 
@@ -43,10 +42,8 @@ The UI for the approval card (Brian renders it; this lane supplies the logic), t
 - The post text for Brian to send: *"Built this today: take a 3-minute AI voice screen for one of the sponsor startups' open roles and get instant feedback. Unofficial demo, not an application. <link>"*
 - Track the real count of screens; target 8 or more by 3:00
 
-**Clock and submission**
+**Clock**
 - Call out 1:20 (Gate 1), 1:45 (cut) and 2:20 (freeze)
-- 2:20–2:40: record the 2-minute video: hook, live Donna audio, ▶ receipt, denied attempt then Approve, invite arriving, trace link, 10 s of the Codevisor crew
-- By 2:55, submit the project link (repo or live URL), the video (public or unlisted) and the partner tools actually used: ElevenLabs, Wasp, Codevisor, Fiber AI, Expected Parrot, Alter, Maritime, TraceRoot, plus Ploid, assistant-ui and Rowboat only if they shipped
 
 ## Acceptance criteria
 
@@ -54,7 +51,6 @@ The UI for the approval card (Brian renders it; this lane supplies the logic), t
 - [ ] Every step appears as an `Event` in the timeline
 - [ ] The trace link opens one candidate's full tree
 - [ ] `roles.json` has 4 or more real postings with working source links
-- [ ] Video uploaded and opens in a private window; form submitted by 2:55
 
 ## Dependencies
 
@@ -72,4 +68,3 @@ The UI for the approval card (Brian renders it; this lane supplies the logic), t
 | Google "unverified app" warning during consent | Expected; click through once with the test account before 1:00 |
 | Alter approval wait times out (5 min) | Propose right before the demo beat; re-propose if expired |
 | Policy syntax unclear | Use Alter's onboarding MCP or docs; ask at the Alter table |
-| Video runs long | Script it to 1:50 and record by 2:40 at the latest |

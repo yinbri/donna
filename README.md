@@ -16,7 +16,7 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 | [dev1/](dev1) | **Brian:** UI + Donna's voice (`prd.md`, `guide.md`, `lane.md`) |
 | [dev2/](dev2) | **Dev 2 (Mac):** Wasp backbone + Codevisor lead |
 | [dev3/](dev3) | **Dev 3:** Donna box (Fiber AI, GitHub, EDSL, Maritime) |
-| [dev4/](dev4) | **Dev 4:** trust + ops + submission (Alter, TraceRoot, pilot, video) |
+| [dev4/](dev4) | **Dev 4:** trust + ops (Alter, TraceRoot, pilot) |
 | [docs/wave-2.md](docs/wave-2.md) | Extras after Gate 1 |
 | [contracts/](contracts) | Frozen TypeScript types shared by all lanes |
 | [fixtures/](fixtures) | Sample data every stub returns, so lanes work before the others land |
@@ -48,7 +48,7 @@ Fresh clone to running app, public HTTPS URL for phones, and QR code: see [dev2/
 
 ## Built with
 
-Only tools that ran today, each with its evidence. Dev 4 updates this at the 2:20 freeze. A tool is added only when it has run.
+Only tools that ran today, each with its evidence. A tool is added only when it has run.
 
 - **ElevenLabs:** Donna's live voice screen, plus the transcript and call audio behind every ▶ receipt. First real call at 13:10: 21 turns, 144 s stored.
 - **Wasp:** the whole app (Wasp 0.26.1, SQLite, operations, founder view).
