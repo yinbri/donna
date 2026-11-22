@@ -33,4 +33,4 @@ Open http://localhost:5173.
 
 ## Design
 
-Chat-first and monochrome, matching the "Donna screens" design board: white canvas (dark mode in the top bar), ink pill buttons, grey surfaces, Inter throughout, JetBrains Mono only for timestamps. One clay accent, used only for Donna's dot-matrix orb and the ▶ receipts.
+Chat-first and monochrome, matching the "Donna screens" design board: dark by default (light mode in the top bar), ink pill buttons, grey surfaces, Inter throughout, JetBrains Mono only for timestamps. One clay accent, used only for Donna's dot-matrix orb and the ▶ receipts.

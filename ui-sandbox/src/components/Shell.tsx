@@ -10,7 +10,7 @@ function initialTheme(): Theme {
   } catch {
     /* ignore */
   }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'dark'; // Dark is the default look; light is an option in the top bar.
 }
 
 // 5×5 dot disc, the small version of Donna's orb.

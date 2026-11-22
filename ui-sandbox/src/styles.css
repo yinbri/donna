@@ -31,16 +31,16 @@
 
 :root[data-theme='dark'] {
   --bg: #171717;
-  --surface: #1f1f1f;
-  --surface-2: #2a2a2a;
-  --surface-3: #1c1c1c;
+  --surface: #171717;
+  --surface-2: #262626;
+  --surface-3: #1f1f1f;
   --ink: #ececec;
   --ink-2: #d4d4d8;
   --muted: #a1a1aa;
-  --line: #333336;
-  --line-soft: #262628;
-  --accent: #f08a5d;
-  --accent-soft: #2a1a12;
+  --line: #333333;
+  --line-soft: #262626;
+  --accent: #f0743e;
+  --accent-soft: #2b1a12;
   --accent-ink: #1a0d06;
   --on-ink: #0a0a0a;
   --pass: #4ade80;
