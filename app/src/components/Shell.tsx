@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, NavLink } from 'react-router';
+import { Link, NavLink, useLocation } from 'react-router';
 import '../styles.css';
 
 type Theme = 'light' | 'dark';
@@ -33,6 +33,7 @@ function BrandMark() {
 // Wasp routes are flat, so each page wraps itself in Shell instead of using <Outlet/>.
 export function Shell({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(initialTheme);
+  const onLanding = useLocation().pathname === '/';
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     try {
@@ -43,7 +44,7 @@ export function Shell({ children }: { children: ReactNode }) {
   }, [theme]);
 
   return (
-    <div className="shell">
+    <div className={onLanding ? 'shell shell-landing' : 'shell'}>
       <nav className="topbar">
         <Link to="/" className="brand">
           <BrandMark />
