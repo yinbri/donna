@@ -2,6 +2,8 @@
 
 Adapter: `app/src/dev/uiApi.ts`. It keeps the sandbox `lib/api` names and maps the backbone's `CandidateView` onto the sandbox's `UICandidate`. Source of truth for the sandbox: `origin/dev1-brian` (`origin/lane/ui-voice` differs only in `agent/*`, one line of `CallPage.tsx` and the deleted `public/conversation.mp3`).
 
+**Status (12:55):** the adapter compiles inside the Wasp app, and the app's `react-router` 8 does export `Link`, `NavLink`, `useParams`, `useSearchParams`, `useNavigate` and `Outlet`. Nothing else here has been run: the port steps in section c and the route block in section d were written from reading the sandbox code and are untested. Expect small fixes when you compile.
+
 ## a. Function map
 
 | Sandbox call | Wasp operation(s) | Notes |
