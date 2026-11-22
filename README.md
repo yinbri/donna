@@ -36,7 +36,7 @@ Only what runs is listed here, from [BUILDLOG.md](BUILDLOG.md). Updated at each 
 - [x] A candidate who types a GitHub username is asked about their own public repos (GitHub API; checked on two real accounts and one scripted screen). Donna opens with one thinking question before the technical ones
 - [x] Approval gate: this checkout runs it in in-app mode (`npm run check:approval`). Dev 4 ran it against live Alter at 13:22 and 13:34
 - [x] TraceRoot spans for research, call fetch, evaluation and each approval step (`npm run check:trace` passes with a key set)
-- [ ] 3-persona panel and live research (the box, `/research` and `/evaluate`): not connected. Without a GitHub username research returns a fixture dossier, and each scorecard says where its scores came from
+- [ ] 3-persona panel and live research (the box, `/research` and `/evaluate`): code merged into main (`box/`, `app/src/server/integrations/box.ts`, 13 box tests pass). Not live until the box is deployed with `BOX_MODE=live`, `BOX_SECRET` and an Expected Parrot or OpenAI key, and the app has `BOX_URL` and `BOX_SECRET`. Until then real calls are scored from the call analysis, and each scorecard says where its scores came from
 - [ ] Gate 1: one full run on the real app with live Alter (apply → call → receipts play → blocked attempt → Approve → invite). Not confirmed yet
 - [ ] Test invites from 1:22 and 1:34 confirmed in the demo inbox
 - [ ] Pilot: waits on Gate 1, the consent-box fixes, the tunnel link, the QR code and a go before anything is posted
