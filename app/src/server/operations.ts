@@ -25,7 +25,7 @@ import * as box from "./integrations/box";
 import * as elevenlabs from "./integrations/elevenlabs";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
-import { scoreFromCallAnalysis, type ScoreSource } from "./scoring";
+import { scoreFromCallAnalysis, type CallScore, type ScoreSource } from "./scoring";
 import {
   candidateInclude,
   logEvent,
@@ -311,7 +311,16 @@ async function fetchAndScore(
   // person is never shown the fixture panel's numbers. The fixture panel is the last resort, and
   // the stored scorecard and the timeline say which source was used.
   const boxLive = reportsLive(box);
-  const fromCall = boxLive ? null : scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
+  let fromCall: CallScore | null = null;
+  if (!boxLive) {
+    try {
+      fromCall = scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
+    } catch (err) {
+      // An analysis in a shape we did not expect must not cost the candidate their screen.
+      console.error(`Scoring candidate ${candidateId} from the call analysis failed:`, err);
+      fromCall = { unusable: `scoring failed: ${err instanceof Error ? err.message : String(err)}` };
+    }
+  }
   const scored = fromCall && "scorecard" in fromCall ? fromCall.scorecard : null;
   const scorecard =
     scored ?? (await traced("evaluate", { candidateId }, () => box.evaluate({ dossier, rubric: role.rubric, transcript })));
