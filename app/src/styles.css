@@ -533,12 +533,23 @@ blockquote { margin: 6px 0; padding: 0; border: 0; font-size: 14.5px; line-heigh
 .form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
 .roles { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 .roles legend { margin-bottom: 8px; }
-.role-opt { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; cursor: pointer; }
-.role-opt.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
-.role-opt input { accent-color: var(--ink); }
-.role-opt span { display: flex; flex-direction: column; }
-.role-opt strong { font-weight: 500; }
-.role-opt small { color: var(--muted); font-size: 13px; }
+.role-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.role-card { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 12px; row-gap: 10px; align-items: center; padding: 14px; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; cursor: pointer; transition: border-color .12s, background .12s; }
+.role-card:hover { background: var(--surface-3); }
+.role-card.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.role-card:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.role-card input { position: absolute; opacity: 0; pointer-events: none; }
+.co-logo { width: 44px; height: 44px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--line); display: grid; place-items: center; overflow: hidden; }
+.co-logo img { width: 100%; height: 100%; object-fit: contain; }
+.co-logo b { font-size: 18px; font-weight: 600; color: #0a0a0a; }
+.role-text { display: flex; flex-direction: column; min-width: 0; padding-right: 24px; }
+.role-text strong { font-weight: 600; font-size: 15px; }
+.role-text span { color: var(--muted); font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.role-tag { grid-column: 1 / -1; justify-self: start; font-size: 11.5px; font-weight: 500; color: var(--pass); background: var(--pass-bg); padding: 3px 9px; border-radius: 999px; }
+.role-check { position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--line); color: transparent; }
+.role-check svg { width: 12px; height: 12px; }
+.role-card.on .role-check { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+@media (max-width: 640px) { .role-grid { grid-template-columns: minmax(0, 1fr); } }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field input { font: 16px var(--sans); color: var(--ink); background: var(--surface-2); border: 1px solid transparent; border-radius: 14px; padding: 12px 14px; }
