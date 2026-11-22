@@ -10,7 +10,7 @@ Fill the "Ran today?" column at 2:20 from the evidence column. If it is not a ye
 |---|---|---|---|
 | ElevenLabs | Donna's live voice screen (Agents, WebRTC), transcript with timestamps, call audio for the ▶ receipts | BUILDLOG 13:10: first real call, 21 turns, 144 s audio stored | yes (13:10) |
 | Wasp | The whole app: Wasp 0.26.1, SQLite, operations, founder view | BUILDLOG 12:35 onward | yes |
-| Alter | Holds the founder's Google Calendar grant. A calendar write without approval is held; approve releases it and Google emails the invite | `npm run check:approval` in live mode passed at 13:22 on SDK 0.34.1. Main pins ^0.33.0 (has the same approval APIs). **Re-run live on main before claiming** | pending re-run |
+| Alter | Holds the founder's Google Calendar grant. A calendar write without approval is held; approve releases it and Google emails the invite | `npm run check:approval` live: passed 13:22 (SDK 0.34.1) and 13:34 (SDK 0.33.0, main's pin), event jfc38og5ikdrh4rf9iq70qsqes invited the demo inbox. Needs `lane/trust-ops` merged to main again for the approve path | yes (13:34) |
 | Codevisor | Parallel coding agents, one per worktree | BUILDLOG says "Claude Code Opus agent … own worktree". **Ask Aarav whether these ran inside Codevisor.** Claim it only if yes, and only for that code | ask Aarav |
 | Fiber AI | Applicant research (box `/research`) | README: box `/research` not checked yet | ask Sam |
 | Expected Parrot | 3-persona hiring panel (box `/evaluate`) | README: box `/evaluate` not checked yet | ask Sam |

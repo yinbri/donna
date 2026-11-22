@@ -41,4 +41,4 @@ Only tools that ran today, each with its evidence. Dev 4 updates this at the 2:2
 
 - **ElevenLabs:** Donna's live voice screen, plus the transcript and call audio behind every ▶ receipt. First real call at 13:10: 21 turns, 144 s stored.
 - **Wasp:** the whole app (Wasp 0.26.1, SQLite, operations, founder view).
-- **Alter:** holds the founder's Google Calendar grant. A calendar write without founder approval is held by Alter, and approving releases it, so Google sends the invite. `npm run check:approval` passed in live mode at 13:22 (invites go only to the team's demo inbox).
+- **Alter:** holds the founder's Google Calendar grant. A calendar write without founder approval is held by Alter, and approving releases it, so Google sends the invite. `npm run check:approval` passed in live mode at 13:22 and 13:34 (invites go only to the team's demo inbox).
