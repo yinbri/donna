@@ -45,6 +45,7 @@ export function CallPage() {
   const simTimers = useRef<number[]>([]);
   const simLevel = useRef(0);
   const finished = useRef(false);
+  const disconnecting = useRef(false);
 
   const push = (role: 'agent' | 'user', text: string) => {
     const turn: TranscriptTurn = { i: linesRef.current.length, role, text, t: (Date.now() - startAt.current) / 1000 };
@@ -54,9 +55,10 @@ export function CallPage() {
 
   // The server fetches the real transcript and audio from ElevenLabs; the live lines are display only.
   const finish = useCallback(async () => {
-    if (!id || finished.current) return;
+    if (!id || !convId.current || finished.current) return;
     finished.current = true;
     simTimers.current.forEach(clearTimeout);
+    setError(null);
     setPhase('ending');
     try {
       await finalizeScreen(id, { conversationId: convId.current });
@@ -70,17 +72,45 @@ export function CallPage() {
   const conversation = useConversation({
     onConnect: ({ conversationId }) => {
       convId.current = conversationId;
+      startAt.current = Date.now();
+      setPhase('live');
     },
     onMessage: (m) => push(m.role === 'user' ? 'user' : 'agent', m.message),
-    onDisconnect: () => void finish(),
-    onError: (message) => console.error('ElevenLabs error', message),
+    onDisconnect: () => {
+      if (convId.current) void finish();
+      else setPhase('ready');
+    },
+    onError: (message) => {
+      console.error('ElevenLabs error', message);
+      if (!convId.current) {
+        setError(message);
+        setPhase('ready');
+      }
+    },
   });
 
   const cap = fast ? FAST_CAP_SECS : CAP_SECS;
 
-  const end = () => {
-    if (!simulated && conversation.status === 'connected') conversation.endSession();
-    else void finish();
+  const end = async () => {
+    if (disconnecting.current || finished.current) return;
+    if (simulated || conversation.status !== 'connected') {
+      await finish();
+      return;
+    }
+    disconnecting.current = true;
+    setPhase('ending');
+    try {
+      await conversation.endSession();
+      await finish();
+    } catch (err) {
+      console.error('Could not end the interview', err);
+      if (!finished.current) {
+        setError('Could not end the call. Try the end call button again.');
+        setPhase('live');
+      }
+    } finally {
+      disconnecting.current = false;
+    }
   };
 
   // Elapsed clock + hard cap.
@@ -89,7 +119,7 @@ export function CallPage() {
     const t = window.setInterval(() => {
       const s = (Date.now() - startAt.current) / 1000;
       setElapsed(s);
-      if (s > cap + 5) end();
+      if (s > cap + 5) void end();
     }, 250);
     return () => clearInterval(t);
   });
@@ -122,6 +152,8 @@ export function CallPage() {
     setError(null);
     setPhase('connecting');
     finished.current = false;
+    convId.current = undefined;
+    setElapsed(0);
     linesRef.current = [];
     setLines([]);
     try {
@@ -135,15 +167,14 @@ export function CallPage() {
         return;
       }
       setSimulated(false);
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
       // onConnect stores the conversationId that finalizeScreen needs.
       conversation.startSession({
         conversationToken: s.token,
         connectionType: 'webrtc',
         dynamicVariables: s.dynamicVariables,
       });
-      startAt.current = Date.now();
-      setPhase('live');
     } catch (err) {
       console.error(err);
       setError(
@@ -238,9 +269,11 @@ export function CallPage() {
       {error && (
         <p className="error" role="alert">
           {error}{' '}
-          <button className="linkish" onClick={() => { finished.current = false; void finish(); }}>
-            Try again
-          </button>
+          {phase === 'ending' && (
+            <button className="linkish" onClick={() => { finished.current = false; void finish(); }}>
+              Try again
+            </button>
+          )}
         </p>
       )}
 
