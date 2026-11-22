@@ -1,0 +1,168 @@
+[
+  {
+    "id": "role-traceroot-founding-engineer",
+    "title": "Founding Engineer",
+    "companyName": "TraceRoot",
+    "founderName": "Xinwei",
+    "rubric": [
+      "Shipped full-stack features end to end (React, TypeScript, Node.js)",
+      "Depth on own project",
+      "Built for scale (high-volume events or telemetry)",
+      "Experience with AI agents or observability tooling",
+      "Communication"
+    ],
+    "questions": [
+      "Walk me through something you built end to end, front end to back end. What would you change now?",
+      "How would you design a pipeline that ingests millions of telemetry events without losing any?",
+      "Tell me about a time an AI agent or automated system failed on an edge case. How did you find and fix it?"
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/traceroot/jobs/xLdkDw5-founding-engineer",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-elevenlabs-full-stack-engineer",
+    "title": "Full-Stack Engineer",
+    "companyName": "ElevenLabs",
+    "founderName": "the ElevenLabs team",
+    "rubric": [
+      "Owns features end to end, front end and back end",
+      "Python plus TypeScript/React depth",
+      "System design (APIs, cloud, storage)",
+      "Depth on own project",
+      "Communication"
+    ],
+    "questions": [
+      "Tell me about a product you built and owned end to end. What was the hardest part?",
+      "How would you design the API and storage behind a feature that generates audio for thousands of users?",
+      "How do you test and secure something you ship?"
+    ],
+    "sourceUrl": "https://elevenlabs.io/careers/6a530871-b6c6-4783-ac6b-69cc3b084192/full-stack-engineer",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-wasp-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Wasp",
+    "founderName": "Matija",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/wasp",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-codevisor-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Codevisor",
+    "founderName": "Alexandru",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/codevisor",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-maritime-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Maritime",
+    "founderName": "Maria",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/maritime",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-alter-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Alter",
+    "founderName": "Srikar",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/alter",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-assistant-ui-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "assistant-ui",
+    "founderName": "Simon",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/assistant-ui",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-expected-parrot-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Expected Parrot",
+    "founderName": "Robin",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/expected-parrot",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-ploid-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Ploid",
+    "founderName": "Emmanuel",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/ploid",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-rowboat-labs-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Rowboat Labs",
+    "founderName": "Arjun",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/rowboat-labs",
+    "isOfficialPosting": false
+  },
+  {
+    "id": "role-fiber-ai-general",
+    "title": "General interest (not an official posting)",
+    "companyName": "Fiber AI",
+    "founderName": "Adi",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "Walk me through the project you're proudest of. What did you build yourself?",
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": "https://www.ycombinator.com/companies/fiber-ai",
+    "isOfficialPosting": false
+  }
+]
