@@ -57,6 +57,8 @@ model Approval {
   alterRef      String?
   emailDraft    String // JSON: { to, subject, body }
   deniedAttempt String? // JSON: { at, reason, auditRef }
+  approvalUrl   String? // live Alter: where the founder approves
+  calendarUrl   String? // booked Google event, or the prefilled Calendar link in stub mode
   createdAt     DateTime  @default(now())
 }
 

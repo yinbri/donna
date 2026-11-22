@@ -2,13 +2,15 @@
   "name": "app",
   "type": "module",
   "scripts": {
-    "check:screen": "node scripts/check-screen.mjs"
+    "check:screen": "node scripts/check-screen.mjs",
+    "check:approval": "tsx scripts/check-approval.ts"
   },
   "workspaces": [
     ".wasp/out/*",
     ".wasp/out/sdk/wasp"
   ],
   "dependencies": {
+    "@alter-ai/alter-sdk": "^0.33.0",
     "@elevenlabs/react": "^1.22.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
@@ -20,6 +22,7 @@
     "@types/react-dom": "^19.2.3",
     "@wasp.sh/spec": "file:.wasp/spec/",
     "prisma": "5.19.1",
+    "tsx": "^4.23.15",
     "typescript": "6.0.3",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
