@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import '../styles.css';
 
@@ -20,7 +20,7 @@ const MARK = Array.from({ length: 25 }, (_, k) => {
   return { d, size: d > 1.05 ? 0 : Math.max(0.35, 1 - d * 0.6) * 5, opacity: d > 1.05 ? 0 : Math.max(0.3, 1 - d * 0.6) };
 });
 
-function BrandMark() {
+export function BrandMark() {
   return (
     <span className="brand-mark" aria-hidden="true">
       {MARK.map((m, k) => (
@@ -30,8 +30,13 @@ function BrandMark() {
   );
 }
 
+const ThemeCtx = createContext<{ theme: Theme; toggle: () => void }>({ theme: 'dark', toggle: () => {} });
+/** For pages that draw their own chrome (the founder rail) and need the theme switch. */
+export const useTheme = () => useContext(ThemeCtx);
+
 // Wasp routes are flat, so each page wraps itself in Shell instead of using <Outlet/>.
-export function Shell({ children }: { children: ReactNode }) {
+// `rail`: the page brings its own full-height sidebar, so the top bar is left out.
+export function Shell({ children, rail = false }: { children: ReactNode; rail?: boolean }) {
   const [theme, setTheme] = useState<Theme>(initialTheme);
   const onLanding = useLocation().pathname === '/';
   useEffect(() => {
@@ -42,6 +47,18 @@ export function Shell({ children }: { children: ReactNode }) {
       /* ignore */
     }
   }, [theme]);
+
+  const toggle = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  if (rail) {
+    return (
+      <ThemeCtx.Provider value={{ theme, toggle }}>
+        <div className="shell shell-rail">
+          <main className="page page-rail">{children}</main>
+        </div>
+      </ThemeCtx.Provider>
+    );
+  }
 
   return (
     <div className={onLanding ? 'shell shell-landing' : 'shell'}>
@@ -55,7 +72,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <NavLink to="/founder">Founder</NavLink>
           <button
             className="icon-btn"
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            onClick={toggle}
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             title="Toggle theme"
           >
