@@ -29,8 +29,8 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 
 Only what runs is listed here. Updated at each merge.
 
-- [ ] Wasp app scaffolded
-- [ ] Donna agent created in ElevenLabs
+- [x] Wasp app scaffolded (stubbed end to end: `npm run check:screen` passes)
+- [x] Donna agent created in ElevenLabs (from `agent/` on `lane/ui-voice`; the token endpoint answers. No real call yet; the end-call tool and agent tests are still to set in the dashboard)
 - [ ] Box `/research` and `/evaluate`
 - [ ] Alter approval flow
 - [ ] Gate 1: one full run end to end
