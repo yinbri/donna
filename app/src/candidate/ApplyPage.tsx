@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { createCandidate, useRoles } from '../dev/uiApi';
 import { Steps } from './Steps';
+import { CompanyLogo } from './CompanyLogo';
 import { Shell } from '../components/Shell';
 
 export function ApplyRoute() {
@@ -70,18 +71,27 @@ export function ApplyPage() {
       <form className="form" onSubmit={submit}>
         <fieldset className="roles">
           <legend className="label">Role</legend>
-          {roles.map((r) => (
-            <label key={r.id} className={`role-opt ${roleId === r.id ? 'on' : ''}`}>
-              <input type="radio" name="role" value={r.id} checked={roleId === r.id} onChange={() => setRoleId(r.id)} />
-              <span>
-                <strong>{r.title}</strong>
-                <small>
-                  {r.companyName}
-                  {!r.isOfficialPosting && ' · general interest, not an official posting'}
-                </small>
-              </span>
-            </label>
-          ))}
+          <div className="role-grid">
+            {roles.map((r) => (
+              <label key={r.id} className={`role-card ${roleId === r.id ? 'on' : ''}`}>
+                <input type="radio" name="role" value={r.id} checked={roleId === r.id} onChange={() => setRoleId(r.id)} />
+                <CompanyLogo company={r.companyName} />
+                <span className="role-text">
+                  <strong>{r.companyName}</strong>
+                  <span>
+                    {r.title.replace(/\s*\(not an official posting\)/i, '')}
+                    {!r.isOfficialPosting && !/general interest/i.test(r.title) && ' · unofficial'}
+                  </span>
+                </span>
+                {r.isOfficialPosting && <span className="role-tag">Official posting</span>}
+                <span className="role-check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12l5 5 9-10" />
+                  </svg>
+                </span>
+              </label>
+            ))}
+          </div>
         </fieldset>
 
         <div className="field-row">
