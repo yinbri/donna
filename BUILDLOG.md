@@ -10,3 +10,4 @@ One line per merge: time (EST), lane, who or which agent, what landed.
 | 12:36 | wasp-backbone | Claude Code Opus agent `ops` (own worktree) | 3 queries and 6 actions, view types, audio route, fixture candidate seed, dev console at `/dev` and `/founder`, `npm run check:screen` |
 | 12:38 | wasp-backbone | Claude Code Opus agent `devex` (own worktree) | `scripts/public-url.sh` (cloudflared), Vite tunnel-host allowance, `dev2/RUNBOOK.md` |
 | 12:41 | wasp-backbone | Claude Code (Fable lead) review | Approvals cannot be acted on after a decision; late research cannot rewind a candidate's status; a failed audio download no longer fails the screen |
+| 12:54 | wasp-backbone | Claude Code Opus agent `ui-adapter` (own worktree) | `app/src/dev/uiApi.ts` (Brian's `lib/api` functions on top of the real operations) and `dev2/ui-integration.md` (port guide). Compiles; not yet run in a browser |
