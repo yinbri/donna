@@ -29,6 +29,20 @@ Approval gate (`src/server/integrations/alter.ts`, Dev 4): its functions return 
 
 Approval gate env (`.env.server`): `ALTER_MODE` (`live` = real Alter, anything else = in-app gate), `ALTER_API_KEY` and `GOOGLE_GRANT_ID` (both required in live mode), `ALTER_DECIDER_KEY` (optional, live mode: a second Alter app key with `approvals:decide`; when set, Approve/Reject in Donna is recorded in Alter with it instead of waiting for the founder to approve in Alter), `ALTER_APPROVER_EMAIL` (required when `ALTER_DECIDER_KEY` is set: the founder's email, sent to Alter as the approver and checked against the rule's approvers), `ALTER_APPROVAL_WAIT_MS` (optional, default 120000), `DEMO_INVITE_TO` (optional: every invite goes to this address instead of the candidate).
 
+## Where research comes from
+
+`createCandidate` picks one source for the dossier:
+
+| When | Dossier |
+|---|---|
+| The Donna box is live | The box's `/research` |
+| The box is not live and the candidate typed a GitHub username (a bare login, `@login` or a github.com URL) | Built from their public repos through GitHub's API (`src/server/integrations/github.ts`). Forks and archived repos are left out, the most starred repo is `topProject`, and the questions are about that repo and the most recently pushed one. `sources.github` is `true` |
+| Neither | The box stub's fixture dossier |
+
+A GitHub lookup that fails (no such user, no repos of their own, GitHub's hourly limit) leaves the candidate without a dossier, so Donna asks the role's questions; the `research_done` event says why. Anonymous lookups are limited to 60 requests an hour per network, 2 per candidate. Set `GITHUB_TOKEN` in `.env.server` to raise that.
+
+Donna's script (the agent in ElevenLabs, mirrored in `agent/prompt.md`) opens with one thinking question before the technical ones. In demo fast mode she asks it and only the first technical question.
+
 ## HTTP routes
 
 - `GET /api/audio/:candidateId` serves the stored call audio with range support (use `CandidateView.audioUrl` as the `<audio src>`). 404 JSON `{ error }` when the candidate or the file is missing.

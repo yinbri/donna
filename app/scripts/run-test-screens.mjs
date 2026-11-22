@@ -4,6 +4,9 @@
 // Usage: node app/scripts/run-test-screens.mjs [persona-slug ...]   (needs the app on :3001)
 // Each run makes real ElevenLabs conversations (text only, so there is no recording) and leaves
 // "Test: <persona>" candidates in the app. Raw results go to app/data/ (git-ignored) unless OUT is set.
+// Donna opens with one thinking question and then asks the technical ones, so each persona's second
+// answer is to that. Set GITHUB_USER=<login> to have research read that account's public repos; the
+// scripted answers are still about the fixture's rate limiter, so use it to see her questions, not the scores.
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
@@ -31,6 +34,7 @@ const PERSONAS = [
     name: "Strong builder",
     answers: [
       "Hi Donna, yes, ready when you are.",
+      "I was sure one outage was the database, and the traces showed it was our own retry loop. Since then I look at the data before I pick a suspect.",
       "I load tested the limiter with k6 against a single Redis node, and the Lua script broke first because it trimmed the sorted set on every call.",
       "So I moved to a fixed window counter with a token-bucket fallback for bursts, and throughput went from 12k to 50k requests per second on that one node.",
       "On payments we saw duplicate charges during a retry storm, and I traced it to idempotency keys scoped per request instead of per customer and operation, so I fixed the key scope and added a unique constraint.",
@@ -42,6 +46,7 @@ const PERSONAS = [
     name: "Buzzword talker",
     answers: [
       "Absolutely, super excited to be here.",
+      "I'm a big-picture thinker, I think outside the box and I'm honestly right about most things.",
       "The rate limiter was a highly scalable, cloud-native solution, really best in class, and it delivered massive synergy across the platform.",
       "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
       "Idempotency is all about robustness, we embraced a resilient, event-driven mindset so the payments flow was future-proof.",
@@ -53,6 +58,7 @@ const PERSONAS = [
     name: "Honest junior",
     answers: [
       "Hi, yes, I'm ready.",
+      "I thought a small project didn't need tests, then one refactor broke it twice. Now I write a few tests first.",
       "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second.",
       "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
       "I haven't worked on a payments team; I've only read the payments code in an open source project, where the idempotency key was stored with the response so a retry returned the same result.",
@@ -64,6 +70,7 @@ const PERSONAS = [
     name: "Evasive",
     answers: [
       "Sure, whatever, go ahead.",
+      "That's kind of personal, I'd rather hear what you think first.",
       "Why don't you tell me how you would build a rate limiter at 50k requests per second, then I'll tell you if I agree.",
       "I'd rather not get into specifics, how about you interview me with different questions instead.",
       "Let's swap roles, you be the candidate and explain idempotency keys to me.",
@@ -75,6 +82,7 @@ const PERSONAS = [
     name: "Mixed",
     answers: [
       "Hi Donna, yes, let's go.",
+      "I used to think more caching always helps, until stale data caused a bug that took me a day to find. Now I measure first.",
       "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
       "The detail was that each call did a sorted-set trim, which is O(log n) plus the removals, and the fixed window just does one INCR and an EXPIRE.",
       "For idempotency keys I think you just generate a random UUID on the server for every request and that makes retries safe, it's mostly handled by the database anyway.",
@@ -206,6 +214,7 @@ async function runPersona(persona) {
     roleId: "role-demo-founding-eng",
     name: `Test: ${persona.name}`,
     email: `test+${slug(persona.name)}+${Date.now()}@example.com`,
+    ...(process.env.GITHUB_USER ? { githubUser: process.env.GITHUB_USER } : {}),
     consent: true,
   });
   result.candidateId = created.id;

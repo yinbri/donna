@@ -35,7 +35,7 @@ PASS is 7 or more overall, MAYBE is 4.5 or more, REJECT is below that.
 
 ## Run them again
 
-From `app/`, with `wasp start` running and the ElevenLabs key set. Each run makes real conversations and leaves `Test: <persona>` candidates in the app.
+From `app/`, with `wasp start` running and the ElevenLabs key set. Donna has opened with a thinking question since 14:42, so a new run has one more exchange than the transcripts stored here. Each run makes real conversations and leaves `Test: <persona>` candidates in the app.
 
 ```bash
 node scripts/run-test-screens.mjs
