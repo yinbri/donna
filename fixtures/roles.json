@@ -1,0 +1,15 @@
+[
+  {
+    "id": "role-demo-founding-eng",
+    "title": "Founding Engineer",
+    "companyName": "Acme (demo)",
+    "founderName": "Alex",
+    "rubric": ["Shipped real systems", "Depth on own project", "Communication"],
+    "questions": [
+      "What's the hardest bug you've shipped a fix for?",
+      "Walk me through a technical decision you'd make differently now."
+    ],
+    "sourceUrl": null,
+    "isOfficialPosting": false
+  }
+]

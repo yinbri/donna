@@ -1,0 +1,13 @@
+{
+  "id": "approval-fixture-001",
+  "candidateId": "candidate-fixture-001",
+  "slotIso": "2026-11-24T15:00:00-05:00",
+  "status": "PENDING",
+  "alterRef": null,
+  "emailDraft": {
+    "to": "sam@example.com",
+    "subject": "Interview with Alex at Acme",
+    "body": "Hi Sam, thanks for the chat with Donna. Alex would like to meet on Tuesday Nov 24 at 3:00 PM ET. The calendar invite is attached. Reply here if that doesn't work."
+  },
+  "deniedAttempt": null
+}

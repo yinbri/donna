@@ -1,0 +1,16 @@
+{
+  "conversationId": "fixture-conv-001",
+  "durationSecs": 96,
+  "audioPath": "fixtures/conversation.mp3",
+  "transcript": [
+    { "i": 0, "role": "agent", "t": 0.0, "text": "Hi Sam, this is Donna, an AI assistant calling for Alex at Acme. This call is recorded. I saw your Redis rate limiter. Got a few minutes for a quick screen?" },
+    { "i": 1, "role": "user", "t": 9.4, "text": "Yeah, for sure." },
+    { "i": 2, "role": "agent", "t": 11.2, "text": "Your README says it handles 50k requests a second. How did you measure that, and what broke first?" },
+    { "i": 3, "role": "user", "t": 17.8, "text": "I load tested with k6 against a single Redis node. The first thing that broke was the Lua script, because I was doing a sorted set trim on every call, so p99 jumped. I moved to a fixed window with a token bucket fallback and it went from about 12k to 50k." },
+    { "i": 4, "role": "agent", "t": 38.5, "text": "Nice. On the payments team, what went wrong with idempotency keys?" },
+    { "i": 5, "role": "user", "t": 43.1, "text": "Honestly I mostly read the code. I think there was some issue with retries but I wasn't really on that part." },
+    { "i": 6, "role": "agent", "t": 52.0, "text": "Fair enough. What's one thing you'd want to own in your first two weeks?" },
+    { "i": 7, "role": "user", "t": 57.6, "text": "The API gateway. I'd want to put real rate limiting and tracing in front of it, because that's where I've actually built stuff, and I'd write down what I find in the first week before changing anything." },
+    { "i": 8, "role": "agent", "t": 78.9, "text": "Thanks Sam, I'll pass my notes to Alex." }
+  ]
+}

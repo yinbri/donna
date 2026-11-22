@@ -1,0 +1,19 @@
+{
+  "summary": "Third-year Waterloo CS student. Two internships on backend infrastructure; maintains an open-source rate limiter with about 400 GitHub stars.",
+  "topProject": "a Redis-backed rate limiter library",
+  "highlights": [
+    "Backend intern on a payments team, worked on idempotency keys",
+    "Open-source rate limiter, about 400 stars, used in two other projects",
+    "Hackathon winner with a voice-controlled spreadsheet"
+  ],
+  "claimsToVerify": [
+    "Says the rate limiter handles 50k requests per second",
+    "Lists Kubernetes experience but no repo uses it"
+  ],
+  "tailoredQuestions": [
+    "Your rate limiter claims 50k requests per second. How did you measure that, and what broke first?",
+    "On the payments team, what went wrong with idempotency keys and how did you find out?",
+    "If you joined tomorrow, what would you want to own in your first two weeks?"
+  ],
+  "sources": { "fiber": true, "ploid": false, "github": true }
+}
