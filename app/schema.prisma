@@ -1,0 +1,69 @@
+datasource db {
+  provider = "sqlite"
+  // Wasp requires that the url is set to the DATABASE_URL environment variable.
+  url      = env("DATABASE_URL")
+}
+
+// Wasp requires the `prisma-client-js` generator to be present.
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite has no JSON or enum columns: fields marked "JSON" hold JSON.stringify output,
+// and status fields hold the string unions from src/server/contracts.ts.
+
+model Role {
+  id                String      @id @default(cuid())
+  title             String
+  companyName       String
+  founderName       String
+  rubric            String // JSON: string[]
+  questions         String // JSON: string[]
+  sourceUrl         String?
+  isOfficialPosting Boolean     @default(false)
+  createdAt         DateTime    @default(now())
+  candidates        Candidate[]
+}
+
+model Candidate {
+  id             String     @id @default(cuid())
+  roleId         String
+  role           Role       @relation(fields: [roleId], references: [id])
+  name           String
+  email          String
+  githubUser     String?
+  linkedinUrl    String?
+  consentAt      DateTime
+  status         String     @default("APPLIED") // CandidateStatus
+  dossier        String? // JSON: ResearchResult
+  conversationId String?
+  transcript     String? // JSON: TranscriptTurn[]
+  analysis       String? // JSON: raw ElevenLabs analysis
+  scorecard      String? // JSON: EvaluateResult
+  audioPath      String?
+  traceUrl       String?
+  createdAt      DateTime   @default(now())
+  approvals      Approval[]
+  events         Event[]
+}
+
+model Approval {
+  id            String    @id @default(cuid())
+  candidateId   String
+  candidate     Candidate @relation(fields: [candidateId], references: [id])
+  slotIso       String
+  status        String    @default("PENDING") // ApprovalStatus
+  alterRef      String?
+  emailDraft    String // JSON: { to, subject, body }
+  deniedAttempt String? // JSON: { at, reason, auditRef }
+  createdAt     DateTime  @default(now())
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  at          DateTime  @default(now())
+  kind        String // TimelineEvent["kind"]
+  detail      String    @default("")
+}
