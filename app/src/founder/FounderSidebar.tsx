@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import type { Role } from '../server/contracts';
 import { panelSpread, PANEL_SPLIT, type UICandidate } from '../dev/uiApi';
 
@@ -38,6 +38,8 @@ export function FounderLayout({
   children: ReactNode;
 }) {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const onOverview = params.get('view') === 'overview' && !activeId;
   const companies = [...new Set(roles.map((r) => r.companyName))];
   const company = role?.companyName ?? companies[0];
   const companyRoles = roles.filter((r) => r.companyName === company);
@@ -69,9 +71,19 @@ export function FounderLayout({
           </span>
         </label>
 
+        <nav className="side-block" aria-label="Views">
+          <Link to="/founder?view=overview" className={`side-item ${onOverview ? 'on' : ''}`} aria-current={onOverview ? 'page' : undefined}>
+            <svg className="side-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <rect x="2" y="3" width="12" height="11" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M2 6.5h12M5.5 1.8v2.4M10.5 1.8v2.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+            <span className="side-item-text">Overview</span>
+          </Link>
+        </nav>
+
         <nav className="side-block" aria-label="Roles">
           <span className="side-label">Roles</span>
-          <Link to="/founder" className={`side-item ${!role && !activeId ? 'on' : ''}`}>
+          <Link to="/founder" className={`side-item ${!role && !activeId && !onOverview ? 'on' : ''}`}>
             <span className="side-item-text">All roles</span>
             <span className="side-count">{candidates.filter((c) => companyIds.has(c.roleId)).length}</span>
           </Link>
