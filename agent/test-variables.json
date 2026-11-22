@@ -1,0 +1,9 @@
+{
+  "candidate_name": "Sam",
+  "founder_name": "Alex",
+  "company_name": "Acme",
+  "role_title": "Founding Engineer",
+  "top_project": "a Redis-backed rate limiter library",
+  "tailored_questions": "Your rate limiter claims 50k requests per second. How did you measure that, and what broke first?\nOn the payments team, what went wrong with idempotency keys and how did you find out?\nIf you joined tomorrow, what would you want to own in your first two weeks?",
+  "demo_fast_mode": false
+}
