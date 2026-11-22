@@ -5,6 +5,8 @@ import { Shell } from '../components/Shell';
 import { FounderLayout, initials } from './FounderSidebar';
 import { Overview } from './Overview';
 import { AskDonna } from './AskDonna';
+import { HiringPrefsPanel } from './HiringPrefsPanel';
+import { isDefault, MUST_HAVE_MIN, prefsContext, rankByFit, useHiringPrefs } from './hiringPrefs';
 
 export function FounderRoute() {
   return (
@@ -46,9 +48,13 @@ export function FounderHome() {
   const inCompany = all.filter((c) => companyIds.has(c.roleId));
   const founder = (role ?? companyRoles[0])?.founderName.split(' ')[0];
 
-  const list = inCompany
-    .filter((c) => c.roleId === role?.id)
-    .sort((a, b) => (b.evaluation?.overall ?? -1) - (a.evaluation?.overall ?? -1));
+  const [prefs, setPrefs] = useHiringPrefs(role?.id);
+  const tuned = !isDefault(prefs);
+  const ranked = rankByFit(
+    inCompany.filter((c) => c.roleId === role?.id),
+    prefs,
+  );
+  const list = ranked.map((r) => r.c);
 
   const screened = list.filter((c) => c.durationSecs);
   const durations = screened.map((c) => c.durationSecs!).sort((a, b) => a - b);
@@ -101,10 +107,12 @@ export function FounderHome() {
                 ))}
               </div>
 
+              <HiringPrefsPanel role={role} prefs={prefs} onChange={setPrefs} />
+
               <section className="ranked">
                 <header className="ranked-head">
                   <h2>
-                    {role.title} · ranked
+                    {role.title} · {tuned ? 'ranked by your preferences' : 'ranked'}
                     {!role.isOfficialPosting && <span className="tab-note">general interest, not an official posting</span>}
                   </h2>
                   <span className="rubric-chips">
@@ -132,10 +140,10 @@ export function FounderHome() {
                       <span>Candidate</span>
                       <span>Donna says</span>
                       <span>Panel</span>
-                      <span className="num">Score</span>
+                      <span className="num">{tuned ? 'Fit' : 'Score'}</span>
                       <span>Status</span>
                     </div>
-                    {list.map((c, i) => {
+                    {ranked.map(({ c, fit }, i) => {
                       const split = panelSpread(c.evaluation) >= PANEL_SPLIT;
                       return (
                         <button key={c.id} className="rk" role="row" onClick={() => navigate(`/founder/candidates/${c.id}`)}>
@@ -152,9 +160,18 @@ export function FounderHome() {
                           <span className="says">
                             <RecBadge rec={c.evaluation?.recommendation} />
                             {split && <span className="split">split</span>}
+                            {tuned && fit?.missed.length ? (
+                              <span className="prefs-chip miss" title={`Under ${MUST_HAVE_MIN}/10 on: ${fit.missed.join(', ')}`}>
+                                missed must-have
+                              </span>
+                            ) : tuned && fit?.aboveBar ? (
+                              <span className="prefs-chip ok">above bar</span>
+                            ) : null}
                           </span>
                           <PanelBars c={c} />
-                          <span className="num score">{c.evaluation ? c.evaluation.overall.toFixed(1) : '—'}</span>
+                          <span className="num score" title={tuned && c.evaluation ? `Panel overall ${c.evaluation.overall.toFixed(1)}` : undefined}>
+                            {fit ? (tuned ? fit.score : c.evaluation!.overall).toFixed(1) : '—'}
+                          </span>
                           <span>
                             <StatusDot status={c.status} />
                           </span>
@@ -170,7 +187,12 @@ export function FounderHome() {
           <p className="fineprint">Unofficial hackathon demo. This is not an application to the company.</p>
         </div>
 
-        <AskDonna candidates={overview ? inCompany : list} role={role} founderName={founder ?? 'there'} />
+        <AskDonna
+          candidates={overview ? inCompany : list}
+          role={role}
+          founderName={founder ?? 'there'}
+          preferences={role ? prefsContext(prefs, role) : ''}
+        />
       </div>
     </FounderLayout>
   );
