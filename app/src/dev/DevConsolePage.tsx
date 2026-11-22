@@ -2,16 +2,34 @@ import { useState } from "react";
 import {
   attemptWithoutApproval,
   createCandidate,
-  decide,
-  finalizeScreen,
   listCandidates,
   listRoles,
   proposeBooking,
   startScreen,
   useQuery,
 } from "wasp/client/operations";
+import { decideAndWait, finalizeAndWait } from "./longOperations";
+import { RealCallPanel } from "./RealCallPanel";
 
 type Step = { label: string; result: unknown };
+
+function GateLinks({ result }: { result: unknown }) {
+  const r = (result ?? {}) as { approvalUrl?: unknown; calendarUrl?: unknown };
+  const links = [
+    ["Approve in Alter", r.approvalUrl],
+    ["Calendar", r.calendarUrl],
+  ].filter((l): l is [string, string] => typeof l[1] === "string");
+  if (links.length === 0) return null;
+  return (
+    <p>
+      {links.map(([label, href]) => (
+        <a key={label} href={href} target="_blank" rel="noreferrer" style={{ marginRight: 12 }}>
+          {label}
+        </a>
+      ))}
+    </p>
+  );
+}
 
 export function DevConsolePage() {
   const roles = useQuery(listRoles);
@@ -79,7 +97,7 @@ export function DevConsolePage() {
         </tbody>
       </table>
 
-      <h2>Drive the stubbed flow</h2>
+      <h2>Drive the flow (fixture stubs; the approval gate follows ALTER_MODE)</h2>
       <p>
         Candidate: <code>{candidateId || "none"}</code> · Approval: <code>{approvalId || "none"}</code>
       </p>
@@ -106,7 +124,7 @@ export function DevConsolePage() {
         </button>
         <button
           disabled={busy || !candidateId}
-          onClick={() => run("finalizeScreen", () => finalizeScreen({ candidateId, conversationId: "fixture-conv-001" }))}
+          onClick={() => run("finalizeScreen", () => finalizeAndWait(candidateId, "fixture-conv-001"))}
         >
           3. Finalize
         </button>
@@ -122,15 +140,18 @@ export function DevConsolePage() {
         <button disabled={busy || !approvalId} onClick={() => run("attemptWithoutApproval", () => attemptWithoutApproval({ approvalId }))}>
           5. Attempt without approval
         </button>
-        <button disabled={busy || !approvalId} onClick={() => run("decide", () => decide({ approvalId, approve: true }))}>
+        <button disabled={busy || !approvalId} onClick={() => run("decide", () => decideAndWait(candidateId, approvalId, true))}>
           6. Approve
         </button>
       </div>
+
+      <RealCallPanel candidateId={candidateId} />
 
       <h2>Results</h2>
       {steps.map((s, n) => (
         <details key={n} open={n === steps.length - 1}>
           <summary>{s.label}</summary>
+          <GateLinks result={s.result} />
           <pre style={{ whiteSpace: "pre-wrap" }}>{JSON.stringify(s.result, null, 2)}</pre>
         </details>
       ))}

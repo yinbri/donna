@@ -16,6 +16,12 @@ export type JsonValue = string | number | boolean | null | JsonValue[] | { [key:
 
 export type RoleView = Plain<Role>;
 
+/** The contract Approval plus the gate's links, present only when the gate returned them. */
+export type ApprovalView = Plain<Approval> & {
+  approvalUrl?: string; // live Alter: where the founder approves
+  calendarUrl?: string; // live: the booked Google event; stub: a prefilled Calendar link (nothing sent)
+};
+
 /** true = live, false = returning fixture data. */
 export type IntegrationStatus = { elevenlabs: boolean; box: boolean; alter: boolean; traceroot: boolean };
 
@@ -38,6 +44,5 @@ export type CandidateView = Plain<{
   durationSecs: number | null; // call length from ElevenLabs, set by finalizeScreen
   scorecard: EvaluateResult | null;
   role: RoleView;
-  approvals: Approval[]; // oldest first
   events: TimelineEvent[]; // oldest first
-}> & { analysis: JsonValue }; // analysis: raw ElevenLabs analysis
+}> & { approvals: ApprovalView[]; analysis: JsonValue }; // approvals oldest first; analysis: raw ElevenLabs analysis

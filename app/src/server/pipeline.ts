@@ -1,7 +1,7 @@
 import { prisma } from "wasp/server";
 import type { Approval as ApprovalRow, Candidate, Event, Role as RoleRow } from "wasp/entities";
 import type { Approval, CandidateStatus, TimelineEvent } from "./contracts";
-import type { CandidateView, JsonValue, RoleView } from "./views";
+import type { ApprovalView, CandidateView, JsonValue, RoleView } from "./views";
 
 export function parseJson<T>(value: string | null, field: string, id: string): T | null {
   if (value === null) return null;
@@ -35,6 +35,13 @@ export function toApproval(row: ApprovalRow): Approval {
     emailDraft: parseJson<Approval["emailDraft"]>(row.emailDraft, "emailDraft", row.id)!,
     deniedAttempt: parseJson<NonNullable<Approval["deniedAttempt"]>>(row.deniedAttempt, "deniedAttempt", row.id),
   };
+}
+
+export function toApprovalView(row: ApprovalRow): ApprovalView {
+  const view: ApprovalView = toApproval(row);
+  if (row.approvalUrl) view.approvalUrl = row.approvalUrl;
+  if (row.calendarUrl) view.calendarUrl = row.calendarUrl;
+  return view;
 }
 
 export function toTimelineEvent(row: Event): TimelineEvent {
@@ -76,7 +83,7 @@ export function toCandidateView(c: CandidateWithRelations): CandidateView {
     analysis: parseJson<JsonValue>(c.analysis, "analysis", c.id),
     scorecard: parseJson(c.scorecard, "scorecard", c.id),
     role: toRoleView(c.role),
-    approvals: c.approvals.map(toApproval),
+    approvals: c.approvals.map(toApprovalView),
     events: c.events.map(toTimelineEvent),
   };
 }
@@ -87,14 +94,4 @@ export async function logEvent(candidateId: string, kind: TimelineEvent["kind"],
 
 export async function setStatus(candidateId: string, status: CandidateStatus): Promise<void> {
   await prisma.candidate.update({ where: { id: candidateId }, data: { status } });
-}
-
-/** Next Monday-to-Friday after today, at 15:00 server-local time. */
-export function defaultSlotIso(now = new Date()): string {
-  const slot = new Date(now);
-  slot.setHours(15, 0, 0, 0);
-  do {
-    slot.setDate(slot.getDate() + 1);
-  } while (slot.getDay() === 0 || slot.getDay() === 6);
-  return slot.toISOString();
 }
