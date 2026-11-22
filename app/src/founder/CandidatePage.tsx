@@ -133,7 +133,7 @@ export function CandidatePage() {
           {e && (
             <Card
               title="Hiring panel"
-              aside={split ? <span className="split">panel split → needs you</span> : <span className="label muted">agrees</span>}
+              aside={split ? <span className="split">panel split → needs you</span> : <span className="label muted">{e.personas.length ? 'agrees' : 'not connected'}</span>}
             >
               <div className="personas">
                 {e.personas.map((p) => (
@@ -154,7 +154,11 @@ export function CandidatePage() {
                   </ul>
                 </div>
               )}
-              {live && !live.box && <p className="fineprint"><Stub>fixture panel</Stub> Expected Parrot scores land when the box is live.</p>}
+              {e.source === 'call_analysis' ? (
+                <p className="fineprint">The scores above come from ElevenLabs' analysis of this call. The 3-persona panel lands when the box is live.</p>
+              ) : (
+                live && !live.box && <p className="fineprint"><Stub>fixture panel</Stub> Expected Parrot scores land when the box is live.</p>
+              )}
             </Card>
           )}
 
