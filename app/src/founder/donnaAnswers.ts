@@ -2,7 +2,7 @@ import { panelSpread, PANEL_SPLIT, type UICandidate } from '../dev/uiApi';
 import type { Role } from '../server/contracts';
 
 /**
- * Sandbox answers for the "Ask Donna" chat. No model call: Donna reads the same
+ * Answers for the "Ask Donna" chat. No model call: Donna reads the same
  * candidate data the dashboard shows (scores, quotes, panel, approvals) and answers
  * from it. Swap this for a server action when the backbone exposes one.
  */

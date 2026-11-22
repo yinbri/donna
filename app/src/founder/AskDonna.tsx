@@ -74,7 +74,6 @@ export function AskDonna({ candidates, role, founderName }: { candidates: UICand
       <aside className="ask-donna" aria-label="Ask Donna">
         <header className="ad-head">
           <span className="ad-title">Ask Donna</span>
-          <span className="stub" title="Answers come from the candidate data on this page, not a language model">sandbox</span>
         </header>
         <ThreadPrimitive.Root className="ad-thread">
           <ThreadPrimitive.Viewport className="ad-viewport">
