@@ -43,24 +43,35 @@ function AssistantMessage() {
 }
 
 /** Docked assistant-ui thread: ask Donna anything about this role's candidates. */
-export function AskDonna({ candidates, role, founderName }: { candidates: UICandidate[]; role?: Role; founderName: string }) {
+export function AskDonna({
+  candidates,
+  role,
+  founderName,
+  preferences = '',
+}: {
+  candidates: UICandidate[];
+  role?: Role;
+  founderName: string;
+  /** The founder's hiring preferences for this role, as plain text. Empty when untouched. */
+  preferences?: string;
+}) {
   // The adapter reads the latest data through a ref so the runtime isn't rebuilt on every render.
-  const data = useRef({ candidates, role, founderName });
-  data.current = { candidates, role, founderName };
+  const data = useRef({ candidates, role, founderName, preferences });
+  data.current = { candidates, role, founderName, preferences };
 
   const adapter = useMemo<ChatModelAdapter>(
     () => ({
       async *run({ messages, abortSignal }) {
         const textOf = (m: (typeof messages)[number]) => m.content.map((p) => (p.type === 'text' ? p.text : '')).join(' ');
         const question = textOf(messages[messages.length - 1]);
-        const { candidates, role, founderName } = data.current;
+        const { candidates, role, founderName, preferences } = data.current;
         let full: string;
         try {
           const reply = await askDonna({
             question,
             founderName,
             scope: role ? `${role.title} at ${role.companyName}` : 'all open roles',
-            candidates: contextFor(candidates, role),
+            candidates: [preferences, contextFor(candidates, role)].filter(Boolean).join('\n\n'),
             history: messages
               .slice(0, -1)
               .map((m) => `${m.role === 'user' ? 'Founder' : 'Donna'}: ${textOf(m)}`)
