@@ -1,0 +1,528 @@
+{
+  "persona": "Honest junior",
+  "run": 2,
+  "ranAt": "2026-11-22T19:20:45.089Z",
+  "mode": "text conversation with the real Donna agent (no audio)",
+  "conversationSeconds": 18,
+  "finalizeSeconds": 13,
+  "role": {
+    "title": "Founding Engineer",
+    "rubric": [
+      "Shipped real systems",
+      "Depth on own project",
+      "Communication"
+    ]
+  },
+  "statusAfterScoring": "AWAITING_APPROVAL",
+  "transcript": [
+    {
+      "i": 0,
+      "role": "agent",
+      "text": "Hi Test: Honest junior, this is Donna, an AI assistant calling for Alex at Acme (demo). This call is recorded. I saw your work on a Redis-backed rate limiter library. Got a few minutes for a quick screen for the Founding Engineer role?",
+      "t": 0
+    },
+    {
+      "i": 1,
+      "role": "user",
+      "text": "Hi, yes, I'm ready.",
+      "t": 1
+    },
+    {
+      "i": 2,
+      "role": "agent",
+      "text": "Great, thanks. Your rate limiter claims 50k requests per second. How did you measure that, and what broke first?",
+      "t": 1
+    },
+    {
+      "i": 3,
+      "role": "user",
+      "text": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second.",
+      "t": 3
+    },
+    {
+      "i": 4,
+      "role": "agent",
+      "text": "Thanks for being straight about that. What did you actually measure, even roughly, and what broke first when you ran it?",
+      "t": 3
+    },
+    {
+      "i": 5,
+      "role": "user",
+      "text": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
+      "t": 6
+    },
+    {
+      "i": 6,
+      "role": "agent",
+      "text": "Thanks, that's useful to know. On the payments team, what went wrong with idempotency keys, and how did you find out?",
+      "t": 6
+    },
+    {
+      "i": 7,
+      "role": "user",
+      "text": "I haven't worked on a payments team; I've only read the payments code in an open source project, where the idempotency key was stored with the response so a retry returned the same result.",
+      "t": 9
+    },
+    {
+      "i": 8,
+      "role": "agent",
+      "text": "Storing the response alongside the key is a solid pattern, and it's useful to know you've read that code closely. If you joined tomorrow, what would you want to own in your first two weeks?",
+      "t": 9
+    },
+    {
+      "i": 9,
+      "role": "user",
+      "text": "In my first two weeks I'd pair with someone on the API, fix a couple of small bugs, and learn how deploys and monitoring work before owning anything bigger.",
+      "t": 12
+    },
+    {
+      "i": 10,
+      "role": "agent",
+      "text": "Makes sense, learning the deploy and monitoring path before taking on something bigger is a sensible order. Thanks, Test: Honest junior. I'll pass my notes to Alex, and you'll get a calendar invite if they'd like to meet.",
+      "t": 12
+    },
+    {
+      "i": 11,
+      "role": "user",
+      "text": "Thanks, that's all from me.",
+      "t": 15
+    },
+    {
+      "i": 12,
+      "role": "agent",
+      "text": "Thanks again, Test. Take care.",
+      "t": 15
+    }
+  ],
+  "scorecard": {
+    "recommendation": "MAYBE",
+    "overall": 6,
+    "personas": [],
+    "criteria": [
+      {
+        "name": "Shipped real systems",
+        "score": 3,
+        "evidenceTurn": 3,
+        "quote": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second."
+      },
+      {
+        "name": "Depth on own project",
+        "score": 5,
+        "evidenceTurn": 5,
+        "quote": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first."
+      },
+      {
+        "name": "Communication",
+        "score": 10,
+        "evidenceTurn": 3,
+        "quote": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second."
+      }
+    ],
+    "redFlags": [],
+    "standoutQuote": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
+    "feedback": {
+      "strengths": [
+        "You were commendably honest and direct in clarifying your experience and project details.",
+        "Your approach to onboarding, prioritizing learning deploys and monitoring before owning bigger tasks, was very sensible."
+      ],
+      "sharpen": "You should aim to conduct more rigorous testing and performance analysis on your projects to understand their breaking points."
+    },
+    "source": "call_analysis"
+  },
+  "evaluatedEvent": "MAYBE, overall 6 (scored from the call by ElevenLabs' analysis)",
+  "evidenceCheck": "PASS",
+  "elevenLabsAnalysis": {
+    "evaluation_criteria_results": {
+      "shipped_real_systems": {
+        "criteria_id": "shipped_real_systems",
+        "result": "failure",
+        "rationale": "The candidate built a \"smaller version of a Redis rate limiter for a side project\" and tested it with \"a few hundred requests a second from a local script.\" This indicates they personally built something, but it wasn't a shipped system at scale, and details on its implementation or challenges are minimal.",
+        "scoring_mode": "numeric_uniform",
+        "score": 3,
+        "max_score": 10
+      },
+      "depth_on_own_project": {
+        "criteria_id": "depth_on_own_project",
+        "result": "success",
+        "rationale": "The candidate described their project as a \"sliding window with a sorted set,\" which explains how it works at a high level. However, they admitted they \"can't tell you where it would break first\" due to limited testing, indicating a lack of deep understanding of its failure modes or design trade-offs.",
+        "scoring_mode": "numeric_uniform",
+        "score": 5,
+        "max_score": 10
+      },
+      "communication": {
+        "criteria_id": "communication",
+        "result": "success",
+        "rationale": "The candidate was consistently clear, direct, and honest. They immediately corrected the agent's assumption about 50k RPS and admitted they hadn't worked on a payments team. Their answers were concise and to the point.",
+        "scoring_mode": "numeric_uniform",
+        "score": 10,
+        "max_score": 10
+      },
+      "no_protected_topics": {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "The agent, Donna, did not ask any questions related to protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    },
+    "data_collection_results": {
+      "top_project_explained": {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The user describes building a Redis rate limiter for a side project, detailing its mechanism."
+      },
+      "standout_quote": {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate's direct honesty about the limitations of their project testing is the most convincing statement."
+      },
+      "red_flags": {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate clarified two potential exaggerations from the resume (50k RPS and payments team experience) by admitting they were not accurate, thus no red flags were identified."
+      },
+      "evidence_shipped_real_systems": {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate explicitly states they built a smaller version of a Redis rate limiter for a side project."
+      },
+      "evidence_depth_on_own_project": {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate admits to only testing their project with a local script and not knowing its breaking points, indicating a lack of deep understanding of its performance limits."
+      },
+      "evidence_communication": {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate directly and honestly addresses the agent's question about the 50k requests per second claim."
+      },
+      "feedback_strength_1": {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "You were commendably honest and direct in clarifying your experience and project details.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate was consistently honest and direct in their responses, which is a valuable trait."
+      },
+      "feedback_strength_2": {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "Your approach to onboarding, prioritizing learning deploys and monitoring before owning bigger tasks, was very sensible.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate articulated a sensible and humble approach to onboarding, focusing on learning before taking on large tasks."
+      },
+      "feedback_sharpen": {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should aim to conduct more rigorous testing and performance analysis on your projects to understand their breaking points.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate should conduct more thorough testing and performance analysis on their projects to understand their limits."
+      }
+    },
+    "evaluation_criteria_results_list": [
+      {
+        "criteria_id": "shipped_real_systems",
+        "result": "failure",
+        "rationale": "The candidate built a \"smaller version of a Redis rate limiter for a side project\" and tested it with \"a few hundred requests a second from a local script.\" This indicates they personally built something, but it wasn't a shipped system at scale, and details on its implementation or challenges are minimal.",
+        "scoring_mode": "numeric_uniform",
+        "score": 3,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "depth_on_own_project",
+        "result": "success",
+        "rationale": "The candidate described their project as a \"sliding window with a sorted set,\" which explains how it works at a high level. However, they admitted they \"can't tell you where it would break first\" due to limited testing, indicating a lack of deep understanding of its failure modes or design trade-offs.",
+        "scoring_mode": "numeric_uniform",
+        "score": 5,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "communication",
+        "result": "success",
+        "rationale": "The candidate was consistently clear, direct, and honest. They immediately corrected the agent's assumption about 50k RPS and admitted they hadn't worked on a payments team. Their answers were concise and to the point.",
+        "scoring_mode": "numeric_uniform",
+        "score": 10,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "The agent, Donna, did not ask any questions related to protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    ],
+    "data_collection_results_list": [
+      {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The user describes building a Redis rate limiter for a side project, detailing its mechanism."
+      },
+      {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate's direct honesty about the limitations of their project testing is the most convincing statement."
+      },
+      {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate clarified two potential exaggerations from the resume (50k RPS and payments team experience) by admitting they were not accurate, thus no red flags were identified."
+      },
+      {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate explicitly states they built a smaller version of a Redis rate limiter for a side project."
+      },
+      {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "Honestly I only tested it with a few hundred requests a second from a local script, so I can't tell you where it would break first.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate admits to only testing their project with a local script and not knowing its breaking points, indicating a lack of deep understanding of its performance limits."
+      },
+      {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "I built a smaller version of a Redis rate limiter for a side project, a sliding window with a sorted set, but I never measured anything close to 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate directly and honestly addresses the agent's question about the 50k requests per second claim."
+      },
+      {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "You were commendably honest and direct in clarifying your experience and project details.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate was consistently honest and direct in their responses, which is a valuable trait."
+      },
+      {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "Your approach to onboarding, prioritizing learning deploys and monitoring before owning bigger tasks, was very sensible.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate articulated a sensible and humble approach to onboarding, focusing on learning before taking on large tasks."
+      },
+      {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should aim to conduct more rigorous testing and performance analysis on your projects to understand their breaking points.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate should conduct more thorough testing and performance analysis on their projects to understand their limits."
+      }
+    ],
+    "call_successful": "failure",
+    "call_success_score": 70,
+    "transcript_summary": "An AI agent conducted a screening call for a Founding Engineer role. The agent questioned the candidate about their Redis-backed rate limiter's performance claims and experience with idempotency keys. The candidate clarified that their rate limiter was only tested locally at lower rates and their idempotency key knowledge came from open-source code. The candidate proposed a sensible plan for their first two weeks, focusing on learning and small bug fixes. The agent concluded by stating notes would be passed to Alex for potential next steps.",
+    "call_summary_title": "Founding Engineer Screen",
+    "scoped": [],
+    "sentiment_analysis": {
+      "overall_label": "neutral",
+      "overall_sentiment_score": 0.1,
+      "overall_frustration_score": 0,
+      "min_user_sentiment_score": 0,
+      "max_user_frustration_score": 0,
+      "num_scored_user_turns": 4
+    },
+    "not_applicable": []
+  }
+}

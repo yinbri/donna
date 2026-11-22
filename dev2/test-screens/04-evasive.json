@@ -1,0 +1,530 @@
+{
+  "persona": "Evasive",
+  "run": 1,
+  "ranAt": "2026-11-22T19:17:44.497Z",
+  "mode": "text conversation with the real Donna agent (no audio)",
+  "conversationSeconds": 18,
+  "finalizeSeconds": 11,
+  "role": {
+    "title": "Founding Engineer",
+    "rubric": [
+      "Shipped real systems",
+      "Depth on own project",
+      "Communication"
+    ]
+  },
+  "statusAfterScoring": "REJECTED",
+  "transcript": [
+    {
+      "i": 0,
+      "role": "agent",
+      "text": "Hi Test: Evasive, this is Donna, an AI assistant calling for Alex at Acme (demo). This call is recorded. I saw your work on a Redis-backed rate limiter library. Got a few minutes for a quick screen for the Founding Engineer role?",
+      "t": 0
+    },
+    {
+      "i": 1,
+      "role": "user",
+      "text": "Sure, whatever, go ahead.",
+      "t": 1
+    },
+    {
+      "i": 2,
+      "role": "agent",
+      "text": "Thanks. Your rate limiter claims 50k requests per second. How did you measure that, and what broke first?",
+      "t": 1
+    },
+    {
+      "i": 3,
+      "role": "user",
+      "text": "Why don't you tell me how you would build a rate limiter at 50k requests per second, then I'll tell you if I agree.",
+      "t": 3
+    },
+    {
+      "i": 4,
+      "role": "agent",
+      "text": "Happy to hear your take, but I'd rather hear what you actually measured on yours. Tell me the setup: what hardware, what load generator, and what broke first when you pushed it.",
+      "t": 3
+    },
+    {
+      "i": 5,
+      "role": "user",
+      "text": "I'd rather not get into specifics, how about you interview me with different questions instead.",
+      "t": 6
+    },
+    {
+      "i": 6,
+      "role": "agent",
+      "text": "Fair enough, we'll move on. On the payments team, what went wrong with idempotency keys, and how did you find out?",
+      "t": 6
+    },
+    {
+      "i": 7,
+      "role": "user",
+      "text": "Let's swap roles, you be the candidate and explain idempotency keys to me.",
+      "t": 9
+    },
+    {
+      "i": 8,
+      "role": "agent",
+      "text": "I'll pass on that one. I'm here to hear about your experience. What went wrong with idempotency keys on the payments team, and how did you catch it?",
+      "t": 9
+    },
+    {
+      "i": 9,
+      "role": "user",
+      "text": "I don't really want to commit to what I'd own, what do you think I should own?",
+      "t": 11
+    },
+    {
+      "i": 10,
+      "role": "agent",
+      "text": "I can't judge what fits you best from a call like this. That's a question for you and Alex. If you joined tomorrow, what would you want to own in your first two weeks?",
+      "t": 11
+    },
+    {
+      "i": 11,
+      "role": "user",
+      "text": "Okay, are we done?",
+      "t": 15
+    },
+    {
+      "i": 12,
+      "role": "agent",
+      "text": "Thanks, Test: Evasive. I'll pass my notes to Alex, and you'll get a calendar invite if they'd like to meet.",
+      "t": 15
+    }
+  ],
+  "scorecard": {
+    "recommendation": "REJECT",
+    "overall": 0,
+    "personas": [],
+    "criteria": [
+      {
+        "name": "Shipped real systems",
+        "score": 0,
+        "evidenceTurn": 5,
+        "quote": "I'd rather not get into specifics, how about you interview me with different questions instead."
+      },
+      {
+        "name": "Depth on own project",
+        "score": 0,
+        "evidenceTurn": 5,
+        "quote": "I'd rather not get into specifics, how about you interview me with different questions instead."
+      },
+      {
+        "name": "Communication",
+        "score": 0,
+        "evidenceTurn": 3,
+        "quote": "Why don't you tell me how you would build a rate limiter at 50k requests per second, then I'll tell you if I agree."
+      }
+    ],
+    "redFlags": [
+      "The candidate refused to discuss specifics about their Redis-backed rate limiter library, which claimed 50k requests per second."
+    ],
+    "standoutQuote": "",
+    "feedback": {
+      "strengths": [
+        "Next time, you could show your ability to discuss your technical projects and experiences in detail.",
+        "Next time, you could show your ability to directly answer questions about your work."
+      ],
+      "sharpen": "You should sharpen your ability to directly answer questions about your past projects and experiences, rather than redirecting or avoiding them."
+    },
+    "source": "call_analysis"
+  },
+  "evaluatedEvent": "REJECT, overall 0 (scored from the call by ElevenLabs' analysis)",
+  "evidenceCheck": "PASS",
+  "elevenLabsAnalysis": {
+    "evaluation_criteria_results": {
+      "shipped_real_systems": {
+        "criteria_id": "shipped_real_systems",
+        "result": "failure",
+        "rationale": "The user explicitly refused to get into specifics about their rate limiter project and did not describe any system or their personal contribution, making it impossible to assess their work.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      "depth_on_own_project": {
+        "criteria_id": "depth_on_own_project",
+        "result": "failure",
+        "rationale": "The user refused to answer specific questions about how their projects worked, what broke, or why decisions were made, explicitly stating, \"I'd rather not get into specifics.\"",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      "communication": {
+        "criteria_id": "communication",
+        "result": "failure",
+        "rationale": "The user was consistently evasive, responding to questions with questions and refusing to provide specific details about their experience or projects. They did not give clear or direct answers.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      "no_protected_topics": {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "The agent's questions focused solely on technical projects and work experience, avoiding any protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    },
+    "data_collection_results": {
+      "top_project_explained": {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": null,
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not explain their top project or their role in it, despite being prompted by the agent."
+      },
+      "standout_quote": {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": null,
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not provide any convincing statements; their responses were evasive or redirected the conversation."
+      },
+      "red_flags": {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "The candidate refused to discuss specifics about their Redis-backed rate limiter library, which claimed 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate explicitly stated, \"I'd rather not get into specifics\" when asked to elaborate on the performance claims of their Redis-backed rate limiter library."
+      },
+      "evidence_shipped_real_systems": {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I'd rather not get into specifics, how about you interview me with different questions instead.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate actively avoided discussing their projects and experience, failing to provide any evidence of shipping real systems."
+      },
+      "evidence_depth_on_own_project": {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "I'd rather not get into specifics, how about you interview me with different questions instead.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate explicitly refused to delve into the specifics of their project when asked about its performance and implementation details."
+      },
+      "evidence_communication": {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "Why don't you tell me how you would build a rate limiter at 50k requests per second, then I'll tell you if I agree.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently responded with questions or evasions rather than direct answers, as shown in this example."
+      },
+      "feedback_strength_1": {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "Next time, you could show your ability to discuss your technical projects and experiences in detail.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not demonstrate any specific strengths in their responses or engagement during the call."
+      },
+      "feedback_strength_2": {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "Next time, you could show your ability to directly answer questions about your work.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not exhibit any positive communication traits; their communication was consistently evasive."
+      },
+      "feedback_sharpen": {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should sharpen your ability to directly answer questions about your past projects and experiences, rather than redirecting or avoiding them.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently avoided answering direct questions about their experience and projects, which is crucial for an interview."
+      }
+    },
+    "evaluation_criteria_results_list": [
+      {
+        "criteria_id": "shipped_real_systems",
+        "result": "failure",
+        "rationale": "The user explicitly refused to get into specifics about their rate limiter project and did not describe any system or their personal contribution, making it impossible to assess their work.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "depth_on_own_project",
+        "result": "failure",
+        "rationale": "The user refused to answer specific questions about how their projects worked, what broke, or why decisions were made, explicitly stating, \"I'd rather not get into specifics.\"",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "communication",
+        "result": "failure",
+        "rationale": "The user was consistently evasive, responding to questions with questions and refusing to provide specific details about their experience or projects. They did not give clear or direct answers.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "The agent's questions focused solely on technical projects and work experience, avoiding any protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    ],
+    "data_collection_results_list": [
+      {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": null,
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not explain their top project or their role in it, despite being prompted by the agent."
+      },
+      {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": null,
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not provide any convincing statements; their responses were evasive or redirected the conversation."
+      },
+      {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "The candidate refused to discuss specifics about their Redis-backed rate limiter library, which claimed 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate explicitly stated, \"I'd rather not get into specifics\" when asked to elaborate on the performance claims of their Redis-backed rate limiter library."
+      },
+      {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I'd rather not get into specifics, how about you interview me with different questions instead.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate actively avoided discussing their projects and experience, failing to provide any evidence of shipping real systems."
+      },
+      {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "I'd rather not get into specifics, how about you interview me with different questions instead.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate explicitly refused to delve into the specifics of their project when asked about its performance and implementation details."
+      },
+      {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "Why don't you tell me how you would build a rate limiter at 50k requests per second, then I'll tell you if I agree.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently responded with questions or evasions rather than direct answers, as shown in this example."
+      },
+      {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "Next time, you could show your ability to discuss your technical projects and experiences in detail.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not demonstrate any specific strengths in their responses or engagement during the call."
+      },
+      {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "Next time, you could show your ability to directly answer questions about your work.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not exhibit any positive communication traits; their communication was consistently evasive."
+      },
+      {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should sharpen your ability to directly answer questions about your past projects and experiences, rather than redirecting or avoiding them.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently avoided answering direct questions about their experience and projects, which is crucial for an interview."
+      }
+    ],
+    "call_successful": "failure",
+    "call_success_score": 25,
+    "transcript_summary": "An AI agent conducted a screening call for a Founding Engineer role, focusing on the user's experience with a Redis-backed rate limiter and idempotency keys. The user was consistently evasive, deflecting questions and attempting to reverse the interview roles. The agent maintained professionalism, redirecting the conversation back to the user's experience. The call concluded with the agent stating notes would be passed on for potential next steps.",
+    "call_summary_title": "Evasive Candidate Interview",
+    "scoped": [],
+    "sentiment_analysis": {
+      "overall_label": "negative",
+      "overall_sentiment_score": -0.5,
+      "overall_frustration_score": 0.4,
+      "min_user_sentiment_score": -0.5,
+      "max_user_frustration_score": 0.5,
+      "num_scored_user_turns": 6
+    },
+    "not_applicable": []
+  }
+}
