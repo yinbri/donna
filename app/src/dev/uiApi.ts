@@ -2,11 +2,10 @@
 // Function names match the sandbox; signature changes are listed in dev2/ui-integration.md.
 
 import { config } from "wasp/client";
-import { finalizeAndWait } from "./finalizeAndWait";
+import { decideAndWait, finalizeAndWait } from "./longOperations";
 import {
   attemptWithoutApproval as attemptWithoutApprovalOp,
   createCandidate as createCandidateOp,
-  decide as decideOp,
   getCandidate,
   getIntegrationStatus,
   listCandidates,
@@ -186,7 +185,7 @@ export async function attemptWithoutApproval(candidateId: string): Promise<void>
 
 /** Takes the candidate id like the sandbox; acts on that candidate's newest open approval. */
 export async function decide(candidateId: string, approve: boolean): Promise<void> {
-  await decideOp({ approvalId: await openApprovalId(candidateId), approve });
+  await decideAndWait(candidateId, await openApprovalId(candidateId), approve);
 }
 
 export function setDecision(id: string, recommendation: "PASS" | "MAYBE" | "REJECT"): never {

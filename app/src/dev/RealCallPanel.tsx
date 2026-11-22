@@ -2,7 +2,7 @@ import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState } from "react";
 import { config } from "wasp/client";
 import { getCandidate, startScreen, useQuery } from "wasp/client/operations";
-import { finalizeAndWait } from "./finalizeAndWait";
+import { finalizeAndWait } from "./longOperations";
 
 type Phase = "idle" | "starting" | "connected" | "scoring" | "done";
 type LiveLine = { role: string; text: string };

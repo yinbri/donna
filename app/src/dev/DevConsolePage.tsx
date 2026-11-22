@@ -2,14 +2,13 @@ import { useState } from "react";
 import {
   attemptWithoutApproval,
   createCandidate,
-  decide,
   listCandidates,
   listRoles,
   proposeBooking,
   startScreen,
   useQuery,
 } from "wasp/client/operations";
-import { finalizeAndWait } from "./finalizeAndWait";
+import { decideAndWait, finalizeAndWait } from "./longOperations";
 import { RealCallPanel } from "./RealCallPanel";
 
 type Step = { label: string; result: unknown };
@@ -141,7 +140,7 @@ export function DevConsolePage() {
         <button disabled={busy || !approvalId} onClick={() => run("attemptWithoutApproval", () => attemptWithoutApproval({ approvalId }))}>
           5. Attempt without approval
         </button>
-        <button disabled={busy || !approvalId} onClick={() => run("decide", () => decide({ approvalId, approve: true }))}>
+        <button disabled={busy || !approvalId} onClick={() => run("decide", () => decideAndWait(candidateId, approvalId, true))}>
           6. Approve
         </button>
       </div>

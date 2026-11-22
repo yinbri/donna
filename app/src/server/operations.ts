@@ -415,15 +415,33 @@ export const decide: Decide<{ approvalId: string; approve: boolean }, ApprovalVi
   if (typeof args.approve !== "boolean") {
     throw new HttpError(400, `approve must be a boolean, got ${JSON.stringify(args.approve)}`);
   }
+  const approve = args.approve;
+  const inFlight = deciding.get(approvalId);
+  if (inFlight) {
+    if (inFlight.approve !== approve) {
+      throw new HttpError(409, `Approval ${approvalId} is already being ${inFlight.approve ? "approved" : "rejected"}`);
+    }
+    return inFlight.run;
+  }
+  const run = runDecide(approvalId, approve).finally(() => deciding.delete(approvalId));
+  deciding.set(approvalId, { approve, run });
+  return run;
+};
+
+// A live approval waits inside the request for the founder to approve in Alter (up to
+// ALTER_APPROVAL_WAIT_MS), far past the 10 s the browser waits. A client that asks again during
+// that wait joins it instead of starting a second booking.
+const deciding = new Map<string, { approve: boolean; run: Promise<ApprovalView> }>();
+
+async function runDecide(approvalId: string, approve: boolean): Promise<ApprovalView> {
   const row = await loadApproval(approvalId);
   requireOpenApproval(row);
   const candidate = await loadCandidate(row.candidateId);
 
-  const approve = args.approve;
   const outcome = await callGate("decide", approvalId, () =>
     alter.decide(toGateApproval(row), approve, bookingInput(candidate, row.slotIso)),
   );
   const updated = await prisma.approval.update({ where: { id: approvalId }, data: gateRowData(outcome) });
   await saveGateEvents(row.candidateId, outcome, approve ? "approved" : "rejected");
   return toApprovalView(updated);
-};
+}
