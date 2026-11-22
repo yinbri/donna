@@ -27,10 +27,16 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 
 ## Status
 
-Only what runs is listed here. Updated at each merge.
+Only what runs is listed here, from [BUILDLOG.md](BUILDLOG.md). Updated at each merge.
 
-- [x] Wasp app scaffolded (stubbed end to end: `npm run check:screen` passes)
-- [x] Donna agent created in ElevenLabs (from `agent/` on `lane/ui-voice`; the token endpoint answers. No real call yet; the end-call tool and agent tests are still to set in the dashboard)
-- [ ] Box `/research` and `/evaluate`
-- [ ] Alter approval flow
+- [x] Wasp app scaffolded (Wasp 0.26.1, SQLite; any integration without a key falls back to fixtures)
+- [x] Donna agent created in ElevenLabs (token endpoint answers; end-call tool and agent tests not set yet)
+- [x] One real call made through the dev console: transcript with timestamps, stored recording, audio seek from the scorecard
+- [x] Approval gate merged, running in in-app mode (`npm run check:approval`). Live Alter not yet run on `main`
+- [ ] Research and scoring box (`/research`, `/evaluate`): still returns fixtures
+- [ ] Real UI ported onto the backend (adapter and port guide exist; not yet run in a browser)
 - [ ] Gate 1: one full run end to end
+
+## Run it
+
+Fresh clone to running app, public HTTPS URL for phones, and QR code: see [dev2/RUNBOOK.md](dev2/RUNBOOK.md). In short, from `app/`: `wasp install`, copy `.env.server.example` to `.env.server`, `wasp db migrate-dev`, `wasp db seed`, `wasp start`, then open http://localhost:3000/dev.

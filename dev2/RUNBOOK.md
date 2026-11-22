@@ -14,7 +14,7 @@ wasp install
 cp .env.server.example .env.server
 ```
 
-Fill in the keys in `.env.server` (empty keys fall back to fixtures).
+Fill in the keys in `.env.server` (empty keys fall back to fixtures). Never commit this file.
 
 ```bash
 wasp db migrate-dev
@@ -28,7 +28,21 @@ wasp db seed
 wasp start
 ```
 
-Web runs on http://localhost:3000, server on http://localhost:3001.
+Web runs on http://localhost:3000, server on http://localhost:3001. Open the dev console at http://localhost:3000/dev (also `/founder`). The seed adds a demo role and one fixture candidate waiting for approval.
+
+Checks, from `app/`:
+
+```bash
+npm run check:screen
+```
+
+Drives one candidate through the stubbed screen over HTTP. Needs `wasp start` running (server on 3001, or set `WASP_SERVER_URL`).
+
+```bash
+npm run check:approval
+```
+
+Runs propose, attempt without approval, approve against the approval gate with an in-memory store. No server needed. In-app gate by default; `ALTER_MODE=live` uses real Alter and waits for you to approve.
 
 ## 2. Public HTTPS URL (phones need HTTPS for the microphone)
 
