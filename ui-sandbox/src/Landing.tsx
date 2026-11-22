@@ -7,7 +7,19 @@ export function Landing() {
       <div className="landing-orb">
         <DotOrb size={260} />
       </div>
-      <p className="eyebrow">Recruiting coordinator for YC founders</p>
+      <p className="eyebrow backers">
+        <span>Recruiting coordinator for founders from</span>
+        <span className="backer-row">
+          <span className="backer backer-yc" title="Y Combinator">
+            <span className="yc-box" aria-hidden="true">Y</span>
+            Combinator
+          </span>
+          <span className="backer backer-a16z" title="Andreessen Horowitz">a16z</span>
+          <span className="backer backer-sequoia" title="Sequoia">SEQUOIA</span>
+          <span className="backer backer-techstars" title="Techstars">techstars_</span>
+          <span className="backer backer-spc" title="South Park Commons">South Park Commons</span>
+        </span>
+      </p>
       <h1 className="display">
         A recruiter you can
         <br />
