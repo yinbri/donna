@@ -59,7 +59,9 @@ export function DonePage() {
           </div>
         </div>
       ) : (
-        <p className="muted">Your feedback is on its way…</p>
+        <p className="muted">
+          {c.status === 'AWAITING_APPROVAL' ? 'Your call was saved for founder review.' : 'Your feedback is on its way…'}
+        </p>
       )}
 
       <p className="fineprint">No score is shown to candidates. Unofficial hackathon demo.</p>

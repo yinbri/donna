@@ -10,6 +10,8 @@ export function isStubbed(): boolean {
   return !process.env.BOX_URL?.trim() || !process.env.BOX_SECRET;
 }
 
+export class EvaluationUnavailableError extends Error {}
+
 async function post<T>(baseUrl: string, endpoint: string, body: unknown): Promise<T> {
   const secret = process.env.BOX_SECRET;
   if (!secret) throw new Error("BOX_SECRET is required when BOX_URL is set");
@@ -21,6 +23,9 @@ async function post<T>(baseUrl: string, endpoint: string, body: unknown): Promis
     redirect: "error",
     signal: AbortSignal.timeout(20_000),
   });
+  if (endpoint === "evaluate" && response.status === 503) {
+    throw new EvaluationUnavailableError("Donna box evaluation is unavailable");
+  }
   if (!response.ok) throw new Error(`Donna box ${endpoint} returned HTTP ${response.status}`);
   return (await response.json()) as T;
 }

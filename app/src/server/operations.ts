@@ -25,7 +25,8 @@ import * as box from "./integrations/box";
 import * as elevenlabs from "./integrations/elevenlabs";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
-import { scoreFromCallAnalysis, type CallScore, type ScoreSource } from "./scoring";
+import { FIXTURE_CONVERSATION } from "./fixtures";
+import { scoreFromCallAnalysis, type ScoreSource } from "./scoring";
 import {
   candidateInclude,
   logEvent,
@@ -221,7 +222,7 @@ function emptyDossier(questions: string[]): ResearchResult {
   };
 }
 
-export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationId: string }, Plain<EvaluateResult>> = async (
+export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationId: string }, Plain<EvaluateResult> | null> = async (
   args,
 ) => {
   const candidateId = requireString(args?.candidateId, "candidateId");
@@ -238,12 +239,17 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
 // The browser abandons a request after 10 s (Wasp's HTTP client default), but scoring a real call
 // takes longer and keeps running here. The client then polls or asks again, so runs for the same
 // conversation share one promise and a conversation that is already scored is not scored twice.
-const finalizing = new Map<string, Promise<EvaluateResult>>();
+const finalizing = new Map<string, Promise<EvaluateResult | null>>();
 
-async function runFinalize(candidateId: string, conversationId: string): Promise<EvaluateResult> {
+async function runFinalize(candidateId: string, conversationId: string): Promise<EvaluateResult | null> {
   const candidate = await loadCandidate(candidateId);
   const stored = parseJson<EvaluateResult>(candidate.scorecard, "scorecard", candidateId);
-  if (stored && candidate.conversationId === conversationId && candidate.status !== "EVALUATING") return stored;
+  if (
+    candidate.conversationId === conversationId &&
+    candidate.status !== "CALLING" &&
+    candidate.status !== "EVALUATING" &&
+    (stored || (candidate.status === "AWAITING_APPROVAL" && candidate.transcript !== null))
+  ) return stored;
 
   const role = toRoleView(candidate.role);
   const dossier = parseJson<ResearchResult>(candidate.dossier, "dossier", candidateId) ?? emptyDossier(role.questions);
@@ -280,7 +286,7 @@ async function fetchAndScore(
   role: RoleView,
   dossier: ResearchResult,
   progress: FinalizeProgress,
-): Promise<EvaluateResult> {
+): Promise<EvaluateResult | null> {
   const conversation = await traced("fetch_conversation", { candidateId, conversationId }, () =>
     elevenlabs.fetchConversation(conversationId),
   );
@@ -307,37 +313,44 @@ async function fetchAndScore(
   await logEvent(candidateId, "call_ended", `${transcript.length} turns, ${conversation.durationSecs}s${audioNote}`);
   progress.stage = "evaluated";
 
-  // While the box is not live, a real call is scored from ElevenLabs' own analysis of it, so a real
-  // person is never shown the fixture panel's numbers. The fixture panel is the last resort, and
-  // the stored scorecard and the timeline say which source was used.
-  const boxLive = reportsLive(box);
-  let fromCall: CallScore | null = null;
-  if (!boxLive) {
+  const fixtureCall = elevenlabs.isStubbed() || conversationId === FIXTURE_CONVERSATION.conversationId;
+  let evaluation: (EvaluateResult & { source: ScoreSource }) | null = null;
+  if (fixtureCall || (reportsLive(box) && transcript.some((turn) => turn.role === "user"))) {
     try {
-      fromCall = scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
+      const scorecard = await traced("evaluate", { candidateId }, () =>
+        box.evaluate({ dossier, rubric: role.rubric, transcript }),
+      );
+      evaluation = { ...scorecard, source: fixtureCall ? "fixture" : "panel" };
     } catch (err) {
-      // An analysis in a shape we did not expect must not cost the candidate their screen.
-      console.error(`Scoring candidate ${candidateId} from the call analysis failed:`, err);
-      fromCall = { unusable: `scoring failed: ${err instanceof Error ? err.message : String(err)}` };
+      if (fixtureCall || !(err instanceof box.EvaluationUnavailableError)) throw err;
     }
   }
-  const scored = fromCall && "scorecard" in fromCall ? fromCall.scorecard : null;
-  const scorecard =
-    scored ?? (await traced("evaluate", { candidateId }, () => box.evaluate({ dossier, rubric: role.rubric, transcript })));
-  const source: ScoreSource = scored ? "call_analysis" : boxLive ? "panel" : "fixture";
-  const status = scorecard.recommendation === "REJECT" ? "REJECTED" : "AWAITING_APPROVAL";
+
+  let unscoredReason = "";
+  if (!evaluation) {
+    try {
+      const fromCall = scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
+      if ("scorecard" in fromCall) evaluation = { ...fromCall.scorecard, source: "call_analysis" };
+      else unscoredReason = fromCall.unusable;
+    } catch (err) {
+      console.error(`Scoring candidate ${candidateId} from the call analysis failed:`, err);
+      unscoredReason = "call analysis could not be read";
+    }
+  }
+
+  const status = evaluation?.recommendation === "REJECT" ? "REJECTED" : "AWAITING_APPROVAL";
   await prisma.candidate.update({
     where: { id: candidateId },
-    data: { scorecard: JSON.stringify({ ...scorecard, source }), status, traceUrl: traceUrlFor(candidateId) },
+    data: { scorecard: evaluation ? JSON.stringify(evaluation) : null, status, traceUrl: traceUrlFor(candidateId) },
   });
-  const unusable =
-    fromCall && "unusable" in fromCall && conversation.analysis ? `; call analysis unusable: ${fromCall.unusable}` : "";
   await logEvent(
     candidateId,
     "evaluated",
-    `${scorecard.recommendation}, overall ${scorecard.overall} (${SCORE_SOURCE_LABELS[source]}${unusable})`,
+    evaluation
+      ? `${evaluation.recommendation}, overall ${evaluation.overall} (${SCORE_SOURCE_LABELS[evaluation.source]})`
+      : `Saved for founder review without a score: ${unscoredReason}`,
   );
-  return scorecard;
+  return evaluation;
 }
 
 // The gate requires a PENDING approval. Rows saved before the trust lane landed recorded a denied
