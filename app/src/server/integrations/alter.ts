@@ -18,6 +18,7 @@
 //      DEMO_INVITE_TO (if set, every invite goes to this address instead of the candidate).
 
 import type { Approval, CandidateStatus, TimelineEvent } from "../contracts";
+import { traced } from "./traceroot";
 
 export type AlterMode = "stub" | "live";
 export const alterMode = (): AlterMode => (process.env.ALTER_MODE === "live" ? "live" : "stub");
@@ -122,18 +123,31 @@ function requirePending(approval: Approval, action: string) {
 
 // ---------- public API ----------
 
+// Each gate step is a TraceRoot span (ids and gate mode only; a no-op when TraceRoot is not configured).
+const spanAttrs = (input: BookingInput, approval?: Approval): Record<string, string> => ({
+  candidateId: input.candidate.id,
+  gate: alterMode() === "live" ? "alter" : "in-app",
+  ...(approval?.alterRef ? { alterRef: approval.alterRef } : {}),
+});
+
 export async function proposeBooking(input: BookingInput): Promise<AlterOutcome> {
-  return alterMode() === "live" ? live.propose(input) : stub.propose(input);
+  return traced("approval_propose", spanAttrs(input), () =>
+    alterMode() === "live" ? live.propose(input) : stub.propose(input),
+  );
 }
 
 export async function attemptWithoutApproval(approval: Approval, input: BookingInput): Promise<AlterOutcome> {
   requirePending(approval, "attempt a write");
-  return alterMode() === "live" ? live.attempt(approval, input) : stub.attempt(approval);
+  return traced("approval_attempt_without_approval", spanAttrs(input, approval), () =>
+    alterMode() === "live" ? live.attempt(approval, input) : stub.attempt(approval),
+  );
 }
 
 export async function decide(approval: Approval, approve: boolean, input: BookingInput): Promise<AlterOutcome> {
   requirePending(approval, "decide");
-  return alterMode() === "live" ? live.decide(approval, approve, input) : stub.decide(approval, approve, input);
+  return traced(approve ? "approval_approve" : "approval_reject", spanAttrs(input, approval), () =>
+    alterMode() === "live" ? live.decide(approval, approve, input) : stub.decide(approval, approve, input),
+  );
 }
 
 // ---------- stub: in-app gate ----------

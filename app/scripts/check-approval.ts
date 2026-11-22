@@ -76,7 +76,9 @@ try {
   );
 
   // 3. approve
-  if (mode === "live") {
+  if (mode === "live" && process.env.ALTER_DECIDER_KEY) {
+    console.log(`\n      Approving as the founder through Alter's API (approvals:decide key)...\n`);
+  } else if (mode === "live") {
     console.log(`\n      Approve it in Alter now (the FIRST approval, not the "do not approve" one):\n      ${p.approvalUrl}\n      Waiting up to ${Number(process.env.ALTER_APPROVAL_WAIT_MS ?? 120000) / 1000}s...\n`);
   }
   const a = await decide(db.approval, true, input);
@@ -101,6 +103,11 @@ try {
 console.log("\nTimeline:");
 for (const e of db.events) console.log(`  ${e.at}  ${e.kind.padEnd(16)} ${e.detail}`);
 console.log(`\n${failures === 0 ? "ALL PASS" : `${failures} FAILED`}`);
+const { flushTraces, isStubbed: traceStubbed } = await import("../src/server/integrations/traceroot");
+if (!traceStubbed()) {
+  try { await flushTraces(); console.log(`TraceRoot: approval_* spans sent (session ${input.candidate.id})`); }
+  catch { console.log("TraceRoot: spans NOT sent (see warning above)"); }
+}
 process.exit(failures === 0 ? 0 : 1);
 }
 
