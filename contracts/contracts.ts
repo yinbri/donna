@@ -92,6 +92,7 @@ export interface StartScreenResult {
     role_title: string;
     top_project: string;
     tailored_questions: string; // newline-joined
+    founder_focus: string; // founder's hiring preferences in one line, "None set." when empty
     demo_fast_mode: boolean;
   };
 }

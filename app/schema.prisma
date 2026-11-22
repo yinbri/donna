@@ -21,6 +21,7 @@ model Role {
   questions         String // JSON: string[]
   sourceUrl         String?
   isOfficialPosting Boolean     @default(false)
+  hiringPrefs       String? // JSON: founder's hiring preferences for this role, see src/server/hiringFocus.ts
   createdAt         DateTime    @default(now())
   candidates        Candidate[]
 }

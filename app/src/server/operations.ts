@@ -10,6 +10,7 @@ import type {
   ListCandidates,
   ListRoles,
   ProposeBooking,
+  SaveHiringPrefs,
   StartScreen,
 } from "wasp/server/operations";
 import type { Approval as ApprovalRow, Candidate, Role as RoleRow } from "wasp/entities";
@@ -28,6 +29,7 @@ import * as github from "./integrations/github";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
 import { FIXTURE_CONVERSATION } from "./fixtures";
+import { cleanPrefs, founderFocus } from "./hiringFocus";
 import { scoreFromCallAnalysis, scoreFromScorer, type ScoreSource } from "./scoring";
 import {
   candidateInclude,
@@ -213,6 +215,7 @@ export const startScreen: StartScreen<{ candidateId: string; fast?: boolean }, P
       role_title: role.title,
       top_project: dossier?.topProject ?? "your recent work",
       tailored_questions: (dossier?.tailoredQuestions ?? role.questions).join("\n"),
+      founder_focus: founderFocus(candidate.role.hiringPrefs),
       demo_fast_mode: args.fast === true,
     },
   };
@@ -530,6 +533,21 @@ async function runDecide(approvalId: string, approve: boolean): Promise<Approval
 }
 
 // ---------- Ask Donna chat ----------
+
+// The founder page saves its hiring preferences here so the voice screen can use them.
+// Only the call-relevant part is kept (see hiringFocus.ts); null clears it.
+type HiringPrefsInput = {
+  roleId: string;
+  // What the founder page sends; extra ranking-only fields are ignored and every field is re-checked.
+  prefs: { seniority?: string; shape?: string; stack?: string[]; traits?: string[]; notes?: string } | null;
+};
+export const saveHiringPrefs: SaveHiringPrefs<HiringPrefsInput, { saved: boolean }> = async (args) => {
+  const roleId = requireString(args?.roleId, "roleId");
+  const prefs = cleanPrefs(args.prefs);
+  const updated = await prisma.role.updateMany({ where: { id: roleId }, data: { hiringPrefs: prefs ? JSON.stringify(prefs) : null } });
+  if (updated.count === 0) throw new HttpError(404, `Role ${roleId} not found`);
+  return { saved: prefs !== null };
+};
 
 type AskDonnaInput = { question: string; founderName: string; scope: string; candidates: string; history?: string };
 

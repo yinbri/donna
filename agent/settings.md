@@ -30,6 +30,7 @@ Declare these (all strings except `demo_fast_mode`, a boolean). Give each a plac
 | `role_title` | Founding Engineer |
 | `top_project` | a Redis-backed rate limiter library |
 | `tailored_questions` | 1. Your rate limiter claims 50k requests per second. How did you measure that, and what broke first? 2. On the payments team, what went wrong with idempotency keys and how did you find out? 3. If you joined tomorrow, what would you want to own in your first two weeks? |
+| `founder_focus` | Tech they want to see: Postgres, Redis. Working traits they value: High ownership. |
 | `demo_fast_mode` | false |
 
 ## Call limits

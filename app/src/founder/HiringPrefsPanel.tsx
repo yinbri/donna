@@ -236,7 +236,7 @@ export function HiringPrefsPanel({ role, prefs, onChange }: { role: Role; prefs:
           </div>
 
           <footer className="prefs-foot">
-            <p>Weights, must-haves and stack matches re-rank the panel's scores. Ask Donna reads everything here. Saved in this browser; Donna's call questions don't use it yet.</p>
+            <p>Weights, must-haves and stack matches re-rank the panel's scores. Ask Donna reads everything here. Level, shape, stack, traits and your words also steer Donna's follow-ups on new screens.</p>
             <div className="prefs-foot-actions">
               <button type="button" className="btn btn-sm" disabled={!custom} onClick={() => onChange(defaultPrefs())}>
                 Reset
