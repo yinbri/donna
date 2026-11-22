@@ -92,7 +92,7 @@ If N is 0 or 1, the pitch says "first real screens today" with the true number, 
 
 ## 8. Stop and roll back
 
-When Dev 4 ends the pilot, at the latest when we start recording the demo video or when judging starts, or if anything goes wrong (abuse, a protected-topic question, an outcome promise, a real invite sent):
+When Dev 4 ends the pilot, at the latest when the team needs the Mac for the demo or when judging starts, or if anything goes wrong (abuse, a protected-topic question, an outcome promise, a real invite sent):
 
 1. Ctrl-C the `public-url.sh` terminal. The public URL dies at once.
 2. Delete or unpin every post that carried the link.

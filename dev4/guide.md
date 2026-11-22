@@ -1,4 +1,4 @@
-# Dev 4 guide: Trust + ops + submission
+# Dev 4 guide: Trust + ops
 
 How to build, run and hand off this lane. Requirements are in [prd.md](prd.md).
 
@@ -40,19 +40,6 @@ For each sponsor, open ycombinator.com/companies/<slug>/jobs and copy one engine
 2. Generate a QR code PNG into `pilot/qr.png`, using any offline generator.
 3. Put the disclaimer at the top of `/apply` (Brian's page) and confirm it shows.
 4. Hand Brian the post text; he posts it. Nothing is sent on anyone's behalf automatically.
-
-## Video checklist (record at 2:20)
-
-| Time | Shot |
-|---|---|
-| 0:00–0:15 | Hook: "Everyone here took a phone screen to get in. Donna is the part after the call." |
-| 0:15–0:55 | Apply → research steps → Donna's live voice opening with a real project |
-| 0:55–1:15 | Scorecard → ▶ plays the candidate's own words |
-| 1:15–1:40 | Try without approval → Alter denial → Approve → invite arrives |
-| 1:40–1:55 | Trace link, box dossier files, the Codevisor crew clip |
-| 1:55–2:00 | Closing line |
-
-Upload it as public or unlisted and open it in a private window before submitting.
 
 ## Hand off
 
