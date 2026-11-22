@@ -4,6 +4,9 @@ import { fmtDuration, listRoles, panelSpread, PANEL_SPLIT, resetDemo, useCandida
 import type { UICandidate } from '../lib/types';
 import { RecBadge, StatusDot } from '../components/ui';
 import { AskDonna } from './AskDonna';
+import { Overview } from './Overview';
+
+const ALL = 'all';
 
 function greeting() {
   const h = new Date().getHours();
@@ -34,12 +37,15 @@ export function FounderHome() {
   const companies = useMemo(() => [...new Set(roles.map((r) => r.companyName))], [roles]);
   const [company, setCompany] = useState(companies[0]);
   const companyRoles = roles.filter((r) => r.companyName === company);
-  const [roleId, setRoleId] = useState<string | undefined>(companyRoles[0]?.id);
+  const [roleId, setRoleId] = useState<string>(ALL);
   const all = useCandidates();
   const navigate = useNavigate();
 
-  const role = roles.find((r) => r.id === roleId) ?? companyRoles[0];
-  const list = all
+  const overview = roleId === ALL;
+  const role = overview ? undefined : (roles.find((r) => r.id === roleId) ?? companyRoles[0]);
+  const companyIds = new Set(companyRoles.map((r) => r.id));
+  const inCompany = all.filter((c) => companyIds.has(c.roleId));
+  const list = inCompany
     .filter((c) => c.roleId === role?.id)
     .sort((a, b) => (b.evaluation?.overall ?? -1) - (a.evaluation?.overall ?? -1));
 
@@ -48,7 +54,8 @@ export function FounderHome() {
   const median = durations.length ? durations[Math.floor(durations.length / 2)] : 0;
   const needsYou = list.filter((c) => c.status === 'AWAITING_APPROVAL').length;
   const booked = list.filter((c) => c.status === 'BOOKED').length;
-  const founder = role?.founderName ?? 'there';
+  const founder = (role ?? companyRoles[0])?.founderName ?? 'there';
+  const needsAll = inCompany.filter((c) => c.status === 'AWAITING_APPROVAL').length;
 
   const strip = [
     { label: 'Screened', value: String(screened.length), note: 'calls with a panel score' },
@@ -71,7 +78,7 @@ export function FounderHome() {
                 value={company}
                 onChange={(e) => {
                   setCompany(e.target.value);
-                  setRoleId(roles.find((r) => r.companyName === e.target.value)?.id);
+                  setRoleId(ALL);
                 }}
                 aria-label="Company"
               >
@@ -80,7 +87,7 @@ export function FounderHome() {
                 ))}
               </select>
               <span aria-hidden="true">·</span>
-              {needsYou ? `${needsYou} ${needsYou === 1 ? 'person needs' : 'people need'} you today` : 'Nothing waiting on you'}
+              {needsAll ? `${needsAll} ${needsAll === 1 ? 'person needs' : 'people need'} you today` : 'Nothing waiting on you'}
             </p>
           </div>
           <Link to="/apply" className="btn">
@@ -88,8 +95,9 @@ export function FounderHome() {
           </Link>
         </header>
 
-        <div className="pipeline">
-          {strip.map((s) => (
+        {!overview && (
+          <div className="pipeline">
+            {strip.map((s) => (
             <div key={s.label} className={`pipe${s.hot ? ' hot' : ''}`}>
               <span className="pipe-label">
                 {s.hot && <i aria-hidden="true" />}
@@ -98,11 +106,15 @@ export function FounderHome() {
               <span className="pipe-value">{s.value}</span>
               <span className="pipe-note">{s.note}</span>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="dash-bar">
           <div className="seg" role="tablist" aria-label="Roles">
+            <button role="tab" aria-selected={overview} className={overview ? 'on' : ''} onClick={() => setRoleId(ALL)}>
+              All roles
+            </button>
             {companyRoles.map((r) => (
               <button key={r.id} role="tab" aria-selected={r.id === role?.id} className={r.id === role?.id ? 'on' : ''} onClick={() => setRoleId(r.id)}>
                 {r.title}
@@ -117,6 +129,9 @@ export function FounderHome() {
           )}
         </div>
 
+        {overview ? (
+          <Overview candidates={inCompany} roles={companyRoles} onOpenRole={setRoleId} />
+        ) : (
         <section className="ranked">
           <header className="ranked-head">
             <h2>{role?.title ?? 'Candidates'} · ranked</h2>
@@ -174,6 +189,7 @@ export function FounderHome() {
             </div>
           )}
         </section>
+        )}
 
         <p className="fineprint">
           Sandbox data from <code>fixtures/</code>.{' '}
@@ -183,7 +199,7 @@ export function FounderHome() {
         </p>
       </div>
 
-      <AskDonna candidates={list} role={role} founderName={founder} />
+      <AskDonna candidates={overview ? inCompany : list} role={role} founderName={founder} />
     </div>
   );
 }
