@@ -9,7 +9,7 @@ Branch `lane/trust-ops` already contains `main` up to merge #6 (merged 13:50), s
 | `app/src/server/integrations/traceroot.ts` | Real `traced()` (TraceRoot `observe` spans, grouped by candidate, ids only, no candidate data), `isStubbed()`, `flushTraces()`, `traceUrlFor()`. No key means a no-op |
 | `app/src/server/integrations/alter.ts` | One TraceRoot span per gate step (`approval_propose`, `approval_attempt_without_approval`, `approval_approve`, `approval_reject`) |
 | `app/scripts/check-trace.ts`, `app/scripts/check-approval.ts` | Trace check, and a flush at the end of the approval check |
-| `pilot/runbook.md`, `docs/submission.md`, README "Built with" (TraceRoot line, keeps your Codevisor line) | Pilot and submission |
+| `pilot/runbook.md`, `pilot/make-sign.mjs`, README "Built with" (TraceRoot and Fiber AI lines, keeps your Codevisor line) | Pilot, QR table sign, tools list |
 
 ## Your files: please change
 

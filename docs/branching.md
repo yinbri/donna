@@ -9,7 +9,7 @@ Each teammate has a folder (`dev1/` to `dev4/`) holding their `prd.md`, `guide.m
 | [dev1/](../dev1) | Brian | UI + Donna's voice | `lane/ui-voice` | [dev1/prd.md](../dev1/prd.md) | [dev1/guide.md](../dev1/guide.md) |
 | [dev2/](../dev2) | (has the Mac) | Wasp backbone + Codevisor lead | `lane/wasp-backbone` | [dev2/prd.md](../dev2/prd.md) | [dev2/guide.md](../dev2/guide.md) |
 | [dev3/](../dev3) | (has Fiber AI access) | Donna box (Fiber, GitHub, EDSL, Maritime) | `lane/donna-box` | [dev3/prd.md](../dev3/prd.md) | [dev3/guide.md](../dev3/guide.md) |
-| [dev4/](../dev4) | | Trust + ops + submission (Alter, TraceRoot, pilot) | `lane/trust-ops` | [dev4/prd.md](../dev4/prd.md) | [dev4/guide.md](../dev4/guide.md) |
+| [dev4/](../dev4) | | Trust + ops (Alter, TraceRoot, pilot) | `lane/trust-ops` | [dev4/prd.md](../dev4/prd.md) | [dev4/guide.md](../dev4/guide.md) |
 
 Wave 2 work (after Gate 1) uses `wave2/<name>`, for example `wave2/chat`. In Codevisor, each agent gets its own worktree on a branch under its lane, such as `lane/wasp-backbone/schema`.
 

@@ -82,6 +82,6 @@ Partner prizes stack with the Grand Prize. Idea 1 can credibly go for:
 | 1 | ElevenLabs agent: prompt, tools, phone number, post-call webhook |
 | 2 | Backend: webhook handler, Fiber or Ploid research, Alter calendar and email |
 | 3 | Dashboard (Wasp or Next.js + assistant-ui), deploy |
-| 4 | Maritime and TraceRoot, the demo script, the 2-minute video, the submission |
+| 4 | Maritime and TraceRoot |
 
 Remember: a fresh repo after 11:00, and submission by 3:00 PM with the project link, a 2-minute demo video and every partner tool used.
