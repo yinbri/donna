@@ -41,8 +41,10 @@ export function FounderLayout({
   const companies = [...new Set(roles.map((r) => r.companyName))];
   const company = role?.companyName ?? companies[0];
   const companyRoles = roles.filter((r) => r.companyName === company);
+  const companyIds = new Set(companyRoles.map((r) => r.id));
+  // With no role picked (the All roles overview), list every thread at the company.
   const threads = candidates
-    .filter((c) => c.roleId === role?.id)
+    .filter((c) => (role ? c.roleId === role.id : companyIds.has(c.roleId)))
     .sort((a, b) => (b.evaluation?.overall ?? -1) - (a.evaluation?.overall ?? -1));
 
   return (
@@ -69,6 +71,10 @@ export function FounderLayout({
 
         <nav className="side-block" aria-label="Roles">
           <span className="side-label">Roles</span>
+          <Link to="/founder" className={`side-item ${!role && !activeId ? 'on' : ''}`}>
+            <span className="side-item-text">All roles</span>
+            <span className="side-count">{candidates.filter((c) => companyIds.has(c.roleId)).length}</span>
+          </Link>
           {companyRoles.map((r) => {
             const n = candidates.filter((c) => c.roleId === r.id).length;
             return (
@@ -96,12 +102,12 @@ export function FounderLayout({
           })}
         </nav>
 
-        {role && (
+        {(role ?? companyRoles[0]) && (
           <div className="side-foot">
-            <span className="avatar" aria-hidden="true">{initials(role.founderName)}</span>
+            <span className="avatar" aria-hidden="true">{initials((role ?? companyRoles[0])!.founderName)}</span>
             <span className="side-item-text">
-              <strong>{role.founderName}</strong>
-              <small>Founder, {role.companyName}</small>
+              <strong>{(role ?? companyRoles[0])!.founderName}</strong>
+              <small>Founder, {(role ?? companyRoles[0])!.companyName}</small>
             </span>
           </div>
         )}

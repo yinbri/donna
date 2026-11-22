@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "@alter-ai/alter-sdk": "^0.33.0",
+    "@assistant-ui/react": "0.15.32",
     "@elevenlabs/react": "^1.22.1",
     "@traceroot-ai/traceroot": "^0.8.1",
     "react": "^19.2.1",

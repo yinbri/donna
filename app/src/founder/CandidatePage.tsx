@@ -129,6 +129,11 @@ export function CandidatePage() {
               </ul>
             </Card>
           )}
+          {!e && c.status === 'AWAITING_APPROVAL' && c.transcript && (
+            <Card title="Scorecard">
+              <p>The call was saved for review without an automated score.</p>
+            </Card>
+          )}
 
           {e && (
             <Card
