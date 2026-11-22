@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import type { Role } from '../server/contracts';
 import type { UICandidate } from '../dev/uiApi';
-import { initials } from './FounderSidebar';
+import { Avatar } from './Avatar';
 
 /**
  * Overview tab: a month calendar and the list of what's coming up.
@@ -353,7 +353,7 @@ export function Schedule({ candidates, roles }: { candidates: UICandidate[]; rol
                       <strong>{KIND_LABEL[e.kind]}</strong>
                       <small>{e.who.name}{e.role ? ` · ${e.role.title}` : ''}</small>
                     </span>
-                    <span className="avatar sm" aria-hidden="true">{initials(e.who.name)}</span>
+                    <Avatar id={e.who.id} name={e.who.name} size={26} />
                   </Link>
                 </li>
               ))}

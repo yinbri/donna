@@ -2,9 +2,10 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { fmtDuration, panelSpread, PANEL_SPLIT, useCandidates, useRoles, type UICandidate } from '../dev/uiApi';
 import { RecBadge, StatusDot } from '../components/ui';
 import { Shell } from '../components/Shell';
-import { FounderLayout, initials } from './FounderSidebar';
+import { FounderLayout } from './FounderSidebar';
 import { Overview } from './Overview';
 import { AskDonna } from './AskDonna';
+import { Avatar } from './Avatar';
 import { Schedule } from './Schedule';
 import { HiringPrefsPanel } from './HiringPrefsPanel';
 import { isDefault, MUST_HAVE_MIN, prefsContext, rankByFit, useHiringPrefs } from './hiringPrefs';
@@ -43,7 +44,6 @@ export function FounderHome() {
   // No ?role= means the overview across every role at the company.
   const role = roles.find((r) => r.id === params.get('role'));
   const overview = !role;
-  const scheduleTab = overview && params.get('view') === 'overview';
   const company = role?.companyName ?? roles[0]?.companyName;
   const companyRoles = roles.filter((r) => r.companyName === company);
   const companyIds = new Set(companyRoles.map((r) => r.id));
@@ -82,7 +82,7 @@ export function FounderHome() {
                 {founder ? `, ${founder}` : ''}
               </h1>
               <p className="dash-sub">
-                {scheduleTab ? `Overview · ${company ?? 'your company'}` : overview ? `All roles at ${company ?? 'your company'}` : role.title}
+                {overview ? `Overview · all roles at ${company ?? 'your company'}` : role.title}
                 <span aria-hidden="true">·</span>
                 {needsAll ? `${needsAll} ${needsAll === 1 ? 'person needs' : 'people need'} you today` : 'Nothing waiting on you'}
               </p>
@@ -92,10 +92,10 @@ export function FounderHome() {
             </Link>
           </header>
 
-          {scheduleTab ? (
-            <Schedule candidates={inCompany} roles={companyRoles} />
-          ) : overview ? (
-            <Overview candidates={inCompany} roles={companyRoles} onOpenRole={(id) => navigate(`/founder?role=${id}`)} />
+          {overview ? (
+            <Overview candidates={inCompany} roles={companyRoles} onOpenRole={(id) => navigate(`/founder?role=${id}`)}>
+              <Schedule candidates={inCompany} roles={companyRoles} />
+            </Overview>
           ) : (
             <>
               <div className="pipeline">
@@ -153,9 +153,7 @@ export function FounderHome() {
                         <button key={c.id} className="rk" role="row" onClick={() => navigate(`/founder/candidates/${c.id}`)}>
                           <span className="rank">{String(i + 1).padStart(2, '0')}</span>
                           <span className="who">
-                            <span className="avatar" aria-hidden="true">
-                              {initials(c.name)}
-                            </span>
+                            <Avatar id={c.id} name={c.name} />
                             <span className="who-text">
                               <strong>{c.name}</strong>
                               <small>{c.dossier?.topProject ?? c.email}</small>
