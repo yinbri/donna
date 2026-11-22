@@ -536,7 +536,12 @@ async function runDecide(approvalId: string, approve: boolean): Promise<Approval
 
 // The founder page saves its hiring preferences here so the voice screen can use them.
 // Only the call-relevant part is kept (see hiringFocus.ts); null clears it.
-export const saveHiringPrefs: SaveHiringPrefs<{ roleId: string; prefs: unknown }, { saved: boolean }> = async (args) => {
+type HiringPrefsInput = {
+  roleId: string;
+  // What the founder page sends; extra ranking-only fields are ignored and every field is re-checked.
+  prefs: { seniority?: string; shape?: string; stack?: string[]; traits?: string[]; notes?: string } | null;
+};
+export const saveHiringPrefs: SaveHiringPrefs<HiringPrefsInput, { saved: boolean }> = async (args) => {
   const roleId = requireString(args?.roleId, "roleId");
   const prefs = cleanPrefs(args.prefs);
   const updated = await prisma.role.updateMany({ where: { id: roleId }, data: { hiringPrefs: prefs ? JSON.stringify(prefs) : null } });
