@@ -1,5 +1,11 @@
 import { action, api, app, page, query, route } from "@wasp.sh/spec";
-import { HomePage } from "./src/HomePage" with { type: "ref" };
+import { LandingRoute } from "./src/Landing" with { type: "ref" };
+import { ApplyRoute } from "./src/candidate/ApplyPage" with { type: "ref" };
+import { ResearchRoute } from "./src/candidate/ResearchPage" with { type: "ref" };
+import { CallRoute } from "./src/candidate/CallPage" with { type: "ref" };
+import { DoneRoute } from "./src/candidate/DonePage" with { type: "ref" };
+import { FounderRoute } from "./src/founder/FounderHome" with { type: "ref" };
+import { CandidateRoute } from "./src/founder/CandidatePage" with { type: "ref" };
 import { DevConsolePage } from "./src/dev/DevConsolePage" with { type: "ref" };
 import { getAudio, getHealth } from "./src/server/apis" with { type: "ref" };
 import {
@@ -25,9 +31,14 @@ export default app({
   head: ["<link rel='icon' href='/favicon.ico' />"],
   db: { seeds: [seedDev] },
   spec: [
-    route("RootRoute", "/", page(HomePage)),
+    route("RootRoute", "/", page(LandingRoute)),
+    route("ApplyRoute", "/apply", page(ApplyRoute)),
+    route("ResearchRoute", "/apply/:id/research", page(ResearchRoute)),
+    route("CallRoute", "/apply/:id/call", page(CallRoute)),
+    route("DoneRoute", "/apply/:id/done", page(DoneRoute)),
+    route("FounderRoute", "/founder", page(FounderRoute)),
+    route("FounderCandidateRoute", "/founder/candidates/:id", page(CandidateRoute)),
     route("DevRoute", "/dev", page(DevConsolePage)),
-    route("FounderRoute", "/founder", page(DevConsolePage)),
 
     query(listRoles, { entities: ["Role"] }),
     query(listCandidates, { entities: all }),

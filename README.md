@@ -27,13 +27,19 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 
 ## Status
 
-Only what runs is listed here. Updated at each merge.
+Only what runs is listed here, from [BUILDLOG.md](BUILDLOG.md). Updated at each merge.
 
-- [x] Wasp app scaffolded (stubbed end to end: `npm run check:screen` passes)
-- [x] Donna agent created in ElevenLabs (from `agent/` on `lane/ui-voice`; the token endpoint answers. No real call yet; the end-call tool and agent tests are still to set in the dashboard)
-- [ ] Box `/research` and `/evaluate`
-- [ ] Alter approval flow
+- [x] Wasp app scaffolded (Wasp 0.26.1, SQLite; any integration without a key falls back to fixtures)
+- [x] Donna agent created in ElevenLabs (token endpoint answers; end-call tool and agent tests not set yet)
+- [x] One real call made through the dev console: transcript with timestamps, stored recording, audio seek from the scorecard
+- [x] Approval gate merged, running in in-app mode (`npm run check:approval`). Live Alter not yet run on `main`
+- [ ] Research and scoring box (`/research`, `/evaluate`): still returns fixtures
+- [ ] Real UI ported onto the backend (adapter and port guide exist; not yet run in a browser)
 - [ ] Gate 1: one full run end to end
+
+## Run it
+
+Fresh clone to running app, public HTTPS URL for phones, and QR code: see [dev2/RUNBOOK.md](dev2/RUNBOOK.md). In short, from `app/`: `wasp install`, copy `.env.server.example` to `.env.server`, `wasp db migrate-dev`, `wasp db seed`, `wasp start`, then open http://localhost:3000/dev.
 
 ## Built with
 
@@ -43,3 +49,4 @@ Only tools that ran today, each with its evidence. Dev 4 updates this at the 2:2
 - **Wasp:** the whole app (Wasp 0.26.1, SQLite, operations, founder view).
 - **Alter:** holds the founder's Google Calendar grant. A calendar write without founder approval is held by Alter, and approving releases it, so Google sends the invite. `npm run check:approval` passed in live mode at 13:22 and 13:34 (invites go only to the team's demo inbox).
 - **TraceRoot:** one span per pipeline step (research, fetching the call, evaluation), grouped by candidate, with IDs only and no candidate data. A live check at 13:44 sent a span, and it showed in the TraceRoot dashboard. This is tracing only; no detector is set up.
+- **Codevisor:** three changes were built at 13:33 by three agents running side by side in Codevisor, each in its own workspace: merging the newer approval gate with its settings docs, seeding the sponsor roles, and this README's status with the runbook. The rest of the code was built with Claude Code agents outside Codevisor.

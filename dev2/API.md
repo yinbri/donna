@@ -27,7 +27,7 @@ Over HTTP (scripts): `POST http://localhost:3001/operations/<kebab-name>` with b
 
 Approval gate (`src/server/integrations/alter.ts`, Dev 4): its functions return `{ approval, events, candidateStatus?, approvalUrl?, calendarUrl? }` and never touch the database. The operations save the approval fields, `approvalUrl` / `calendarUrl` (kept from earlier steps when a later one returns none), every event with its own timestamp, and `candidateStatus` when returned. An event kind outside `TimelineEvent["kind"]` would be saved as the step's kind with the original in brackets in the detail. Gate failures (e.g. missing env vars in live mode, Alter timeout) are 502 with the gate's message.
 
-Approval gate env (`.env.server`): `ALTER_MODE` (`live` = real Alter, anything else = in-app gate), `ALTER_API_KEY` and `GOOGLE_GRANT_ID` (both required in live mode), `ALTER_APPROVAL_WAIT_MS` (optional, default 120000), `DEMO_INVITE_TO` (optional: every invite goes to this address instead of the candidate).
+Approval gate env (`.env.server`): `ALTER_MODE` (`live` = real Alter, anything else = in-app gate), `ALTER_API_KEY` and `GOOGLE_GRANT_ID` (both required in live mode), `ALTER_DECIDER_KEY` (optional, live mode: a second Alter app key with `approvals:decide`; when set, Approve/Reject in Donna is recorded in Alter with it instead of waiting for the founder to approve in Alter), `ALTER_APPROVER_EMAIL` (required when `ALTER_DECIDER_KEY` is set: the founder's email, sent to Alter as the approver and checked against the rule's approvers), `ALTER_APPROVAL_WAIT_MS` (optional, default 120000), `DEMO_INVITE_TO` (optional: every invite goes to this address instead of the candidate).
 
 ## HTTP routes
 
@@ -39,4 +39,4 @@ Approval gate env (`.env.server`): `ALTER_MODE` (`live` = real Alter, anything e
 - `/dev` and `/founder`: dev console that lists roles and candidates and drives one candidate through the stubbed flow.
 - `npm run check:approval` (from `app/`, no server needed): runs propose → attempt without approval → approve → second attempt against `alter.ts` with an in-memory store and prints PASS/FAIL per step. `ALTER_MODE=live` uses real Alter, forces invites to the team demo inbox and waits for you to approve.
 - `npm run check:screen` (from `app/`, with `wasp start` running): end-to-end check of create → READY → start → finalize, asserting every criterion's `evidenceTurn` is a user turn containing its quote.
-- Seed (`wasp db seed`, idempotent): demo role, `candidate-fixture-001` in AWAITING_APPROVAL with `approval-fixture-001` PENDING.
+- Seed (`wasp db seed`, idempotent): demo role plus the 11 sponsor roles from `app/seed/roles.json` (seed fails naming the path if it is missing or not valid JSON), `candidate-fixture-001` in AWAITING_APPROVAL with `approval-fixture-001` PENDING.
