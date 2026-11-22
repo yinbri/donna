@@ -34,5 +34,5 @@ Hosts: Konrad Tabay, Neel Laroiya, Owen Lee, Harmony Chen, Maritime AI, TraceRoo
 
 - Doors 9:30 AM, opening ceremony and challenge reveal 10:00 AM
 - Hacking 11:00 AM to 3:00 PM; submissions close at 3:00 PM
-- Fresh repo after 11:00 AM: only work done today is judged, so this repo is notes only
+- Fresh repo after 11:00 AM: only work done today is judged. This repo (donna) was created at 11:23 AM, so the project can live here
 - Schedule, rules, judging weights, prizes and perks are in [HACKATHON.md](HACKATHON.md)

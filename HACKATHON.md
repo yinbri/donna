@@ -50,7 +50,7 @@ The organizers take photos; tell one of them if you would rather not be in them.
 - **Teams of 4**, assigned from the team form.
 - **Ship a working demo.** A live product on real input, not slides.
 
-This repo was created on Nov 21, so it cannot be the project repo. Create a new one after 11:00 AM.
+This repo (donna) was created at 11:23 AM on Nov 22, so it qualifies as the fresh project repo. The notes were moved here from the earlier `hackathon` repo.
 
 ## Submission
 
