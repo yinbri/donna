@@ -407,6 +407,69 @@ code { font: 12px var(--mono); background: var(--surface-2); padding: 1px 6px; b
 .ad-send:disabled { opacity: .3; cursor: default; }
 .ad-send svg { width: 16px; height: 16px; }
 
+/* Overview tab: calendar + upcoming. Ink = booked, accent = needs Approve, muted = past activity. */
+.side-icon { flex: none; color: var(--muted); }
+.side-item.on .side-icon { color: var(--ink); }
+.schedule { display: flex; flex-direction: column; gap: 16px; }
+.sched-side { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; min-width: 0; }
+.cal-card { gap: 12px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cal-head h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.cal-nav { display: flex; align-items: center; gap: 4px; }
+.cal-today { border: 1px solid var(--line); background: none; color: var(--ink); font-size: 12.5px; font-weight: 500; padding: 5px 10px; border-radius: 999px; cursor: pointer; margin-right: 4px; }
+.cal-arrow { width: 28px; height: 28px; border: 0; border-radius: 8px; background: none; color: var(--ink-2); display: grid; place-items: center; cursor: pointer; }
+.cal-today:hover, .cal-arrow:hover { background: var(--surface-2); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.cal-wd { padding: 7px 8px; font-size: 11.5px; font-weight: 500; color: var(--muted); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface-3); }
+.cal-day { min-height: 84px; display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 6px; border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; font: inherit; min-width: 0; }
+.cal-day:hover { background: var(--surface-3); }
+.cal-day.out { color: var(--muted); background: repeating-linear-gradient(135deg, transparent 0 5px, var(--line-soft) 5px 6px); }
+.cal-day.picked { box-shadow: inset 0 0 0 2px var(--ink); }
+.cal-num { font-size: 12.5px; font-variant-numeric: tabular-nums; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; }
+.cal-day.today .cal-num { background: var(--ink); color: var(--on-ink); font-weight: 600; }
+.cal-chips { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.cal-chip { font-size: 11px; line-height: 1.3; padding: 2px 5px; border-radius: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--surface-2); color: var(--ink-2); }
+.cal-chip.k-interview { background: var(--ink); color: var(--on-ink); }
+.cal-chip.k-proposed { background: var(--accent-soft); color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent); }
+.cal-chip.k-onsite, .cal-chip.k-debrief { background: none; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.cal-chip.k-applied { background: none; color: var(--muted); padding-left: 0; }
+.cal-more { font-size: 11px; color: var(--muted); }
+.cal-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); }
+.cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.cal-legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.cal-legend i.k-interview { background: var(--ink); box-shadow: none; }
+.cal-legend i.k-proposed { background: var(--accent); box-shadow: none; }
+.cal-legend i.k-onsite { background: none; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.cal-legend i.k-applied { background: none; }
+.cal-sample { margin-left: auto; font-style: italic; }
+.upcoming, .day-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.up-row { display: flex; align-items: center; gap: 12px; padding: 8px; margin: 0 -8px; border-radius: 12px; text-decoration: none; color: var(--ink); }
+.up-row:hover { background: var(--surface-3); }
+.up-date { width: 44px; flex: none; display: flex; flex-direction: column; align-items: center; padding: 5px 0; border-radius: 10px; border: 1px solid var(--line); border-left: 3px solid var(--ink); line-height: 1.1; }
+.up-row.hot .up-date { border-left-color: var(--accent); }
+.up-date strong { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.up-date small { font-size: 10.5px; color: var(--muted); text-transform: uppercase; }
+.up-more { font-size: 12.5px; color: var(--muted); padding-left: 56px; }
+.up-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.up-text strong { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-text small { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-tag { font-size: 11.5px; font-weight: 500; padding: 3px 8px; border-radius: 999px; white-space: nowrap; background: var(--surface-2); color: var(--ink-2); }
+.up-tag.k-proposed { background: var(--accent-soft); color: var(--accent); }
+.day-list a { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.day-list a:hover strong { text-decoration: underline; }
+.day-list time { width: 62px; flex: none; font: 12px var(--mono); color: var(--muted); }
+.day-bar { width: 3px; align-self: stretch; min-height: 30px; border-radius: 2px; background: var(--line); }
+.day-bar.k-interview { background: var(--ink); }
+.day-bar.k-proposed { background: var(--accent); }
+.day-bar.k-onsite, .day-bar.k-debrief { background: none; box-shadow: inset 0 0 0 1.5px var(--ink); }
+@media (max-width: 760px) { .sched-side { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .cal-day { min-height: 48px; padding: 4px; }
+  .cal-chips { flex-direction: row; gap: 2px; }
+  .cal-chip { width: 6px; height: 6px; padding: 0; font-size: 0; border-radius: 50%; }
+  .cal-more { display: none; }
+}
+
 @media (max-width: 1080px) {
   .dash { grid-template-columns: minmax(0, 1fr); }
   .ask-donna { position: static; height: 560px; }
