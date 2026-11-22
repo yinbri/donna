@@ -57,7 +57,7 @@ export const seedDev: DbSeedFn = async (prisma) => {
     transcript: JSON.stringify(FIXTURE_CONVERSATION.transcript),
     durationSecs: FIXTURE_CONVERSATION.durationSecs,
     analysis: JSON.stringify(null),
-    scorecard: JSON.stringify(FIXTURE_PANEL),
+    scorecard: JSON.stringify({ ...FIXTURE_PANEL, source: "fixture" }),
     audioPath: null,
     traceUrl: null,
   };

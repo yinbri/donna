@@ -4,7 +4,8 @@
   "scripts": {
     "check:screen": "node scripts/check-screen.mjs",
     "check:approval": "tsx scripts/check-approval.ts",
-    "check:trace": "tsx scripts/check-trace.ts"
+    "check:trace": "tsx scripts/check-trace.ts",
+    "check:scoring": "tsx scripts/check-scoring.ts"
   },
   "workspaces": [
     ".wasp/out/*",

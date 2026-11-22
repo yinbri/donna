@@ -40,3 +40,17 @@ Approval gate env (`.env.server`): `ALTER_MODE` (`live` = real Alter, anything e
 - `npm run check:approval` (from `app/`, no server needed): runs propose → attempt without approval → approve → second attempt against `alter.ts` with an in-memory store and prints PASS/FAIL per step. `ALTER_MODE=live` uses real Alter, forces invites to the team demo inbox and waits for you to approve.
 - `npm run check:screen` (from `app/`, with `wasp start` running): end-to-end check of create → READY → start → finalize, asserting every criterion's `evidenceTurn` is a user turn containing its quote.
 - Seed (`wasp db seed`, idempotent): demo role plus the 11 sponsor roles from `app/seed/roles.json` (seed fails naming the path if it is missing or not valid JSON), `candidate-fixture-001` in AWAITING_APPROVAL with `approval-fixture-001` PENDING.
+
+## Where the scores come from
+
+`finalizeScreen` picks one source and stores it on the scorecard as `source`:
+
+| `source` | When | What the founder sees |
+|---|---|---|
+| `panel` | The Donna box is live (`box.ts` exports `isStubbed()` returning `false`) | The 3-persona panel's scorecard |
+| `call_analysis` | The box is not live and the call has a usable ElevenLabs analysis | 0-10 scores from the analysis's numeric criteria, each with a quote taken word for word from a candidate turn. `personas` is empty: one analysis is not three personas |
+| `fixture` | Neither of the above (stub calls, or an analysis without numeric scores or findable quotes) | The fixture panel. The `evaluated` event says why the call analysis was not used |
+
+The Donna agent in ElevenLabs is configured for this: criteria `shipped_real_systems`, `depth_on_own_project` and `communication` are numeric (0-10), and each has an `evidence_<id>` data field holding the candidate's own sentence; `feedback_strength_1`, `feedback_strength_2` and `feedback_sharpen` feed the candidate's feedback page. **These settings are newer than `agent/settings.md`. Pasting that file's pass/fail criteria over them sends every call back to the fixture panel.**
+
+Roles with their own rubric get scores only for the items the analysis judged (their first item, "Depth on own project" and "Communication"). `npm run check:scoring` (no server needed) checks the mapping.

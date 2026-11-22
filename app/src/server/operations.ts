@@ -25,6 +25,7 @@ import * as box from "./integrations/box";
 import * as elevenlabs from "./integrations/elevenlabs";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
+import { scoreFromCallAnalysis, type ScoreSource } from "./scoring";
 import {
   candidateInclude,
   logEvent,
@@ -267,6 +268,12 @@ async function runFinalize(candidateId: string, conversationId: string): Promise
 
 type FinalizeProgress = { stage: "call_ended" | "evaluated" };
 
+const SCORE_SOURCE_LABELS: Record<ScoreSource, string> = {
+  call_analysis: "scored from the call by ElevenLabs' analysis",
+  panel: "3-persona panel",
+  fixture: "fixture panel",
+};
+
 async function fetchAndScore(
   candidateId: string,
   conversationId: string,
@@ -300,15 +307,27 @@ async function fetchAndScore(
   await logEvent(candidateId, "call_ended", `${transcript.length} turns, ${conversation.durationSecs}s${audioNote}`);
   progress.stage = "evaluated";
 
-  const scorecard = await traced("evaluate", { candidateId }, () =>
-    box.evaluate({ dossier, rubric: role.rubric, transcript }),
-  );
+  // While the box is not live, a real call is scored from ElevenLabs' own analysis of it, so a real
+  // person is never shown the fixture panel's numbers. The fixture panel is the last resort, and
+  // the stored scorecard and the timeline say which source was used.
+  const boxLive = reportsLive(box);
+  const fromCall = boxLive ? null : scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
+  const scored = fromCall && "scorecard" in fromCall ? fromCall.scorecard : null;
+  const scorecard =
+    scored ?? (await traced("evaluate", { candidateId }, () => box.evaluate({ dossier, rubric: role.rubric, transcript })));
+  const source: ScoreSource = scored ? "call_analysis" : boxLive ? "panel" : "fixture";
   const status = scorecard.recommendation === "REJECT" ? "REJECTED" : "AWAITING_APPROVAL";
   await prisma.candidate.update({
     where: { id: candidateId },
-    data: { scorecard: JSON.stringify(scorecard), status, traceUrl: traceUrlFor(candidateId) },
+    data: { scorecard: JSON.stringify({ ...scorecard, source }), status, traceUrl: traceUrlFor(candidateId) },
   });
-  await logEvent(candidateId, "evaluated", `${scorecard.recommendation}, overall ${scorecard.overall}`);
+  const unusable =
+    fromCall && "unusable" in fromCall && conversation.analysis ? `; call analysis unusable: ${fromCall.unusable}` : "";
+  await logEvent(
+    candidateId,
+    "evaluated",
+    `${scorecard.recommendation}, overall ${scorecard.overall} (${SCORE_SOURCE_LABELS[source]}${unusable})`,
+  );
   return scorecard;
 }
 
