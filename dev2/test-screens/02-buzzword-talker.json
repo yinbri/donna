@@ -1,0 +1,530 @@
+{
+  "persona": "Buzzword talker",
+  "run": 1,
+  "ranAt": "2026-11-22T19:16:41.497Z",
+  "mode": "text conversation with the real Donna agent (no audio)",
+  "conversationSeconds": 19,
+  "finalizeSeconds": 13,
+  "role": {
+    "title": "Founding Engineer",
+    "rubric": [
+      "Shipped real systems",
+      "Depth on own project",
+      "Communication"
+    ]
+  },
+  "statusAfterScoring": "REJECTED",
+  "transcript": [
+    {
+      "i": 0,
+      "role": "agent",
+      "text": "Hi Test: Buzzword talker, this is Donna, an AI assistant calling for Alex at Acme (demo). This call is recorded. I saw your work on a Redis-backed rate limiter library. Got a few minutes for a quick screen for the Founding Engineer role?",
+      "t": 0
+    },
+    {
+      "i": 1,
+      "role": "user",
+      "text": "Absolutely, super excited to be here.",
+      "t": 1
+    },
+    {
+      "i": 2,
+      "role": "agent",
+      "text": "Great, thanks for making the time. Your rate limiter claims 50k requests per second. How did you measure that, and what broke first?",
+      "t": 1
+    },
+    {
+      "i": 3,
+      "role": "user",
+      "text": "The rate limiter was a highly scalable, cloud-native solution, really best in class, and it delivered massive synergy across the platform.",
+      "t": 4
+    },
+    {
+      "i": 4,
+      "role": "agent",
+      "text": "Thanks, but I'd like specifics. What did you actually run to get to 50k, and what broke first when you pushed it?",
+      "t": 4
+    },
+    {
+      "i": 5,
+      "role": "user",
+      "text": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+      "t": 6
+    },
+    {
+      "i": 6,
+      "role": "agent",
+      "text": "Understood, but I still need something concrete. What load tool or benchmark did you use to hit 50k, and what was the first thing to fail when you pushed past it?",
+      "t": 6
+    },
+    {
+      "i": 7,
+      "role": "user",
+      "text": "Idempotency is all about robustness, we embraced a resilient, event-driven mindset so the payments flow was future-proof.",
+      "t": 8
+    },
+    {
+      "i": 8,
+      "role": "agent",
+      "text": "Let's move on. On the payments team, what went wrong with idempotency keys, and how did you find out?",
+      "t": 8
+    },
+    {
+      "i": 9,
+      "role": "user",
+      "text": "In my first two weeks I'd drive alignment, unlock value and empower the team to move fast at scale.",
+      "t": 11
+    },
+    {
+      "i": 10,
+      "role": "agent",
+      "text": "What's one specific thing you'd want to take on in those first two weeks, and why that one?",
+      "t": 11
+    },
+    {
+      "i": 11,
+      "role": "user",
+      "text": "Great chat, I think we're very aligned.",
+      "t": 15
+    },
+    {
+      "i": 12,
+      "role": "agent",
+      "text": "Thanks, Test: Buzzword talker. I'll pass my notes to Alex, and you'll get a calendar invite if they'd like to meet.",
+      "t": 15
+    }
+  ],
+  "scorecard": {
+    "recommendation": "REJECT",
+    "overall": 0,
+    "personas": [],
+    "criteria": [
+      {
+        "name": "Shipped real systems",
+        "score": 0,
+        "evidenceTurn": 5,
+        "quote": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile."
+      },
+      {
+        "name": "Depth on own project",
+        "score": 0,
+        "evidenceTurn": 5,
+        "quote": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile."
+      },
+      {
+        "name": "Communication",
+        "score": 0,
+        "evidenceTurn": 5,
+        "quote": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile."
+      }
+    ],
+    "redFlags": [
+      "The candidate could not back up the claim of 50k requests per second for their rate limiter or discuss specific issues with idempotency keys."
+    ],
+    "standoutQuote": "",
+    "feedback": {
+      "strengths": [
+        "Next time, you could show how you approach technical challenges by providing specific examples and details.",
+        "Next time, you could focus on providing concrete answers to questions rather than general statements."
+      ],
+      "sharpen": "You should sharpen your ability to provide concrete examples and specific details when discussing your projects and experiences, rather than relying on buzzwords."
+    },
+    "source": "call_analysis"
+  },
+  "evaluatedEvent": "REJECT, overall 0 (scored from the call by ElevenLabs' analysis)",
+  "evidenceCheck": "PASS",
+  "elevenLabsAnalysis": {
+    "evaluation_criteria_results": {
+      "shipped_real_systems": {
+        "criteria_id": "shipped_real_systems",
+        "result": "failure",
+        "rationale": "The candidate mentioned a \"Redis-backed rate limiter library\" and \"payments flow\" but provided no specific details about their personal contributions, how it was built, or any numbers, failures, or trade-offs. They only used buzzwords.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      "depth_on_own_project": {
+        "criteria_id": "depth_on_own_project",
+        "result": "failure",
+        "rationale": "The candidate consistently avoided explaining how their projects worked or why any decisions were made, instead responding with buzzwords and generic statements to every specific question.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      "communication": {
+        "criteria_id": "communication",
+        "result": "failure",
+        "rationale": "The candidate was evasive and unclear throughout the conversation, using buzzwords to avoid answering direct questions and never admitting to not knowing something. They consistently dodged specific inquiries.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      "no_protected_topics": {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "The agent, Donna, did not ask any questions related to protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    },
+    "data_collection_results": {
+      "top_project_explained": {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": "The rate limiter was a highly scalable, cloud-native solution, really best in class, and it delivered massive synergy across the platform.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate described their rate limiter project as 'a highly scalable, cloud-native solution, really best in class, and it delivered massive synergy across the platform,' but did not specify their role."
+      },
+      "standout_quote": {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": null,
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not provide any convincing statements, instead using buzzwords and avoiding direct answers to specific questions."
+      },
+      "red_flags": {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "The candidate could not back up the claim of 50k requests per second for their rate limiter or discuss specific issues with idempotency keys.",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate failed to explain how the 50k requests per second claim for their rate limiter was measured and what broke first, and also avoided specifics about idempotency key issues on the payments team."
+      },
+      "evidence_shipped_real_systems": {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently used vague, buzzword-filled language and avoided providing concrete details about building or shipping any system, failing to answer direct questions about implementation."
+      },
+      "evidence_depth_on_own_project": {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate failed to provide any specific details or demonstrate depth of understanding about their rate limiter project, instead offering generic, buzzword-laden descriptions."
+      },
+      "evidence_communication": {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently used vague, buzzword-heavy language and avoided direct answers, making their communication unclear and indirect."
+      },
+      "feedback_strength_1": {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "Next time, you could show how you approach technical challenges by providing specific examples and details.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not demonstrate any specific strengths during the call, as they consistently avoided direct answers and used buzzwords."
+      },
+      "feedback_strength_2": {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "Next time, you could focus on providing concrete answers to questions rather than general statements.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate's communication was consistently vague and lacked specificity, making it difficult to identify any strengths in their communication style."
+      },
+      "feedback_sharpen": {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should sharpen your ability to provide concrete examples and specific details when discussing your projects and experiences, rather than relying on buzzwords.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently used buzzwords and avoided providing specific details or answering direct questions, which is the most critical area for improvement."
+      }
+    },
+    "evaluation_criteria_results_list": [
+      {
+        "criteria_id": "shipped_real_systems",
+        "result": "failure",
+        "rationale": "The candidate mentioned a \"Redis-backed rate limiter library\" and \"payments flow\" but provided no specific details about their personal contributions, how it was built, or any numbers, failures, or trade-offs. They only used buzzwords.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "depth_on_own_project",
+        "result": "failure",
+        "rationale": "The candidate consistently avoided explaining how their projects worked or why any decisions were made, instead responding with buzzwords and generic statements to every specific question.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "communication",
+        "result": "failure",
+        "rationale": "The candidate was evasive and unclear throughout the conversation, using buzzwords to avoid answering direct questions and never admitting to not knowing something. They consistently dodged specific inquiries.",
+        "scoring_mode": "numeric_uniform",
+        "score": 0,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "The agent, Donna, did not ask any questions related to protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    ],
+    "data_collection_results_list": [
+      {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": "The rate limiter was a highly scalable, cloud-native solution, really best in class, and it delivered massive synergy across the platform.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate described their rate limiter project as 'a highly scalable, cloud-native solution, really best in class, and it delivered massive synergy across the platform,' but did not specify their role."
+      },
+      {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": null,
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not provide any convincing statements, instead using buzzwords and avoiding direct answers to specific questions."
+      },
+      {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "The candidate could not back up the claim of 50k requests per second for their rate limiter or discuss specific issues with idempotency keys.",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate failed to explain how the 50k requests per second claim for their rate limiter was measured and what broke first, and also avoided specifics about idempotency key issues on the payments team."
+      },
+      {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently used vague, buzzword-filled language and avoided providing concrete details about building or shipping any system, failing to answer direct questions about implementation."
+      },
+      {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate failed to provide any specific details or demonstrate depth of understanding about their rate limiter project, instead offering generic, buzzword-laden descriptions."
+      },
+      {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "I mean the specifics really depend on the context, the key thing is we leveraged the cloud to scale horizontally and stay agile.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently used vague, buzzword-heavy language and avoided direct answers, making their communication unclear and indirect."
+      },
+      {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "Next time, you could show how you approach technical challenges by providing specific examples and details.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not demonstrate any specific strengths during the call, as they consistently avoided direct answers and used buzzwords."
+      },
+      {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "Next time, you could focus on providing concrete answers to questions rather than general statements.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate's communication was consistently vague and lacked specificity, making it difficult to identify any strengths in their communication style."
+      },
+      {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should sharpen your ability to provide concrete examples and specific details when discussing your projects and experiences, rather than relying on buzzwords.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate consistently used buzzwords and avoided providing specific details or answering direct questions, which is the most critical area for improvement."
+      }
+    ],
+    "call_successful": "failure",
+    "call_success_score": 25,
+    "transcript_summary": "An AI agent conducted a screening call for a Founding Engineer role. The agent asked specific technical questions about the candidate's rate limiter library, including performance measurement and failure points, and issues with idempotency keys. The candidate consistently responded with high-level, buzzword-filled statements, avoiding concrete technical details despite repeated requests for specifics. The call concluded with the agent stating notes would be passed to the hiring manager.",
+    "call_summary_title": "Founding Engineer Screen",
+    "scoped": [],
+    "sentiment_analysis": {
+      "overall_label": "positive",
+      "overall_sentiment_score": 0.4,
+      "overall_frustration_score": 0,
+      "min_user_sentiment_score": 0.1,
+      "max_user_frustration_score": 0,
+      "num_scored_user_turns": 6
+    },
+    "not_applicable": []
+  }
+}
