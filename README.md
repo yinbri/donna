@@ -13,9 +13,11 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 | [plan.md](plan.md) | The approved plan: product, architecture, contracts, schedule, cut order |
 | [AGENTS.md](AGENTS.md) | Rules for every person and coding agent working in this repo. Read first |
 | [docs/branching.md](docs/branching.md) | **Start here:** your branch name, how to merge into `main`, merge windows |
-| [docs/prd/](docs/prd) | One PRD per teammate: problem, user stories, requirements, acceptance criteria |
-| [docs/guides/](docs/guides) | One guide per teammate: setup, environment, commands, sponsor notes, handoff |
-| [lanes/](lanes) | One-page brief per lane: what it owns and its "done when" check |
+| [dev1/](dev1) | **Brian:** UI + Donna's voice (`prd.md`, `guide.md`, `lane.md`) |
+| [dev2/](dev2) | **Dev 2 (Mac):** Wasp backbone + Codevisor lead |
+| [dev3/](dev3) | **Dev 3:** Donna box (Fiber AI, GitHub, EDSL, Maritime) |
+| [dev4/](dev4) | **Dev 4:** trust + ops + submission (Alter, TraceRoot, pilot, video) |
+| [docs/wave-2.md](docs/wave-2.md) | Extras after Gate 1 |
 | [contracts/](contracts) | Frozen TypeScript types shared by all lanes |
 | [fixtures/](fixtures) | Sample data every stub returns, so lanes work before the others land |
 | [BUILDLOG.md](BUILDLOG.md) | One timestamped line per merge |

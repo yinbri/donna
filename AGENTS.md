@@ -10,14 +10,14 @@ Rules for every teammate and coding agent (Claude Code, Codex, Codevisor crews) 
 
 ## Ownership
 
-Each lane edits only the files it owns (see `lanes/*.md`). If you need a change in another lane's file, ask its owner.
+Each lane edits only the files it owns (see your folder: `dev1/` to `dev4/`). If you need a change in another lane's file, ask its owner.
 
-| Lane | Owner | Owns |
-|---|---|---|
-| UI + voice | Brian | `app/src/candidate/*`, `app/src/founder/*`, `ui-sandbox/*`, the ElevenLabs agent config in `agent/*` |
-| Wasp backbone | Mac teammate | `app/main.wasp`, `app/schema.prisma`, `app/src/server/*` except `integrations/box.ts` and `integrations/alter.ts`, `BUILDLOG.md` |
-| Donna box | Dev 3 | `box/*`, `app/src/server/integrations/box.ts` |
-| Trust + ops | Dev 4 | `app/src/server/integrations/alter.ts`, `app/src/server/integrations/traceroot.ts`, `app/src/founder/ApprovalCard.tsx` logic, `app/seed/roles.json`, `pilot/*` |
+| Folder | Lane | Owner | Owns |
+|---|---|---|---|
+| `dev1/` | UI + voice | Brian | `app/src/candidate/*`, `app/src/founder/*`, `ui-sandbox/*`, the ElevenLabs agent config in `agent/*` |
+| `dev2/` | Wasp backbone | Dev 2 (Mac) | `app/main.wasp`, `app/schema.prisma`, `app/src/server/*` except `integrations/box.ts` and `integrations/alter.ts`, `BUILDLOG.md` |
+| `dev3/` | Donna box | Dev 3 | `box/*`, `app/src/server/integrations/box.ts` |
+| `dev4/` | Trust + ops | Dev 4 | `app/src/server/integrations/alter.ts`, `app/src/server/integrations/traceroot.ts`, `app/src/founder/ApprovalCard.tsx` logic, `app/seed/roles.json`, `pilot/*` |
 
 `contracts/contracts.ts` is frozen. Only the Wasp backbone owner edits it, and only with a note in `BUILDLOG.md` and a heads-up to everyone.
 

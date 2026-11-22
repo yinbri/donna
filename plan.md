@@ -73,7 +73,7 @@ Browser ──► Wasp app (React + Node + Prisma/SQLite)   ← orchestrator, wo
              └ spans ──► TraceRoot
 ```
 
-**Repo layout** (from v2): `plan.md`, `AGENTS.md`, `BUILDLOG.md`, `lanes/*.md`, `app/` (Wasp: `src/candidate`, `src/founder`, `src/chat`, `src/server/contracts.ts` frozen, `src/server/integrations/*.ts`, `seed/roles.json`, `fixtures/*.json`), `box/` (`main.py`, `research.py`, `panel.py`, `Dockerfile`, `pyproject.toml`). The existing notes move to `docs/`.
+**Repo layout** (from v2): `plan.md`, `AGENTS.md`, `BUILDLOG.md`, `dev1/`–`dev4/` (prd.md, guide.md, lane.md per teammate), `app/` (Wasp: `src/candidate`, `src/founder`, `src/chat`, `src/server/contracts.ts` frozen, `src/server/integrations/*.ts`, `seed/roles.json`, `fixtures/*.json`), `box/` (`main.py`, `research.py`, `panel.py`, `Dockerfile`, `pyproject.toml`). The existing notes move to `docs/`.
 
 Every integration file ships first as a stub that returns fixture data, so each lane can demo before the others land. Each lane edits only its own files.
 
@@ -160,6 +160,6 @@ Status flow: APPLIED → RESEARCHING → READY → CALLING → EVALUATING → AW
 
 ## First actions after approval
 
-1. Restructure `yinbri/donna`: move the existing notes into `docs/`, add `plan.md` (this plan), `AGENTS.md`, `lanes/*.md` and `BUILDLOG.md`. Commit and push.
+1. Restructure `yinbri/donna`: move the existing notes into `docs/`, add `plan.md` (this plan), `AGENTS.md`, `dev1/`–`dev4/` (prd.md, guide.md, lane.md per teammate) and `BUILDLOG.md`. Commit and push.
 2. The Mac teammate scaffolds Wasp in Codevisor from `AGENTS.md`.
 3. Brian starts the Vite UI sandbox against `fixtures/*.json` and creates the Donna agent.

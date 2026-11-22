@@ -1,15 +1,15 @@
 # Branching and workflow
 
-Everyone works on their own branch and merges into `main` through a pull request. `main` must always run with every integration stubbed.
+Each teammate has a folder (`dev1/` to `dev4/`) holding their `prd.md`, `guide.md` and one-page `lane.md`. Everyone works on their own branch and merges into `main` through a pull request. `main` must always run with every integration stubbed.
 
 ## Branches
 
-| Teammate | Lane | Branch | PRD | Guide |
-|---|---|---|---|---|
-| Brian | UI + Donna's voice | `lane/ui-voice` | [prd/ui-voice.md](prd/ui-voice.md) | [guides/ui-voice.md](guides/ui-voice.md) |
-| Mac teammate | Wasp backbone + Codevisor lead | `lane/wasp-backbone` | [prd/wasp-backbone.md](prd/wasp-backbone.md) | [guides/wasp-backbone.md](guides/wasp-backbone.md) |
-| Dev 3 | Donna box (Fiber, GitHub, EDSL, Maritime) | `lane/donna-box` | [prd/donna-box.md](prd/donna-box.md) | [guides/donna-box.md](guides/donna-box.md) |
-| Dev 4 | Trust + ops + submission (Alter, TraceRoot, pilot) | `lane/trust-ops` | [prd/trust-ops.md](prd/trust-ops.md) | [guides/trust-ops.md](guides/trust-ops.md) |
+| Folder | Teammate | Lane | Branch | PRD | Guide |
+|---|---|---|---|---|---|
+| [dev1/](../dev1) | Brian | UI + Donna's voice | `lane/ui-voice` | [dev1/prd.md](../dev1/prd.md) | [dev1/guide.md](../dev1/guide.md) |
+| [dev2/](../dev2) | (has the Mac) | Wasp backbone + Codevisor lead | `lane/wasp-backbone` | [dev2/prd.md](../dev2/prd.md) | [dev2/guide.md](../dev2/guide.md) |
+| [dev3/](../dev3) | (has Fiber AI access) | Donna box (Fiber, GitHub, EDSL, Maritime) | `lane/donna-box` | [dev3/prd.md](../dev3/prd.md) | [dev3/guide.md](../dev3/guide.md) |
+| [dev4/](../dev4) | | Trust + ops + submission (Alter, TraceRoot, pilot) | `lane/trust-ops` | [dev4/prd.md](../dev4/prd.md) | [dev4/guide.md](../dev4/guide.md) |
 
 Wave 2 work (after Gate 1) uses `wave2/<name>`, for example `wave2/chat`. In Codevisor, each agent gets its own worktree on a branch under its lane, such as `lane/wasp-backbone/schema`.
 
@@ -39,7 +39,7 @@ Use your own branch name from the table.
 
 1. Open a PR from your branch into `main`: `gh pr create --base main --fill`.
 2. The PR description says which "done when" items from your PRD now pass.
-3. The Mac teammate merges (squash), or the lane owner does if they are busy. Merge only if the app still starts with stubs.
+3. Dev 2 merges (squash), or the lane owner does if they are busy. Merge only if the app still starts with stubs.
 4. Add one line to `BUILDLOG.md`: time, lane, who, what landed.
 
 ## Merge windows
@@ -55,4 +55,4 @@ Use your own branch name from the table.
 
 ## Contract changes
 
-`contracts/contracts.ts` is frozen. If you need a change, tell the Mac teammate. They change it on `main`, note it in `BUILDLOG.md`, and everyone pulls.
+`contracts/contracts.ts` is frozen. If you need a change, tell Dev 2. They change it on `main`, note it in `BUILDLOG.md`, and everyone pulls.
