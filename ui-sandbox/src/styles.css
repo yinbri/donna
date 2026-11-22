@@ -154,6 +154,9 @@ code { font: 12px var(--mono); background: var(--surface-2); padding: 1px 6px; b
 .shell-landing .icon-btn { background: transparent; color: #fff; }
 .shell-landing .icon-btn:hover { background: rgba(255, 255, 255, .12); }
 .shell-landing .page { max-width: none; padding: 0; }
+/* Landing type: Google Sans Flex at roundness 65 (the rest of the app stays on Inter). */
+.shell-landing { font-family: 'Google Sans Flex Variable', var(--sans); font-variation-settings: 'ROND' 65; }
+.shell-landing .btn, .shell-landing button { font-family: inherit; }
 
 .landing { --wrap: 1120px; --section: clamp(80px, 11vw, 136px); display: flex; flex-direction: column; align-items: center; text-align: center; }
 
