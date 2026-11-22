@@ -41,11 +41,17 @@ These keep it in line with the guardrails in AGENTS.md. Donna's first sentence s
 
 `pilot/qr.png` and `pilot/sign.html` are git-ignored (`pilot/.gitignore`). They die with the tunnel anyway.
 
-## 4. Post text (for Brian, after Dev 4 says go)
+## 4. Table only, supervised (Dev 4's decision, 14:41)
+
+The founder view is open to anyone with the tunnel URL: the candidate page's **Founder** toggle (or `/founder`) lists every candidate's name, score and status, and has working Approve buttons. Nobody is locking it before the pilot, so:
+
+- The link is **not posted** anywhere (no Discord, no Slack, no group chats). The only way in is the QR on `pilot/sign.html`, shown full screen at our table.
+- A teammate stays with each person while they scan and take the screen. If anyone taps **Founder**, bring them back to the screen. Nobody presses Approve on a pilot candidate.
+- When the table is unattended, close the sign. The tunnel stays up only while someone watches it.
+
+If the founder view is locked later, this post text can be used, each post with Dev 4's OK:
 
 > Built this today: take a 3-minute AI voice screen for one of the sponsor startups' open roles and get instant feedback. Unofficial demo, not an application. <link>
-
-Where: the hackathon Discord or Slack, and a printed or on-screen QR at our table. Each post needs Dev 4's OK first.
 
 ## 5. Limits we must respect (from Cloudflare's quick tunnel docs)
 
@@ -98,6 +104,7 @@ When Dev 4 ends the pilot, at the latest when we start recording the demo video 
 
 | Time | What | Who |
 |---|---|---|
-| | Go-live, URL posted to: | |
+| 14:41 | Mode: table only, supervised, link not posted (founder view open over the tunnel). Sign made from Aarav's web tunnel URL; `/apply` checked loading over it | Dev 4 |
+| | Go-live (sign shown at the table): | |
 | | Team test run (exclude from N): | |
 | | Pilot stopped | |
