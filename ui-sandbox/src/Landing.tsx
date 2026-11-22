@@ -11,8 +11,7 @@ export function Landing() {
         <span>Recruiting coordinator for founders from</span>
         <span className="backer-row">
           <span className="backer backer-yc" title="Y Combinator">
-            <span className="yc-box" aria-hidden="true">Y</span>
-            Combinator
+            <span className="yc-box" aria-label="Y Combinator">Y</span>
           </span>
           <span className="backer backer-a16z" title="Andreessen Horowitz">a16z</span>
           <span className="backer backer-sequoia" title="Sequoia">SEQUOIA</span>
