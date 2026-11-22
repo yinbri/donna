@@ -113,7 +113,7 @@ export function CallPage() {
         <>
           <h1 className="title">Ready when you are</h1>
           <p className="muted">
-            Donna will ask about {c.dossier?.topProject ?? 'your work'} for the {role?.title} role. About 3 minutes. Use headphones if
+            Donna will ask about {c.dossier?.topProject ?? 'your work'} for the {role?.title} role. {fast ? 'About a minute.' : 'About 3 minutes.'} Use headphones if
             you can.
           </p>
           <div className="call-actions">
