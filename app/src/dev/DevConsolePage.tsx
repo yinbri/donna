@@ -10,6 +10,7 @@ import {
   startScreen,
   useQuery,
 } from "wasp/client/operations";
+import { RealCallPanel } from "./RealCallPanel";
 
 type Step = { label: string; result: unknown };
 
@@ -126,6 +127,8 @@ export function DevConsolePage() {
           6. Approve
         </button>
       </div>
+
+      <RealCallPanel candidateId={candidateId} />
 
       <h2>Results</h2>
       {steps.map((s, n) => (
