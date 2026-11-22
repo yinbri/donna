@@ -22,16 +22,16 @@ Adapter: `app/src/dev/uiApi.ts`. It keeps the sandbox `lib/api` names and maps t
 | `setDecision` | none | Exported, **throws** (no backend op). |
 | `resetDemo` | none | Exported, **throws**; use `wasp db seed`. |
 | `fmtDuration`, `panelSpread`, `PANEL_SPLIT` | none | Copied unchanged. |
-| `STUBS` | none | **Not exported** (see b). |
+| `STUBS` | `useQuery(getIntegrationStatus)` | **Not exported.** Use `useIntegrationStatus()` (see b); values are inverted (`true` = live). |
 | `LIVE_AGENT_ID` | `startScreen().agentId` | **Not exported.** Use `isStubScreen(s)` / `STUB_CONVERSATION_ID`. |
 
 ## b. Mismatches and missing capabilities
 
 | Gap | Effect | Recommended fix | Owner |
 |---|---|---|---|
-| `durationSecs` not stored (`call_duration_secs` is read in `finalizeScreen` but only logged in the `call_ended` detail) | Founder stats and "· 1:36 call" stay empty | Add `durationSecs Int?` to `Candidate` and expose on `CandidateView` (schema change) | Dev 2 |
+| ~~`durationSecs` not stored~~ **Closed:** `Candidate.durationSecs` is saved by `finalizeScreen` and seeded (96 s on the fixture) | `UICandidate.durationSecs` is the real value (undefined before the call); use it as-is with `fmtDuration` | Done | Dev 2 |
 | No per-step research progress | Research page shows all steps running, then the result | Accept for demo, or emit events per source from the box | Dev 3 (box) + Dev 2 |
-| `STUBS` flags have no backend source | Stub labels cannot be shown honestly | Add a `getIntegrationStatus` query returning which integrations are stubbed; until then remove the `<Stub>` badges or drive them from data (`dossier.sources`, `deniedAttempt.auditRef === null`) | Dev 2 |
+| ~~`STUBS` flags have no backend source~~ **Closed:** `getIntegrationStatus` query | `const live = useIntegrationStatus();` (from `uiApi`, `undefined` while loading) gives `{ elevenlabs, box, alter, traceroot }`, `true` = live. Show a `<Stub>` badge where `live && !live.box` etc. (sandbox `STUBS.x` = `!live.x`) | Done | Dev 2 |
 | `setDecision` (founder overrides recommendation) | Chips throw | Add an `overrideRecommendation` action, or make chips read-only | Dev 2 (op) / Brian (UI) |
 | `resetDemo` | Link throws | Remove the link; reseed with `wasp db seed` | Brian |
 | Sandbox audio fallback `/conversation.mp3` | Not in the app's `public/` | Copy it to `app/public/` or play speech fallback (receipts.ts already does when HEAD fails) | Brian |
