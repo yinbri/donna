@@ -15,7 +15,7 @@ Fill the "Ran today?" column at 2:20 from the evidence column. If it is not a ye
 | Fiber AI | Applicant research (box `/research`) | README: box `/research` not checked yet | ask Sam |
 | Expected Parrot | 3-persona hiring panel (box `/evaluate`) | README: box `/evaluate` not checked yet | ask Sam |
 | Maritime | Hosts the box as an "isolated micro-VM that sleeps" | none yet | ask Sam |
-| TraceRoot | Span per pipeline step (research, fetch_conversation, evaluate), grouped by candidate; ids only, no candidate data | `scripts/check-trace.ts` live at 13:44: span sent, flush accepted. **Confirm "check_trace" shows in the TraceRoot dashboard.** Tracing only, no detector | yes if seen in dashboard |
+| TraceRoot | Span per pipeline step (research, fetch_conversation, evaluate), grouped by candidate; ids only, no candidate data | `scripts/check-trace.ts` live at 13:44: span sent, flush accepted. Dev 4 confirmed the span in the TraceRoot dashboard. Tracing only, no detector | yes (13:44) |
 | Ploid, assistant-ui, Rowboat | Wave 2 only | none | no, unless they land |
 
 If Alter's live re-run fails: claim "in-app approval gate", drop Alter from the tool list, and switch the video shot in section 3.
