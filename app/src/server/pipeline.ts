@@ -72,6 +72,7 @@ export function toCandidateView(c: CandidateWithRelations): CandidateView {
     traceUrl: c.traceUrl,
     dossier: parseJson(c.dossier, "dossier", c.id),
     transcript: parseJson(c.transcript, "transcript", c.id),
+    durationSecs: c.durationSecs,
     analysis: parseJson<JsonValue>(c.analysis, "analysis", c.id),
     scorecard: parseJson(c.scorecard, "scorecard", c.id),
     role: toRoleView(c.role),
