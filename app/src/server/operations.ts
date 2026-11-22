@@ -23,6 +23,7 @@ import type {
 import * as alter from "./integrations/alter";
 import * as box from "./integrations/box";
 import * as elevenlabs from "./integrations/elevenlabs";
+import * as github from "./integrations/github";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
 import { scoreFromCallAnalysis, type CallScore, type ScoreSource } from "./scoring";
@@ -162,9 +163,19 @@ export const createCandidate: CreateCandidate<CreateCandidateInput, CandidateVie
   return toCandidateView(row);
 };
 
+/**
+ * Where a dossier comes from: the Donna box when it is live; otherwise the candidate's own public GitHub repos
+ * when they typed a username; otherwise the box stub. A GitHub lookup that fails throws, so that candidate
+ * continues without a dossier instead of being asked about the fixture's project.
+ */
+function research(request: Parameters<typeof box.research>[0]): Promise<ResearchResult> {
+  if (!reportsLive(box) && request.githubUser?.trim()) return github.researchFromGithub(request);
+  return box.research(request);
+}
+
 async function runResearch(candidateId: string, request: Parameters<typeof box.research>[0]): Promise<void> {
   try {
-    const dossier = await traced("research", { candidateId }, () => box.research(request));
+    const dossier = await traced("research", { candidateId }, () => research(request));
     await prisma.candidate.update({
       where: { id: candidateId },
       data: { dossier: JSON.stringify(dossier), traceUrl: traceUrlFor(candidateId) },
