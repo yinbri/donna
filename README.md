@@ -35,7 +35,11 @@ Only what runs is listed here, from [BUILDLOG.md](BUILDLOG.md). Updated at each 
 - [x] Approval gate merged, running in in-app mode (`npm run check:approval`). Live Alter not yet run on `main`
 - [ ] Research and scoring box (`/research`, `/evaluate`): still returns fixtures
 - [ ] Real UI ported onto the backend (adapter and port guide exist; not yet run in a browser)
-- [ ] Gate 1: one full run end to end
+- [ ] TraceRoot tracing: `main` has only the stub, so the app sends no traces. The real client is on `lane/trust-ops`; it still needs merging, its package installed and the key set on the demo Mac
+- [ ] Gate 1: one full run on the real app (apply → call → receipts play → blocked attempt → Approve → invite). Not confirmed yet
+- [ ] Test invites from 1:22 and 1:34 confirmed in the demo inbox
+- [ ] Pilot: waits on Gate 1, the two consent-box fixes, the tunnel link, the QR code and a go before anything is posted
+- [ ] Repo public, so judges can open the project link
 
 ## Run it
 
