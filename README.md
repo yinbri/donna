@@ -29,7 +29,7 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 
 Only what runs is listed here. Updated at each merge.
 
-- [ ] Wasp app scaffolded
+- [x] Wasp app scaffolded (stubbed end to end: `npm run check:screen` passes)
 - [ ] Donna agent created in ElevenLabs
 - [ ] Box `/research` and `/evaluate`
 - [ ] Alter approval flow
