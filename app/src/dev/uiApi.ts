@@ -8,6 +8,7 @@ import {
   decide as decideOp,
   finalizeScreen as finalizeScreenOp,
   getCandidate,
+  getIntegrationStatus,
   listCandidates,
   listRoles,
   proposeBooking as proposeBookingOp,
@@ -24,7 +25,7 @@ import type {
   TimelineEvent,
   TranscriptTurn,
 } from "../server/contracts";
-import type { CandidateView } from "../server/views";
+import type { CandidateView, IntegrationStatus } from "../server/views";
 
 /** The sandbox's UICandidate, plus `role` (replaces the sandbox's getRole(c.roleId)). */
 export interface UICandidate {
@@ -41,7 +42,7 @@ export interface UICandidate {
   dossier?: ResearchResult;
   conversationId?: string;
   transcript?: TranscriptTurn[];
-  durationSecs?: number; // not stored by the backend yet, so always undefined
+  durationSecs?: number; // undefined until finalizeScreen has run
   evaluation?: EvaluateResult;
   approval?: Approval; // the newest approval
   events: TimelineEvent[];
@@ -72,6 +73,7 @@ function toUI(c: CandidateView): UICandidate {
     dossier: c.dossier ?? undefined,
     conversationId: c.conversationId ?? undefined,
     transcript: c.transcript ?? undefined,
+    durationSecs: c.durationSecs ?? undefined,
     evaluation: c.scorecard ?? undefined,
     approval: c.approvals.at(-1),
     events: c.events,
@@ -94,6 +96,11 @@ export function useCandidates(): UICandidate[] {
 export function useCandidate(id: string | undefined): UICandidate | undefined {
   const { data } = useQuery(getCandidate, { id: id ?? "" }, { enabled: !!id });
   return data ? toUI(data) : undefined;
+}
+
+/** Which integrations are live (true) or returning fixtures (false); undefined while loading. */
+export function useIntegrationStatus(): IntegrationStatus | undefined {
+  return useQuery(getIntegrationStatus).data;
 }
 
 // ---------- operations ----------

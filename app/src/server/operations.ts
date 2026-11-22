@@ -5,6 +5,7 @@ import type {
   Decide,
   FinalizeScreen,
   GetCandidate,
+  GetIntegrationStatus,
   ListCandidates,
   ListRoles,
   ProposeBooking,
@@ -25,7 +26,7 @@ import {
   toCandidateView,
   toRoleView,
 } from "./pipeline";
-import type { CandidateView, Plain, RoleView } from "./views";
+import type { CandidateView, IntegrationStatus, Plain, RoleView } from "./views";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -92,6 +93,14 @@ export const getCandidate: GetCandidate<{ id: string }, CandidateView> = async (
   if (!row) throw new HttpError(404, `Candidate ${id} not found`);
   return toCandidateView(row);
 };
+
+// box, alter and traceroot return fixtures when their env var is empty (.env.server.example).
+export const getIntegrationStatus: GetIntegrationStatus<void, IntegrationStatus> = async () => ({
+  elevenlabs: !elevenlabs.isStubbed(),
+  box: !!process.env.BOX_URL,
+  alter: !!process.env.ALTER_API_KEY,
+  traceroot: !!process.env.TRACEROOT_TOKEN,
+});
 
 // ---------- Actions ----------
 
@@ -223,6 +232,7 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
     where: { id: candidateId },
     data: {
       transcript: JSON.stringify(transcript),
+      durationSecs: conversation.durationSecs,
       analysis: JSON.stringify(conversation.analysis ?? null),
       audioPath,
     },

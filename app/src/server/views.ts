@@ -16,6 +16,9 @@ export type JsonValue = string | number | boolean | null | JsonValue[] | { [key:
 
 export type RoleView = Plain<Role>;
 
+/** true = live, false = returning fixture data. */
+export type IntegrationStatus = { elevenlabs: boolean; box: boolean; alter: boolean; traceroot: boolean };
+
 export type CandidateView = Plain<{
   id: string;
   roleId: string;
@@ -32,6 +35,7 @@ export type CandidateView = Plain<{
   traceUrl: string | null;
   dossier: ResearchResult | null;
   transcript: TranscriptTurn[] | null;
+  durationSecs: number | null; // call length from ElevenLabs, set by finalizeScreen
   scorecard: EvaluateResult | null;
   role: RoleView;
   approvals: Approval[]; // oldest first
