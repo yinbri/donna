@@ -10,11 +10,11 @@ Fill the "Ran today?" column at 2:20 from the evidence column. If it is not a ye
 |---|---|---|---|
 | ElevenLabs | Donna's live voice screen (Agents, WebRTC), transcript with timestamps, call audio for the ▶ receipts | BUILDLOG 13:10: first real call, 21 turns, 144 s audio stored | yes (13:10) |
 | Wasp | The whole app: Wasp 0.26.1, SQLite, operations, founder view | BUILDLOG 12:35 onward | yes |
-| Alter | Holds the founder's Google Calendar grant. A calendar write without approval is held; approve releases it and Google emails the invite | `npm run check:approval` live: passed 13:22 (SDK 0.34.1) and 13:34 (SDK 0.33.0, main's pin), event jfc38og5ikdrh4rf9iq70qsqes invited the demo inbox. Approve path on main since merge #6 | yes (13:34) |
+| Alter | Holds the founder's Google Calendar grant. A calendar write without approval is held; approve releases it and Google emails the invite | `npm run check:approval` live: passed 13:22 (SDK 0.34.1) and 13:34 (SDK 0.33.0, main's pin), event jfc38og5ikdrh4rf9iq70qsqes invited the demo inbox. Dev 4 confirmed both invites arrived in the demo inbox. Approve path on main since merge #6 | yes (13:34) |
 | Codevisor | Parallel coding agents, each in its own workspace | Main README (Aarav, merge #6): three changes built at 13:33 by three agents side by side in Codevisor (approval gate merge, sponsor role seed, README status + runbook). The rest was Claude Code outside Codevisor | yes (13:33), claim only those changes |
-| Fiber AI | Applicant research (box `/research`) | README: box `/research` not checked yet | ask Sam |
-| Expected Parrot | 3-persona hiring panel (box `/evaluate`) | README: box `/evaluate` not checked yet | ask Sam |
-| Maritime | Hosts the box as an "isolated micro-VM that sleeps" | none yet | ask Sam |
+| Fiber AI | Applicant research (box `/research`): work history from what the candidate typed | Dev 3 (Sam) confirmed Fiber AI ran today in the box. On main the app still calls the box stub (`integrations/box.ts` returns fixtures), so in the app the research step shows fixture data until Sam wires the box in. In the video, show Fiber only from the box or once it is wired | yes (Sam) |
+| Expected Parrot | 3-persona hiring panel (box `/evaluate`) | Not confirmed by Sam | no, unless Sam confirms |
+| Maritime | Hosts the box as an "isolated micro-VM that sleeps" | Not confirmed by Sam | no, unless Sam confirms |
 | TraceRoot | Span per pipeline step (research, fetch_conversation, evaluate), grouped by candidate; ids only, no candidate data | `scripts/check-trace.ts` live at 13:44: span sent, flush accepted. Dev 4 confirmed the span in the TraceRoot dashboard. Tracing only, no detector | yes (13:44) |
 | Ploid, assistant-ui, Rowboat | Wave 2 only | none | no, unless they land |
 
