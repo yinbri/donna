@@ -1,2 +1,14 @@
 # Organizers asked that this not be shared (contains promo codes)
 Hacker Package.pdf
+
+# Secrets and local state
+.env
+.env.*
+!.env.example
+box/dossiers/
+node_modules/
+.wasp/
+__pycache__/
+.venv/
+*.sqlite
+*.db
