@@ -33,4 +33,4 @@ Open http://localhost:5173.
 
 ## Design
 
-Warm paper with a dotted grid in light mode, near-black monochrome in dark mode (toggle in the top bar). Serif display type (Instrument Serif), Inter for body, JetBrains Mono for labels, one terracotta accent. Donna's presence is a dot-matrix orb that ripples with voice level.
+Chat-first and monochrome, matching the "Donna screens" design board: white canvas (dark mode in the top bar), ink pill buttons, grey surfaces, Inter throughout, JetBrains Mono only for timestamps. One clay accent, used only for Donna's dot-matrix orb and the ▶ receipts.

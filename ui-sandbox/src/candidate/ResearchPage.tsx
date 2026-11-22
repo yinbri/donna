@@ -35,15 +35,20 @@ export function ResearchPage() {
       <DotOrb size={180} active getLevel={() => 0.25} />
       <h1 className="title">Researching you{c ? `, ${c.name.split(' ')[0]}` : ''}</h1>
       <p className="muted">Only using what you entered. This takes a few seconds.</p>
-      <ul className="research-steps">
-        {(Object.keys(LABELS) as StepKey[]).map((k) => (
-          <li key={k} className={`rs rs-${steps[k]}`}>
-            <i>{steps[k] === 'ok' ? '✓' : steps[k] === 'skip' ? '–' : ''}</i>
-            {LABELS[k]}
-            {steps[k] === 'skip' && <span className="muted"> · skipped</span>}
-          </li>
-        ))}
-      </ul>
+      <section className="research-card" aria-label="Research steps">
+        <div className="research-card-head">
+          {Object.values(steps).every((s) => s === 'ok' || s === 'skip') ? 'Research done' : 'Researching you'}
+        </div>
+        <ul className="research-steps">
+          {(Object.keys(LABELS) as StepKey[]).map((k) => (
+            <li key={k} className={`rs rs-${steps[k]}`}>
+              <i>{steps[k] === 'ok' ? '✓' : steps[k] === 'skip' ? '–' : ''}</i>
+              {LABELS[k]}
+              {steps[k] === 'skip' && <span className="muted"> · skipped</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
       {STUBS.research && <p className="fineprint"><Stub>fixture research</Stub> Real lookups land with the Donna box.</p>}
     </div>
   );
