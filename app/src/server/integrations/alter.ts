@@ -313,6 +313,7 @@ const live = {
 
   async decide(approval: Approval, approve: boolean, _input: BookingInput): Promise<AlterOutcome> {
     if (!approval.alterRef) throw new Error(`Approval ${approval.id} has no Alter reference`);
+    if (process.env.ALTER_DECIDER_KEY) return live.decideViaApi(approval, approve);
     if (!approve) {
       // This app key queued the request, so Alter refuses to let it decide (self_decision_refused).
       // Reject locally; the held request is never executed and expires in Alter.
@@ -352,5 +353,58 @@ const live = {
       }
       throw e; // ApprovalTimeoutError etc.: still pending in Alter; caller can retry decide().
     }
+  },
+
+  /**
+   * The founder clicks Approve/Reject in Donna; we record that decision in Alter with a
+   * second app key that holds `approvals:decide` (Alter refuses the key that queued the
+   * request: self_decision_refused). Alter checks ALTER_APPROVER_EMAIL against the rule's
+   * approvers and audits it as asserted_by_integration. Then the main key awaits execution.
+   */
+  async decideViaApi(approval: Approval, approve: boolean): Promise<AlterOutcome> {
+    const approverEmail = process.env.ALTER_APPROVER_EMAIL;
+    if (!approverEmail) throw new Error("ALTER_DECIDER_KEY is set but ALTER_APPROVER_EMAIL is not");
+    const { App } = await sdk();
+    const app = await client();
+    const decider = new App({ apiKey: process.env.ALTER_DECIDER_KEY });
+    const ref = approval.alterRef!;
+    try {
+      if (!approve) {
+        await decider.decideApproval(ref, { decision: "denied", actorEmail: approverEmail, reason: "Founder rejected in Donna" });
+        return {
+          approval: { ...approval, status: "REJECTED" },
+          candidateStatus: "REJECTED",
+          events: [ev("rejected", `Founder rejected; recorded in Alter as denied (approval ${ref}). Nothing was booked.`)],
+        };
+      }
+      // Approving attests to a summary version; read it at the version Alter requires.
+      let status = await app.getApprovalStatus(ref);
+      if (status.requiredSummaryVersion > status.summaryVersion) {
+        status = await app.getApprovalStatus(ref, { summaryVersion: status.requiredSummaryVersion });
+      }
+      await decider.decideApproval(ref, {
+        decision: "approved",
+        actorEmail: approverEmail,
+        reason: "Founder approved in Donna",
+        summaryVersion: status.summaryVersion,
+      });
+    } finally {
+      await decider.close();
+    }
+    const result = await app.awaitApproval(ref, { timeoutMs: Number(process.env.ALTER_APPROVAL_WAIT_MS ?? 120_000) });
+    if (result.statusCode >= 300) {
+      throw new Error(`Alter approved and ran the insert, but Google returned HTTP ${result.statusCode}: ${result.bodyText().slice(0, 300)}`);
+    }
+    const gEvent = result.bodyJson() as { id?: string; htmlLink?: string; attendees?: { email: string }[] };
+    const to = gEvent.attendees?.map((a) => a.email).join(", ") ?? approval.emailDraft.to;
+    return {
+      approval: { ...approval, status: "APPROVED" },
+      candidateStatus: "BOOKED",
+      calendarUrl: gEvent.htmlLink,
+      events: [
+        ev("approved", `Founder approved; Alter verified the approver and released the held write (approval ${ref}).`),
+        ev("invite_sent", `Google Calendar event ${gEvent.id ?? ""} created through Alter; invite emailed to ${to}.`),
+      ],
+    };
   },
 };
