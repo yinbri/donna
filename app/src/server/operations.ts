@@ -53,6 +53,20 @@ async function loadApproval(id: string) {
   return row;
 }
 
+// Once an approval is APPROVED or REJECTED nothing may act on it again: a second attempt or
+// decision on an approved booking would send a second invite.
+function requireOpenApproval(row: { id: string; status: string }): void {
+  if (row.status !== "PENDING" && row.status !== "DENIED_ATTEMPT") {
+    throw new HttpError(409, `Approval ${row.id} is already ${row.status}`);
+  }
+}
+
+// A screen can start while research is still running, so research finishing late must not
+// rewind a candidate who is already CALLING or beyond.
+async function markReadyIfResearching(candidateId: string): Promise<void> {
+  await prisma.candidate.updateMany({ where: { id: candidateId, status: "RESEARCHING" }, data: { status: "READY" } });
+}
+
 // ---------- Queries ----------
 
 export const listRoles: ListRoles<void, RoleView[]> = async () => {
@@ -126,14 +140,15 @@ async function runResearch(candidateId: string, request: Parameters<typeof box.r
     const dossier = await traced("research", { candidateId }, () => box.research(request));
     await prisma.candidate.update({
       where: { id: candidateId },
-      data: { dossier: JSON.stringify(dossier), status: "READY", traceUrl: traceUrlFor(candidateId) },
+      data: { dossier: JSON.stringify(dossier), traceUrl: traceUrlFor(candidateId) },
     });
+    await markReadyIfResearching(candidateId);
     await logEvent(candidateId, "research_done", dossier.summary);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`Research failed for candidate ${candidateId}:`, err);
     try {
-      await setStatus(candidateId, "READY");
+      await markReadyIfResearching(candidateId);
       await logEvent(candidateId, "research_done", `Research failed, continuing without a dossier: ${message}`);
     } catch (saveErr) {
       console.error(`Could not record research failure for candidate ${candidateId}:`, saveErr);
@@ -194,7 +209,16 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
     elevenlabs.fetchConversation(conversationId),
   );
   const transcript: TranscriptTurn[] = conversation.transcript;
-  const audioPath = await elevenlabs.downloadAudio(conversationId, candidateId);
+  // The scorecard does not need the audio, so a failed download costs only the receipts player.
+  let audioPath: string | null = null;
+  let audioNote = ", no audio";
+  try {
+    audioPath = await elevenlabs.downloadAudio(conversationId, candidateId);
+    if (audioPath) audioNote = "";
+  } catch (err) {
+    console.error(`Audio download failed for candidate ${candidateId} (conversation ${conversationId}):`, err);
+    audioNote = `, audio download failed: ${err instanceof Error ? err.message : String(err)}`;
+  }
   await prisma.candidate.update({
     where: { id: candidateId },
     data: {
@@ -203,11 +227,7 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
       audioPath,
     },
   });
-  await logEvent(
-    candidateId,
-    "call_ended",
-    `${transcript.length} turns, ${conversation.durationSecs}s${audioPath ? "" : ", no audio"}`,
-  );
+  await logEvent(candidateId, "call_ended", `${transcript.length} turns, ${conversation.durationSecs}s${audioNote}`);
 
   const scorecard = await traced("evaluate", { candidateId }, () =>
     box.evaluate({ dossier, rubric: role.rubric, transcript }),
@@ -254,6 +274,7 @@ export const proposeBooking: ProposeBooking<{ candidateId: string; slotIso?: str
 export const attemptWithoutApproval: AttemptWithoutApproval<{ approvalId: string }, Plain<Approval>> = async (args) => {
   const approvalId = requireString(args?.approvalId, "approvalId");
   const row = await loadApproval(approvalId);
+  requireOpenApproval(row);
   const denied = await alter.attemptWithoutApproval(toApproval(row));
   const updated = await prisma.approval.update({
     where: { id: approvalId },
@@ -269,9 +290,7 @@ export const decide: Decide<{ approvalId: string; approve: boolean }, Plain<Appr
     throw new HttpError(400, `approve must be a boolean, got ${JSON.stringify(args.approve)}`);
   }
   const row = await loadApproval(approvalId);
-  if (row.status !== "PENDING" && row.status !== "DENIED_ATTEMPT") {
-    throw new HttpError(409, `Approval ${approvalId} is already ${row.status}`);
-  }
+  requireOpenApproval(row);
 
   const result = await alter.decide(toApproval(row), args.approve);
   const updated = await prisma.approval.update({
