@@ -1,7 +1,8 @@
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { useEffect, useRef, useState } from "react";
 import { config } from "wasp/client";
-import { finalizeScreen, getCandidate, startScreen, useQuery } from "wasp/client/operations";
+import { getCandidate, startScreen, useQuery } from "wasp/client/operations";
+import { finalizeAndWait } from "./finalizeAndWait";
 
 type Phase = "idle" | "starting" | "connected" | "scoring" | "done";
 type LiveLine = { role: string; text: string };
@@ -9,14 +10,15 @@ type LiveLine = { role: string; text: string };
 const CLIP_SECS = 12;
 
 export function RealCallPanel({ candidateId }: { candidateId: string }) {
+  const [scoredCount, setScoredCount] = useState(0);
   return (
     <section>
       <h2>Real call</h2>
       {candidateId ? (
         // Keyed so switching candidates drops the previous call's state.
         <ConversationProvider key={candidateId}>
-          <RealCall candidateId={candidateId} />
-          <CallResult candidateId={candidateId} />
+          <RealCall candidateId={candidateId} onScored={() => setScoredCount((n) => n + 1)} />
+          <CallResult candidateId={candidateId} scoredCount={scoredCount} />
         </ConversationProvider>
       ) : (
         <p>Create or pick a candidate first.</p>
@@ -25,7 +27,7 @@ export function RealCallPanel({ candidateId }: { candidateId: string }) {
   );
 }
 
-function RealCall({ candidateId }: { candidateId: string }) {
+function RealCall({ candidateId, onScored }: { candidateId: string; onScored: () => void }) {
   const [fast, setFast] = useState(true);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState("");
@@ -41,10 +43,11 @@ function RealCall({ candidateId }: { candidateId: string }) {
     finalizedRef.current = true;
     setPhase("scoring");
     try {
-      await finalizeScreen({ candidateId, conversationId });
+      await finalizeAndWait(candidateId, conversationId);
+      onScored();
       setPhase("done");
     } catch (err) {
-      setError(`finalizeScreen failed for conversation ${conversationId}: ${(err as Error).message}`);
+      setError(`Scoring failed for conversation ${conversationId}: ${(err as Error).message}`);
       setPhase("idle");
     }
   }
@@ -146,12 +149,16 @@ function RealCall({ candidateId }: { candidateId: string }) {
   );
 }
 
-function CallResult({ candidateId }: { candidateId: string }) {
+function CallResult({ candidateId, scoredCount }: { candidateId: string; scoredCount: number }) {
   const candidate = useQuery(getCandidate, { id: candidateId });
   const audioRef = useRef<HTMLAudioElement>(null);
   const stopTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => () => clearTimeout(stopTimer.current), []);
+  // When scoring outlives the request, no action completes on the client to refresh this query.
+  useEffect(() => {
+    if (scoredCount > 0) void candidate.refetch();
+  }, [scoredCount]);
 
   if (candidate.error) return <p>Error loading candidate: {candidate.error.message}</p>;
   const c = candidate.data;

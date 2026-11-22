@@ -3,13 +3,13 @@ import {
   attemptWithoutApproval,
   createCandidate,
   decide,
-  finalizeScreen,
   listCandidates,
   listRoles,
   proposeBooking,
   startScreen,
   useQuery,
 } from "wasp/client/operations";
+import { finalizeAndWait } from "./finalizeAndWait";
 import { RealCallPanel } from "./RealCallPanel";
 
 type Step = { label: string; result: unknown };
@@ -107,7 +107,7 @@ export function DevConsolePage() {
         </button>
         <button
           disabled={busy || !candidateId}
-          onClick={() => run("finalizeScreen", () => finalizeScreen({ candidateId, conversationId: "fixture-conv-001" }))}
+          onClick={() => run("finalizeScreen", () => finalizeAndWait(candidateId, "fixture-conv-001"))}
         >
           3. Finalize
         </button>

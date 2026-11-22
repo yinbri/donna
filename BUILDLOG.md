@@ -15,3 +15,5 @@ One line per merge: time (EST), lane, who or which agent, what landed.
 | 13:00 | ui-voice (done by Dev 2) | Claude Code (Fable lead) | Donna agent created in the ElevenLabs account the app's key belongs to, from `agent/prompt.md` and `agent/settings.md` on `lane/ui-voice`. Token endpoint returns 200. Not set yet: end-call tool, agent tests |
 | 13:04 | wasp-backbone | Dev 2 + Claude Code | PR #3 merged: UI adapter, port guide, stored call length, integration status |
 | 13:06 | wasp-backbone | Claude Code Opus agent `dev-call` (own worktree) | "Real call" panel in the dev console (`@elevenlabs/react` 1.22.1): real session from `startScreen`, finalize on hang-up, scorecard with audio seek. Renders; no real call made yet |
+| 13:10 | wasp-backbone | Dev 2 (real call) | First real call through the dev console: 21 turns with timestamps, 144 s recording stored, audio route serves ranges, ElevenLabs analysis saved |
+| 13:21 | wasp-backbone | Claude Code (Fable lead) | Fix: scoring a real call outlives the browser's 10 s request limit. The page now waits for the server's result; repeat requests reuse it; a failed finalize is recorded and retryable |

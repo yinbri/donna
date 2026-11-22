@@ -216,12 +216,55 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
 ) => {
   const candidateId = requireString(args?.candidateId, "candidateId");
   const conversationId = requireString(args.conversationId, "conversationId");
+  const key = `${candidateId}:${conversationId}`;
+  let run = finalizing.get(key);
+  if (!run) {
+    run = runFinalize(candidateId, conversationId).finally(() => finalizing.delete(key));
+    finalizing.set(key, run);
+  }
+  return run;
+};
+
+// The browser abandons a request after 10 s (Wasp's HTTP client default), but scoring a real call
+// takes longer and keeps running here. The client then polls or asks again, so runs for the same
+// conversation share one promise and a conversation that is already scored is not scored twice.
+const finalizing = new Map<string, Promise<EvaluateResult>>();
+
+async function runFinalize(candidateId: string, conversationId: string): Promise<EvaluateResult> {
   const candidate = await loadCandidate(candidateId);
+  const stored = parseJson<EvaluateResult>(candidate.scorecard, "scorecard", candidateId);
+  if (stored && candidate.conversationId === conversationId && candidate.status !== "EVALUATING") return stored;
+
   const role = toRoleView(candidate.role);
   const dossier = parseJson<ResearchResult>(candidate.dossier, "dossier", candidateId) ?? emptyDossier(role.questions);
 
   await prisma.candidate.update({ where: { id: candidateId }, data: { status: "EVALUATING", conversationId } });
+  const progress: FinalizeProgress = { stage: "call_ended" };
+  try {
+    return await fetchAndScore(candidateId, conversationId, role, dossier, progress);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    // Back to CALLING so the screen can be finalized again, with the reason on the timeline:
+    // by now the client has usually stopped waiting and can only learn it from the candidate.
+    try {
+      await setStatus(candidateId, "CALLING");
+      await logEvent(candidateId, progress.stage, `Failed: ${message}`);
+    } catch (saveErr) {
+      console.error(`Could not record the finalize failure for candidate ${candidateId}:`, saveErr);
+    }
+    throw err;
+  }
+}
 
+type FinalizeProgress = { stage: "call_ended" | "evaluated" };
+
+async function fetchAndScore(
+  candidateId: string,
+  conversationId: string,
+  role: RoleView,
+  dossier: ResearchResult,
+  progress: FinalizeProgress,
+): Promise<EvaluateResult> {
   const conversation = await traced("fetch_conversation", { candidateId, conversationId }, () =>
     elevenlabs.fetchConversation(conversationId),
   );
@@ -246,6 +289,7 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
     },
   });
   await logEvent(candidateId, "call_ended", `${transcript.length} turns, ${conversation.durationSecs}s${audioNote}`);
+  progress.stage = "evaluated";
 
   const scorecard = await traced("evaluate", { candidateId }, () =>
     box.evaluate({ dossier, rubric: role.rubric, transcript }),
@@ -257,7 +301,7 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
   });
   await logEvent(candidateId, "evaluated", `${scorecard.recommendation}, overall ${scorecard.overall}`);
   return scorecard;
-};
+}
 
 export const proposeBooking: ProposeBooking<{ candidateId: string; slotIso?: string }, Plain<Approval>> = async (args) => {
   const candidateId = requireString(args?.candidateId, "candidateId");

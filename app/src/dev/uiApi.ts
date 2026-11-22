@@ -2,11 +2,11 @@
 // Function names match the sandbox; signature changes are listed in dev2/ui-integration.md.
 
 import { config } from "wasp/client";
+import { finalizeAndWait } from "./finalizeAndWait";
 import {
   attemptWithoutApproval as attemptWithoutApprovalOp,
   createCandidate as createCandidateOp,
   decide as decideOp,
-  finalizeScreen as finalizeScreenOp,
   getCandidate,
   getIntegrationStatus,
   listCandidates,
@@ -166,7 +166,7 @@ export async function finalizeScreen(id: string, call: { conversationId?: string
         `(use STUB_CONVERSATION_ID when isStubScreen(startScreen result) is true)`,
     );
   }
-  return finalizeScreenOp({ candidateId: id, conversationId: call.conversationId });
+  return finalizeAndWait(id, call.conversationId);
 }
 
 export async function proposeBooking(id: string, slotIso?: string): Promise<Approval> {
