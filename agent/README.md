@@ -7,6 +7,7 @@ Donna's voice agent configuration, kept in the repo so changes are reviewed. The
 | [prompt.md](prompt.md) | System prompt |
 | [settings.md](settings.md) | First message, voice, dynamic variables, evaluation criteria, data collection, call limits |
 | [tests.md](tests.md) | Agent tests to add in the dashboard |
+| [ask-donna-prompt.md](ask-donna-prompt.md) | Prompt for the separate text-only agent behind the founder's Ask Donna chat (`ELEVENLABS_CHAT_AGENT_ID`, created by `app/scripts/create-chat-agent.mjs`) |
 
 ## After creating the agent
 

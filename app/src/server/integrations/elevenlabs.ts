@@ -139,3 +139,64 @@ export async function downloadAudio(conversationId: string, candidateId: string)
   await writeFile(file, Buffer.from(await res.arrayBuffer()));
   return file;
 }
+
+// ---------- Ask Donna: text-only chat with a separate ElevenLabs agent ----------
+
+const CHAT_TIMEOUT_MS = 30_000;
+
+export function isChatStubbed(): boolean {
+  return !process.env.ELEVENLABS_API_KEY || !process.env.ELEVENLABS_CHAT_AGENT_ID;
+}
+
+export type ChatInput = { founderName: string; scope: string; candidates: string; history: string; question: string };
+
+/**
+ * One question to the text-only "Ask Donna" agent (ELEVENLABS_CHAT_AGENT_ID, created by
+ * scripts/create-chat-agent.mjs). Opens a conversation over the WebSocket, passes the candidate
+ * data and earlier turns as dynamic variables, sends the question and returns the reply.
+ */
+export async function chat(input: ChatInput): Promise<string> {
+  const agentId = process.env.ELEVENLABS_CHAT_AGENT_ID!;
+  const res = await apiGet(`/conversation/get-signed-url?agent_id=${encodeURIComponent(agentId)}`);
+  const { signed_url } = (await res.json()) as { signed_url?: string };
+  if (!signed_url) throw new Error(`ElevenLabs returned no signed URL for chat agent ${agentId}`);
+
+  return new Promise<string>((resolve, reject) => {
+    const ws = new WebSocket(signed_url);
+    let settled = false;
+    const done = (err: Error | null, text?: string) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      ws.close();
+      if (err) reject(err);
+      else resolve(text!);
+    };
+    const timer = setTimeout(() => done(new Error(`ElevenLabs chat timed out after ${CHAT_TIMEOUT_MS / 1000}s`)), CHAT_TIMEOUT_MS);
+
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          type: "conversation_initiation_client_data",
+          dynamic_variables: {
+            founder_name: input.founderName,
+            scope: input.scope,
+            candidates: input.candidates,
+            history: input.history || "(none)",
+          },
+        }),
+      );
+      ws.send(JSON.stringify({ type: "user_message", text: input.question }));
+    };
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(String(event.data));
+      if (msg.type === "ping") {
+        ws.send(JSON.stringify({ type: "pong", event_id: msg.ping_event.event_id }));
+      } else if (msg.type === "agent_response") {
+        done(null, String(msg.agent_response_event?.agent_response ?? "").trim());
+      }
+    };
+    ws.onerror = () => done(new Error("ElevenLabs chat WebSocket error"));
+    ws.onclose = (e) => done(new Error(`ElevenLabs chat closed before replying (${e.code} ${e.reason})`));
+  });
+}

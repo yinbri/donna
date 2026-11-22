@@ -2,9 +2,9 @@ import { panelSpread, PANEL_SPLIT, type UICandidate } from '../dev/uiApi';
 import type { Role } from '../server/contracts';
 
 /**
- * Answers for the "Ask Donna" chat. No model call: Donna reads the same
- * candidate data the dashboard shows (scores, quotes, panel, approvals) and answers
- * from it. Swap this for a server action when the backbone exposes one.
+ * Fallback answers for the "Ask Donna" chat, used when the ElevenLabs chat agent is
+ * unset or unreachable. No model call: Donna reads the same candidate data the
+ * dashboard shows (scores, quotes, panel, approvals) and answers from it.
  */
 
 // Donna never weighs these (AGENTS.md guardrails), so she says so instead of answering.
@@ -83,4 +83,37 @@ export function answer(question: string, candidates: UICandidate[], role?: Role)
   }
 
   return `I can answer from the screens I've run${forRole}. Try:\n• Who should I meet this week?\n• Where did the panel disagree?\n• Any red flags?\n• Tell me about ${scored[0] ? first(scored[0]) : 'a candidate'}`;
+}
+
+/** Plain-text candidate data for the ElevenLabs chat agent: everything the dashboard shows, nothing it doesn't. */
+export function contextFor(candidates: UICandidate[], role?: Role): string {
+  const roles = new Map<string, Role>();
+  for (const c of candidates) roles.set(c.role.id, c.role);
+  if (role) roles.set(role.id, role);
+  const roleBlock = [...roles.values()]
+    .map((r) => `ROLE ${r.title} at ${r.companyName}. Rubric: ${r.rubric.join('; ')}. Screen questions: ${r.questions.join(' | ')}`)
+    .join('\n');
+
+  const people = candidates.map((c) => {
+    const e = c.evaluation;
+    const lines = [`CANDIDATE ${c.name} (role: ${c.role.title}, status: ${c.status}, recommendation: ${recLabel(c)}${e ? `, overall ${e.overall.toFixed(1)}/10` : ''})`];
+    if (c.dossier) {
+      lines.push(`Research: ${c.dossier.summary} Top project: ${c.dossier.topProject}.`);
+      if (c.dossier.highlights.length) lines.push(`Highlights: ${c.dossier.highlights.join('; ')}`);
+      if (c.dossier.claimsToVerify.length) lines.push(`Claims to verify: ${c.dossier.claimsToVerify.join('; ')}`);
+    }
+    if (e) {
+      lines.push(`Criteria: ${e.criteria.map((k) => `${k.name} ${k.score}/10 ("${k.quote}")`).join('; ')}`);
+      lines.push(`Panel: ${e.personas.map((p) => `${p.name} ${p.score}/10 (${p.rationale})`).join('; ')}`);
+      lines.push(`Standout quote: "${e.standoutQuote}"`);
+      lines.push(`Red flags: ${e.redFlags.length ? e.redFlags.join('; ') : 'none'}`);
+      lines.push(`Strengths: ${e.feedback.strengths.join('; ')}. To sharpen: ${e.feedback.sharpen}`);
+    }
+    if (c.transcript?.length) {
+      lines.push(`Call transcript:\n${c.transcript.map((t) => `${t.role === 'agent' ? 'Donna' : first(c)}: ${t.text}`).join('\n')}`);
+    }
+    if (c.approval) lines.push(`Booking: ${c.approval.status} for ${c.approval.slotIso}`);
+    return lines.join('\n');
+  });
+  return [roleBlock, ...people].join('\n\n') || 'No candidates yet.';
 }
