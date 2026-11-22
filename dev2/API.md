@@ -39,4 +39,4 @@ Approval gate env (`.env.server`): `ALTER_MODE` (`live` = real Alter, anything e
 - `/dev` and `/founder`: dev console that lists roles and candidates and drives one candidate through the stubbed flow.
 - `npm run check:approval` (from `app/`, no server needed): runs propose → attempt without approval → approve → second attempt against `alter.ts` with an in-memory store and prints PASS/FAIL per step. `ALTER_MODE=live` uses real Alter, forces invites to the team demo inbox and waits for you to approve.
 - `npm run check:screen` (from `app/`, with `wasp start` running): end-to-end check of create → READY → start → finalize, asserting every criterion's `evidenceTurn` is a user turn containing its quote.
-- Seed (`wasp db seed`, idempotent): demo role, `candidate-fixture-001` in AWAITING_APPROVAL with `approval-fixture-001` PENDING.
+- Seed (`wasp db seed`, idempotent): demo role plus the 11 sponsor roles from `app/seed/roles.json` (seed fails naming the path if it is missing or not valid JSON), `candidate-fixture-001` in AWAITING_APPROVAL with `approval-fixture-001` PENDING.
