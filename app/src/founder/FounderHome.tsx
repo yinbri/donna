@@ -8,7 +8,7 @@ import { AskDonna } from './AskDonna';
 import { Avatar } from './Avatar';
 import { Schedule } from './Schedule';
 import { HiringPrefsPanel } from './HiringPrefsPanel';
-import { isDefault, MUST_HAVE_MIN, prefsContext, rankByFit, useHiringPrefs } from './hiringPrefs';
+import { isDefault, MUST_HAVE_MIN, prefsContext, rankByFit, STACK_BOOST, useHiringPrefs } from './hiringPrefs';
 
 export function FounderRoute() {
   return (
@@ -157,6 +157,12 @@ export function FounderHome() {
                             <span className="who-text">
                               <strong>{c.name}</strong>
                               <small>{c.dossier?.topProject ?? c.email}</small>
+                              {prefs.stack.length > 0 && fit && (
+                                <small className="stack-hits" title="Picked stack items seen in research or on the call">
+                                  Stack {fit.stackHits.length}/{prefs.stack.length}
+                                  {fit.stackHits.length ? `: ${fit.stackHits.join(', ')}` : ''}
+                                </small>
+                              )}
                             </span>
                           </span>
                           <span className="says">
@@ -171,7 +177,7 @@ export function FounderHome() {
                             ) : null}
                           </span>
                           <PanelBars c={c} />
-                          <span className="num score" title={tuned && c.evaluation ? `Panel overall ${c.evaluation.overall.toFixed(1)}` : undefined}>
+                          <span className="num score" title={tuned && c.evaluation ? `Panel overall ${c.evaluation.overall.toFixed(1)}${fit?.stackHits.length ? ` · stack +${(STACK_BOOST * fit.stackHits.length / prefs.stack.length).toFixed(2)}` : ''}` : undefined}>
                             {fit ? (tuned ? fit.score : c.evaluation!.overall).toFixed(1) : '—'}
                           </span>
                           <span>

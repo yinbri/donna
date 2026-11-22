@@ -4,14 +4,45 @@ import type { UICandidate } from '../dev/uiApi';
 
 /**
  * The founder's own take on what "good" looks like for one role. Kept in this browser,
- * per role. Weights, must-haves and the bar re-rank the scores the panel already gave;
- * nothing here changes a score or what Donna asks on a call. The profile and notes are
- * handed to Ask Donna so her answers lean the founder's way.
+ * per role. Weights, must-haves and the bar re-rank the scores the panel already gave, and
+ * tech stack matches (found in the dossier and transcript) add a small, visible boost.
+ * Nothing here changes a panel score or what Donna asks on a call yet. The profile,
+ * personality traits and notes are handed to Ask Donna so her answers lean the founder's way.
  */
 
 export const SENIORITY = ['Any', 'Early career', 'Mid-level', 'Senior', 'Staff+'] as const;
 export const SHAPE = ['Any', 'Generalist', 'Product-minded', 'Infra / backend', 'AI / ML'] as const;
 export const PACE = ['Ship fast', 'Balanced', 'Rigor first'] as const;
+
+/** Preset stack chips; founders can add their own. Aliases widen the text match. */
+export const STACK_PRESETS = ['TypeScript', 'Python', 'Go', 'Rust', 'React', 'Node.js', 'Postgres', 'Redis', 'Kubernetes', 'AWS', 'LLMs', 'iOS / Swift'] as const;
+const STACK_ALIASES: Record<string, string[]> = {
+  typescript: ['typescript', 'ts'],
+  'node js': ['node', 'nodejs', 'node js'],
+  postgres: ['postgres', 'postgresql', 'pgslice'],
+  kubernetes: ['kubernetes', 'k8s'],
+  llms: ['llm', 'llms', 'gpt', 'openai', 'anthropic', 'claude', 'rag', 'embeddings'],
+  'ios swift': ['ios', 'swift', 'swiftui'],
+  react: ['react', 'next js', 'nextjs'],
+  aws: ['aws', 'lambda', 's3', 'dynamodb'],
+};
+/** Up to this much is added to fit when a candidate shows every stack item you picked. */
+export const STACK_BOOST = 0.5;
+
+/** Work-style traits only. Never protected traits; Ask Donna is told the same. */
+export const TRAITS = [
+  'High ownership',
+  'Bias to action',
+  'Clear communicator',
+  'Low ego',
+  'Customer-obsessed',
+  'Thrives in ambiguity',
+  'Detail-oriented',
+  'Fast learner',
+  'Collaborative',
+  'Strong opinions, loosely held',
+] as const;
+export const MAX_TRAITS = 4;
 
 export const WEIGHTS = [
   { label: 'Ignore', value: 0 },
@@ -33,10 +64,12 @@ export interface HiringPrefs {
   mustHave: string[]; // rubric items
   bar: number; // fit score that counts as "above your bar"
   notes: string;
+  stack: string[]; // tech the founder wants to see
+  traits: string[]; // personality / working traits, up to MAX_TRAITS
 }
 
 export function defaultPrefs(): HiringPrefs {
-  return { seniority: 'Any', shape: 'Any', pace: 'Balanced', weights: {}, mustHave: [], bar: DEFAULT_BAR, notes: '' };
+  return { seniority: 'Any', shape: 'Any', pace: 'Balanced', weights: {}, mustHave: [], bar: DEFAULT_BAR, notes: '', stack: [], traits: [] };
 }
 
 export function isDefault(p: HiringPrefs): boolean {
@@ -47,7 +80,9 @@ export function isDefault(p: HiringPrefs): boolean {
     Object.values(p.weights).every((w) => w === 1) &&
     p.mustHave.length === 0 &&
     p.bar === DEFAULT_BAR &&
-    !p.notes.trim()
+    !p.notes.trim() &&
+    p.stack.length === 0 &&
+    p.traits.length === 0
   );
 }
 
@@ -101,13 +136,35 @@ const weightOf = (p: HiringPrefs, name: string) => {
 };
 
 export interface Fit {
-  score: number; // weighted 0-10
+  score: number; // weighted 0-10, plus the stack boost
   aboveBar: boolean;
   missed: string[]; // must-haves scored below MUST_HAVE_MIN
+  stackHits: string[]; // picked stack items seen in research or on the call
+}
+
+/** Everything Donna knows about a candidate as one lowercase string, for stack matching. */
+function candidateText(c: UICandidate): string {
+  const d = c.dossier;
+  return norm(
+    [
+      d?.summary,
+      d?.topProject,
+      ...(d?.highlights ?? []),
+      ...(c.transcript ?? []).filter((t) => t.role === 'user').map((t) => t.text),
+    ]
+      .filter(Boolean)
+      .join(' '),
+  );
+}
+
+export function stackHits(c: UICandidate, stack: string[]): string[] {
+  if (!stack.length) return [];
+  const text = ` ${candidateText(c)} `;
+  return stack.filter((s) => (STACK_ALIASES[norm(s)] ?? [norm(s)]).some((a) => text.includes(` ${a} `)));
 }
 
 /** Re-weights the panel's criterion scores by what this founder cares about. */
-export function fitFor(e: EvaluateResult | undefined, p: HiringPrefs): Fit | undefined {
+export function fitFor(e: EvaluateResult | undefined, p: HiringPrefs, hits: string[] = []): Fit | undefined {
   if (!e) return undefined;
   let sum = 0;
   let total = 0;
@@ -116,19 +173,21 @@ export function fitFor(e: EvaluateResult | undefined, p: HiringPrefs): Fit | und
     sum += k.score * w;
     total += w;
   }
-  const score = total > 0 ? Math.round((sum / total) * 10) / 10 : e.overall;
+  const base = total > 0 ? sum / total : e.overall;
+  const boost = p.stack.length ? (STACK_BOOST * hits.length) / p.stack.length : 0;
+  const score = Math.min(10, Math.round((base + boost) * 10) / 10);
   // A must-have the scorecard left out is unknown, not failed.
   const missed = p.mustHave.filter((m) => {
     const k = e.criteria.find((c) => norm(c.name) === norm(m));
     return k !== undefined && k.score < MUST_HAVE_MIN;
   });
-  return { score, aboveBar: score >= p.bar && missed.length === 0, missed };
+  return { score, aboveBar: score >= p.bar && missed.length === 0, missed, stackHits: hits };
 }
 
 /** Ranks by fit: must-have misses sink, then by weighted score. */
 export function rankByFit(list: UICandidate[], p: HiringPrefs) {
   return list
-    .map((c) => ({ c, fit: fitFor(c.evaluation, p) }))
+    .map((c) => ({ c, fit: fitFor(c.evaluation, p, stackHits(c, p.stack)) }))
     .sort((a, b) => {
       const am = a.fit?.missed.length ? 1 : 0;
       const bm = b.fit?.missed.length ? 1 : 0;
@@ -148,6 +207,8 @@ export function prefsContext(p: HiringPrefs, role: Role): string {
     `Looking for: ${p.seniority === 'Any' ? 'any level' : p.seniority}, ${p.shape === 'Any' ? 'any engineer shape' : p.shape}, ${p.pace.toLowerCase()}.`,
     `Criterion weights: ${weights}.`,
     p.mustHave.length ? `Must-haves (score ${MUST_HAVE_MIN}+): ${p.mustHave.join('; ')}.` : '',
+    p.stack.length ? `Tech stack they want to see: ${p.stack.join(', ')}. Favor candidates whose research or call shows real use of these.` : '',
+    p.traits.length ? `Working traits they value: ${p.traits.join(', ')}. Point to transcript evidence for these; do not guess.` : '',
     `Bar to advance: weighted fit ${p.bar}/10.`,
     p.notes.trim() ? `In the founder's words: ${p.notes.trim()}` : '',
   ]

@@ -339,6 +339,17 @@ code { font: 12px var(--mono); background: var(--surface-2); padding: 1px 6px; b
 .prefs-bar input::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--ink); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
 .prefs-bar input:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 .prefs-bar-value { min-width: 44px; text-align: center; padding: 4px 8px; border-radius: 8px; background: var(--surface-2); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.pchip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); font: 500 13px var(--sans); cursor: pointer; }
+.pchip:hover:not(:disabled) { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); color: var(--ink); }
+.pchip.on { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.pchip:disabled { opacity: .4; cursor: default; }
+.pchip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.chip-add { display: flex; gap: 8px; margin-top: 10px; max-width: 360px; }
+.chip-add input { flex: 1; min-width: 0; min-height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 13.5px var(--sans); }
+.chip-add input::placeholder { color: var(--muted); }
+.prefs-group > .prefs-row-help { margin: 0; }
+.stack-hits { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
 .prefs-notes { width: 100%; box-sizing: border-box; resize: vertical; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 14px/1.5 var(--sans); }
 .prefs-notes::placeholder { color: var(--muted); opacity: .8; }
 .prefs-notes:focus { outline: 2px solid var(--ink); outline-offset: 1px; }
