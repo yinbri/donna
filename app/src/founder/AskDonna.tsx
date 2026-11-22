@@ -10,7 +10,8 @@ import {
 import type { Role } from '../server/contracts';
 import type { UICandidate } from '../dev/uiApi';
 import { DotOrb } from '../components/DotOrb';
-import { answer } from './donnaAnswers';
+import { askDonna } from 'wasp/client/operations';
+import { answer, contextFor } from './donnaAnswers';
 
 const SUGGESTIONS = ['Who should I meet this week?', 'Where did the panel disagree?', 'Any red flags?', 'What needs me?'];
 
@@ -42,18 +43,46 @@ function AssistantMessage() {
 }
 
 /** Docked assistant-ui thread: ask Donna anything about this role's candidates. */
-export function AskDonna({ candidates, role, founderName }: { candidates: UICandidate[]; role?: Role; founderName: string }) {
+export function AskDonna({
+  candidates,
+  role,
+  founderName,
+  preferences = '',
+}: {
+  candidates: UICandidate[];
+  role?: Role;
+  founderName: string;
+  /** The founder's hiring preferences for this role, as plain text. Empty when untouched. */
+  preferences?: string;
+}) {
   // The adapter reads the latest data through a ref so the runtime isn't rebuilt on every render.
-  const data = useRef({ candidates, role });
-  data.current = { candidates, role };
+  const data = useRef({ candidates, role, founderName, preferences });
+  data.current = { candidates, role, founderName, preferences };
 
   const adapter = useMemo<ChatModelAdapter>(
     () => ({
       async *run({ messages, abortSignal }) {
-        const last = messages[messages.length - 1];
-        const question = last.content.map((p) => (p.type === 'text' ? p.text : '')).join(' ');
-        const full = answer(question, data.current.candidates, data.current.role);
-        await sleep(350, abortSignal);
+        const textOf = (m: (typeof messages)[number]) => m.content.map((p) => (p.type === 'text' ? p.text : '')).join(' ');
+        const question = textOf(messages[messages.length - 1]);
+        const { candidates, role, founderName, preferences } = data.current;
+        let full: string;
+        try {
+          const reply = await askDonna({
+            question,
+            founderName,
+            scope: role ? `${role.title} at ${role.companyName}` : 'all open roles',
+            candidates: [preferences, contextFor(candidates, role)].filter(Boolean).join('\n\n'),
+            history: messages
+              .slice(0, -1)
+              .map((m) => `${m.role === 'user' ? 'Founder' : 'Donna'}: ${textOf(m)}`)
+              .join('\n'),
+          });
+          full = reply?.text ?? answer(question, candidates, role);
+        } catch (err) {
+          console.error('Ask Donna: ElevenLabs chat failed, using sandbox answer', err);
+          full = answer(question, candidates, role);
+        }
+        if (abortSignal.aborted) return;
         // Stream word by word so it reads like a reply, not a page swap.
         const words = full.split(/(\s+)/);
         let text = '';
@@ -74,7 +103,6 @@ export function AskDonna({ candidates, role, founderName }: { candidates: UICand
       <aside className="ask-donna" aria-label="Ask Donna">
         <header className="ad-head">
           <span className="ad-title">Ask Donna</span>
-          <span className="stub" title="Answers come from the candidate data on this page, not a language model">sandbox</span>
         </header>
         <ThreadPrimitive.Root className="ad-thread">
           <ThreadPrimitive.Viewport className="ad-viewport">

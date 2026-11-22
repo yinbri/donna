@@ -139,3 +139,91 @@ export async function downloadAudio(conversationId: string, candidateId: string)
   await writeFile(file, Buffer.from(await res.arrayBuffer()));
   return file;
 }
+
+// ---------- Text-only agents: Ask Donna chat and the screen scorer ----------
+
+const TEXT_TURN_TIMEOUT_MS = 60_000;
+
+export function isChatStubbed(): boolean {
+  return !process.env.ELEVENLABS_API_KEY || !process.env.ELEVENLABS_CHAT_AGENT_ID;
+}
+
+export function isScorerStubbed(): boolean {
+  return !process.env.ELEVENLABS_API_KEY || !process.env.ELEVENLABS_SCORER_AGENT_ID;
+}
+
+/**
+ * One message to a text-only agent (created by scripts/create-text-agent.mjs): opens a conversation
+ * over the WebSocket with the given dynamic variables, sends the message and returns the reply.
+ */
+async function textTurn(agentId: string, dynamicVariables: Record<string, string>, message: string): Promise<string> {
+  const res = await apiGet(`/conversation/get-signed-url?agent_id=${encodeURIComponent(agentId)}`);
+  const { signed_url } = (await res.json()) as { signed_url?: string };
+  if (!signed_url) throw new Error(`ElevenLabs returned no signed URL for agent ${agentId}`);
+
+  return new Promise<string>((resolve, reject) => {
+    const ws = new WebSocket(signed_url);
+    let settled = false;
+    const done = (err: Error | null, text?: string) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      ws.close();
+      if (err) reject(err);
+      else resolve(text!);
+    };
+    const timer = setTimeout(
+      () => done(new Error(`ElevenLabs agent ${agentId} did not reply within ${TEXT_TURN_TIMEOUT_MS / 1000}s`)),
+      TEXT_TURN_TIMEOUT_MS,
+    );
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: "conversation_initiation_client_data", dynamic_variables: dynamicVariables }));
+      ws.send(JSON.stringify({ type: "user_message", text: message }));
+    };
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(String(event.data));
+      if (msg.type === "ping") {
+        ws.send(JSON.stringify({ type: "pong", event_id: msg.ping_event.event_id }));
+      } else if (msg.type === "agent_response") {
+        done(null, String(msg.agent_response_event?.agent_response ?? "").trim());
+      }
+    };
+    ws.onerror = () => done(new Error(`ElevenLabs agent ${agentId} WebSocket error`));
+    ws.onclose = (e) => done(new Error(`ElevenLabs agent ${agentId} closed before replying (${e.code} ${e.reason})`));
+  });
+}
+
+export type ChatInput = { founderName: string; scope: string; candidates: string; history: string; question: string };
+
+/** One question to the founder's "Ask Donna" agent (ELEVENLABS_CHAT_AGENT_ID). */
+export function chat(input: ChatInput): Promise<string> {
+  return textTurn(
+    process.env.ELEVENLABS_CHAT_AGENT_ID!,
+    { founder_name: input.founderName, scope: input.scope, candidates: input.candidates, history: input.history || "(none)" },
+    input.question,
+  );
+}
+
+export type ScoreInput = { roleTitle: string; companyName: string; rubric: string[]; dossier: string; transcript: TranscriptTurn[] };
+
+/**
+ * Asks the scorer agent (ELEVENLABS_SCORER_AGENT_ID, prompt in agent/scoring-guidelines.md) to score
+ * a screen. Returns its raw reply; scoring.ts parses and checks it.
+ */
+export function scoreScreen(input: ScoreInput): Promise<string> {
+  const transcript = input.transcript
+    .map((t) => (t.role === "agent" ? `Donna: ${t.text}` : `[${t.i}] Candidate: ${t.text}`))
+    .join("\n");
+  return textTurn(
+    process.env.ELEVENLABS_SCORER_AGENT_ID!,
+    {
+      role_title: input.roleTitle,
+      company_name: input.companyName,
+      rubric: input.rubric.join("; "),
+      dossier: input.dossier || "(no research)",
+      transcript,
+    },
+    "Score this screen. Reply with the JSON object only.",
+  );
+}

@@ -6,11 +6,12 @@ import { Shell } from '../components/Shell';
 import { playReceipt, stopReceipt } from '../lib/receipts';
 import { Card, RecBadge, SourceBadges, StatusDot, Stub } from '../components/ui';
 import { ApprovalCard } from './ApprovalCard';
+import { Avatar } from './Avatar';
 import { Timeline } from './Timeline';
 
 export function CandidateRoute() {
   return (
-    <Shell>
+    <Shell rail>
       <CandidatePage />
     </Shell>
   );
@@ -61,7 +62,10 @@ export function CandidatePage() {
 
       <header className="cand-head">
         <div>
-          <h1 className="title">{c.name}</h1>
+          <div className="cand-id">
+            <Avatar id={c.id} name={c.name} size={56} />
+            <h1 className="title">{c.name}</h1>
+          </div>
           <p className="muted">
             {c.email}
             {c.githubUser && <> · github.com/{c.githubUser}</>}
@@ -159,7 +163,9 @@ export function CandidatePage() {
                   </ul>
                 </div>
               )}
-              {e.source === 'call_analysis' ? (
+              {e.source === 'llm_scorer' ? (
+                <p className="fineprint">Scored by the ElevenLabs LLM against Donna's scoring guidelines. Every quote is checked against the transcript.</p>
+              ) : e.source === 'call_analysis' ? (
                 <p className="fineprint">The scores above come from ElevenLabs' analysis of this call. The 3-persona panel lands when the box is live.</p>
               ) : (
                 live && !live.box && <p className="fineprint"><Stub>fixture panel</Stub> Expected Parrot scores land when the box is live.</p>

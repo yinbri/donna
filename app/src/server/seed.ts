@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { DbSeedFn } from "wasp/server";
 import type { Role } from "./contracts";
+import { seedDemoCandidates } from "./demoCandidates";
 import { FIXTURE_APPROVAL, FIXTURE_CONVERSATION, FIXTURE_DOSSIER, FIXTURE_PANEL, FIXTURE_ROLES } from "./fixtures";
 
 const FIXTURE_CANDIDATE_ID = FIXTURE_APPROVAL.candidateId;
@@ -100,4 +101,6 @@ export const seedDev: DbSeedFn = async (prisma) => {
       at: new Date(start + n * 60_000),
     })),
   });
+
+  await seedDemoCandidates(prisma);
 };

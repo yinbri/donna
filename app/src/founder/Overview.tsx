@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { panelSpread, PANEL_SPLIT, type UICandidate } from '../dev/uiApi';
 import type { Role } from '../server/contracts';
 import { RecBadge } from '../components/ui';
+import { Avatar } from './Avatar';
 
 /**
  * Overview across every role at one company. Built for small numbers: dot plots and
@@ -69,7 +70,7 @@ function Axis() {
   );
 }
 
-export function Overview({ candidates, roles, onOpenRole }: { candidates: UICandidate[]; roles: Role[]; onOpenRole: (id: string) => void }) {
+export function Overview({ candidates, roles, onOpenRole, children }: { candidates: UICandidate[]; roles: Role[]; onOpenRole: (id: string) => void; children?: ReactNode }) {
   const scored = candidates.filter((c) => c.evaluation);
   const researched = candidates.filter((c) => c.dossier);
   const screened = candidates.filter((c) => c.durationSecs || c.evaluation);
@@ -132,6 +133,8 @@ export function Overview({ candidates, roles, onOpenRole }: { candidates: UICand
         ))}
       </div>
 
+      {children /* the calendar and upcoming events sit between the KPIs and the analytics */}
+
       <div className="ov-grid">
         <Section title="Funnel" note="all roles">
           <ol className="funnel">
@@ -157,6 +160,7 @@ export function Overview({ candidates, roles, onOpenRole }: { candidates: UICand
               {waiting.map((c) => (
                 <li key={c.id}>
                   <Link to={`/founder/candidates/${c.id}`}>
+                    <Avatar id={c.id} name={c.name} size={30} />
                     <span className="q-who">
                       <strong>{c.name}</strong>
                       <small>

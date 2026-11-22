@@ -1,5 +1,6 @@
 import { HttpError, prisma } from "wasp/server";
 import type {
+  AskDonna,
   AttemptWithoutApproval,
   CreateCandidate,
   Decide,
@@ -27,7 +28,7 @@ import * as github from "./integrations/github";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
 import { FIXTURE_CONVERSATION } from "./fixtures";
-import { scoreFromCallAnalysis, type ScoreSource } from "./scoring";
+import { scoreFromCallAnalysis, scoreFromScorer, type ScoreSource } from "./scoring";
 import {
   candidateInclude,
   logEvent,
@@ -285,7 +286,19 @@ async function runFinalize(candidateId: string, conversationId: string): Promise
 
 type FinalizeProgress = { stage: "call_ended" | "evaluated" };
 
+function dossierSummary(d: ResearchResult): string {
+  return [
+    d.summary,
+    d.topProject && `Top project: ${d.topProject}.`,
+    d.highlights.length ? `Highlights: ${d.highlights.join("; ")}.` : "",
+    d.claimsToVerify.length ? `Claims to verify: ${d.claimsToVerify.join("; ")}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
 const SCORE_SOURCE_LABELS: Record<ScoreSource, string> = {
+  llm_scorer: "scored by the ElevenLabs LLM against the scoring guidelines",
   call_analysis: "scored from the call by ElevenLabs' analysis",
   panel: "3-persona panel",
   fixture: "fixture panel",
@@ -338,6 +351,24 @@ async function fetchAndScore(
   }
 
   let unscoredReason = "";
+  if (!evaluation && !elevenlabs.isScorerStubbed() && transcript.some((turn) => turn.role === "user")) {
+    try {
+      const raw = await traced("score_with_llm", { candidateId }, () =>
+        elevenlabs.scoreScreen({
+          roleTitle: role.title,
+          companyName: role.companyName,
+          rubric: role.rubric,
+          dossier: dossierSummary(dossier),
+          transcript,
+        }),
+      );
+      const scored = scoreFromScorer(raw, transcript, role.rubric);
+      if ("scorecard" in scored) evaluation = { ...scored.scorecard, source: "llm_scorer" };
+      else console.warn(`Scorer reply for candidate ${candidateId} was unusable (${scored.unusable}); using the call analysis`);
+    } catch (err) {
+      console.error(`Scoring candidate ${candidateId} with the ElevenLabs scorer failed; using the call analysis:`, err);
+    }
+  }
   if (!evaluation) {
     try {
       const fromCall = scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
@@ -497,3 +528,24 @@ async function runDecide(approvalId: string, approve: boolean): Promise<Approval
   await saveGateEvents(row.candidateId, outcome, approve ? "approved" : "rejected");
   return toApprovalView(updated);
 }
+
+// ---------- Ask Donna chat ----------
+
+type AskDonnaInput = { question: string; founderName: string; scope: string; candidates: string; history?: string };
+
+const clip = (s: string, max: number) => (s.length > max ? s.slice(s.length - max) : s);
+
+/** The founder chat. Returns null when the chat agent isn't configured, so the client falls back to its sandbox answers. */
+export const askDonna: AskDonna<AskDonnaInput, { text: string } | null> = async (args) => {
+  const question = requireString(args?.question, "question");
+  if (elevenlabs.isChatStubbed()) return null;
+  const text = await elevenlabs.chat({
+    question: question.slice(0, 2_000),
+    founderName: optionalString(args.founderName, "founderName") ?? "the founder",
+    scope: optionalString(args.scope, "scope") ?? "the open roles",
+    candidates: (optionalString(args.candidates, "candidates") ?? "No candidates yet.").slice(0, 40_000),
+    history: clip(optionalString(args.history, "history") ?? "", 8_000),
+  });
+  if (!text) throw new HttpError(502, "ElevenLabs chat returned an empty reply");
+  return { text };
+};

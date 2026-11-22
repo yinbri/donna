@@ -9,6 +9,7 @@ import { CandidateRoute } from "./src/founder/CandidatePage" with { type: "ref" 
 import { DevConsolePage } from "./src/dev/DevConsolePage" with { type: "ref" };
 import { getAudio, getHealth } from "./src/server/apis" with { type: "ref" };
 import {
+  askDonna,
   attemptWithoutApproval,
   createCandidate,
   decide,
@@ -51,6 +52,7 @@ export default app({
     action(proposeBooking, { entities: all }),
     action(attemptWithoutApproval, { entities: all }),
     action(decide, { entities: all }),
+    action(askDonna, { entities: [] }),
 
     api("GET", "/api/health", getHealth, { auth: false }),
     api("GET", "/api/audio/:candidateId", getAudio, { auth: false }),
