@@ -11,7 +11,7 @@ Over HTTP (scripts): `POST http://localhost:3001/operations/<kebab-name>` with b
 |---|---|---|---|
 | `listRoles` | none | `RoleView[]` | |
 | `listCandidates` | `{ roleId? }` | `CandidateView[]` | `scorecard.overall` descending, unscored last, newest first on ties |
-| `getIntegrationStatus` | none | `{ elevenlabs, box, alter, traceroot }` (booleans) | `true` = live, `false` = fixtures. ElevenLabs from its keys; the others from whether `BOX_URL`, `ALTER_API_KEY`, `TRACEROOT_TOKEN` are set |
+| `getIntegrationStatus` | none | `{ elevenlabs, box, alter, traceroot }` (booleans) | `true` = live, `false` = fixtures. An integration is live only when its module exports `isStubbed()` and it returns `false`. **Dev 3 and Dev 4: add `export function isStubbed(): boolean` to `box.ts`, `alter.ts` and `traceroot.ts` when you wire the real call**; until then they report as stubbed, whatever env vars are set |
 | `getCandidate` | `{ id }` | `CandidateView` | includes `role`, `dossier`, `transcript`, `scorecard`, `approvals` (`Approval[]`), `events` (`TimelineEvent[]`), `audioUrl`, `durationSecs` (`number \| null`, call length in seconds, set by `finalizeScreen`) |
 
 ## Actions

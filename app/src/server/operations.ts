@@ -15,6 +15,7 @@ import type { Approval, EvaluateResult, ResearchResult, StartScreenResult, Trans
 import * as alter from "./integrations/alter";
 import * as box from "./integrations/box";
 import * as elevenlabs from "./integrations/elevenlabs";
+import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
 import {
   candidateInclude,
@@ -94,12 +95,19 @@ export const getCandidate: GetCandidate<{ id: string }, CandidateView> = async (
   return toCandidateView(row);
 };
 
-// box, alter and traceroot return fixtures when their env var is empty (.env.server.example).
+// An integration counts as live only when its own module says so. box.ts, alter.ts and traceroot.ts
+// start as fixture stubs, so an env var being set does not mean the real call is wired: their
+// owners add `export function isStubbed()` when it is. Until then they are reported as stubbed.
+function reportsLive(integration: object): boolean {
+  const isStubbed = (integration as { isStubbed?: () => boolean }).isStubbed;
+  return typeof isStubbed === "function" && !isStubbed();
+}
+
 export const getIntegrationStatus: GetIntegrationStatus<void, IntegrationStatus> = async () => ({
-  elevenlabs: !elevenlabs.isStubbed(),
-  box: !!process.env.BOX_URL,
-  alter: !!process.env.ALTER_API_KEY,
-  traceroot: !!process.env.TRACEROOT_TOKEN,
+  elevenlabs: reportsLive(elevenlabs),
+  box: reportsLive(box),
+  alter: reportsLive(alter),
+  traceroot: reportsLive(traceroot),
 });
 
 // ---------- Actions ----------

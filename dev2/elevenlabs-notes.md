@@ -5,7 +5,7 @@ Client: `app/src/server/integrations/elevenlabs.ts`. Checked against the docs on
 ## Env (`app/.env.server`, git-ignored)
 
 - `ELEVENLABS_API_KEY`: the key. Never commit it.
-- `ELEVENLABS_AGENT_ID=agent_0301m82483v8f35rz4eeg6gxjpj7` ("Donna - voice screener"; this id is not a secret)
+- `ELEVENLABS_AGENT_ID=agent_9801m826kchmf2x8qksn4fencp58` ("Donna - voice screener"; this id is not a secret)
 - `DONNA_DATA_DIR` (optional): overrides where audio is saved. The default is `app/data`.
 
 If either of the first two is missing, the client runs as a stub and returns fixtures. The conversation id `fixture-conv-001` also always returns the fixture.
