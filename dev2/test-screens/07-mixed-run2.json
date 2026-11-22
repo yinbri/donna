@@ -1,0 +1,530 @@
+{
+  "persona": "Mixed",
+  "run": 2,
+  "ranAt": "2026-11-22T19:21:16.356Z",
+  "mode": "text conversation with the real Donna agent (no audio)",
+  "conversationSeconds": 19,
+  "finalizeSeconds": 13,
+  "role": {
+    "title": "Founding Engineer",
+    "rubric": [
+      "Shipped real systems",
+      "Depth on own project",
+      "Communication"
+    ]
+  },
+  "statusAfterScoring": "AWAITING_APPROVAL",
+  "transcript": [
+    {
+      "i": 0,
+      "role": "agent",
+      "text": "Hi Test: Mixed, this is Donna, an AI assistant calling for Alex at Acme (demo). This call is recorded. I saw your work on a Redis-backed rate limiter library. Got a few minutes for a quick screen for the Founding Engineer role?",
+      "t": 0
+    },
+    {
+      "i": 1,
+      "role": "user",
+      "text": "Hi Donna, yes, let's go.",
+      "t": 1
+    },
+    {
+      "i": 2,
+      "role": "agent",
+      "text": "Great, thanks. Your rate limiter claims 50k requests per second. How did you measure that, and what broke first?",
+      "t": 1
+    },
+    {
+      "i": 3,
+      "role": "user",
+      "text": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+      "t": 4
+    },
+    {
+      "i": 4,
+      "role": "agent",
+      "text": "Nice, moving off the Lua script to a fixed window counter is a clean fix. Quick follow-up: what actually broke first when you shipped that, and how did you find out?",
+      "t": 4
+    },
+    {
+      "i": 5,
+      "role": "user",
+      "text": "The detail was that each call did a sorted-set trim, which is O(log n) plus the removals, and the fixed window just does one INCR and an EXPIRE.",
+      "t": 6
+    },
+    {
+      "i": 6,
+      "role": "agent",
+      "text": "That explains why it got faster. What actually broke when you shipped it, or what surprised you in production?",
+      "t": 6
+    },
+    {
+      "i": 7,
+      "role": "user",
+      "text": "For idempotency keys I think you just generate a random UUID on the server for every request and that makes retries safe, it's mostly handled by the database anyway.",
+      "t": 9
+    },
+    {
+      "i": 8,
+      "role": "agent",
+      "text": "If the server generates a new UUID on every request, a client retry gets a new key, so how does the server recognize it as the same payment? What went wrong on the payments team, and how did you find out?",
+      "t": 9
+    },
+    {
+      "i": 9,
+      "role": "user",
+      "text": "In my first two weeks I'd read the gateway code, set up tracing on the slowest endpoints, and take one small on-call ticket to learn the system.",
+      "t": 12
+    },
+    {
+      "i": 10,
+      "role": "agent",
+      "text": "Tracing the slowest endpoints is a solid plan, and starting with the gateway makes sense. Thanks, Test: Mixed. I'll pass my notes to Alex, and you'll get a calendar invite if they'd like to meet.",
+      "t": 12
+    },
+    {
+      "i": 11,
+      "role": "user",
+      "text": "Thanks, that's it from me.",
+      "t": 15
+    },
+    {
+      "i": 12,
+      "role": "agent",
+      "text": "Thanks for your time, Test: Mixed. Have a good rest of your day.",
+      "t": 15
+    }
+  ],
+  "scorecard": {
+    "recommendation": "MAYBE",
+    "overall": 6.7,
+    "personas": [],
+    "criteria": [
+      {
+        "name": "Shipped real systems",
+        "score": 9,
+        "evidenceTurn": 3,
+        "quote": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node."
+      },
+      {
+        "name": "Depth on own project",
+        "score": 7,
+        "evidenceTurn": 5,
+        "quote": "The detail was that each call did a sorted-set trim, which is O(log n) plus the removals, and the fixed window just does one INCR and an EXPIRE."
+      },
+      {
+        "name": "Communication",
+        "score": 4,
+        "evidenceTurn": 3,
+        "quote": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node."
+      }
+    ],
+    "redFlags": [
+      "The candidate did not directly answer what broke first when shipping the rate limiter or what went wrong with idempotency keys in production."
+    ],
+    "standoutQuote": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+    "feedback": {
+      "strengths": [
+        "You clearly articulated the technical details of how you optimized the Redis rate limiter, including the specific bottleneck and your solution.",
+        "You effectively quantified the impact of your work by stating the performance improvement from 15k to 50k requests per second."
+      ],
+      "sharpen": "You should practice elaborating on unexpected challenges or production issues encountered, as this demonstrates problem-solving and learning from real-world scenarios."
+    },
+    "source": "call_analysis"
+  },
+  "evaluatedEvent": "MAYBE, overall 6.7 (scored from the call by ElevenLabs' analysis)",
+  "evidenceCheck": "PASS",
+  "elevenLabsAnalysis": {
+    "evaluation_criteria_results": {
+      "shipped_real_systems": {
+        "criteria_id": "shipped_real_systems",
+        "result": "success",
+        "rationale": "The candidate described a specific project (Redis-backed rate limiter), provided numbers (15k to 50k requests/sec), identified a bottleneck (Lua script/sorted-set trim), and explained their personal solution (fixed window counter with INCR/EXPIRE). This demonstrates personal involvement in shipping a real system.",
+        "scoring_mode": "numeric_uniform",
+        "score": 9,
+        "max_score": 10
+      },
+      "depth_on_own_project": {
+        "criteria_id": "depth_on_own_project",
+        "result": "success",
+        "rationale": "The candidate clearly explained the technical details of the rate limiter, including the bottleneck (Lua script's sorted-set trim) and the chosen solution (fixed window counter with INCR/EXPIRE), and the performance improvement. However, they did not directly answer the repeated question about what *broke* or *surprised* them in production.",
+        "scoring_mode": "numeric_uniform",
+        "score": 7,
+        "max_score": 10
+      },
+      "communication": {
+        "criteria_id": "communication",
+        "result": "failure",
+        "rationale": "The candidate's initial answers about the rate limiter were clear. However, they repeatedly dodged the question about what broke in production. Later, when asked about idempotency keys and what went wrong with the payments team, they completely changed the subject to what they would do in a new role, which is evasive.",
+        "scoring_mode": "numeric_uniform",
+        "score": 4,
+        "max_score": 10
+      },
+      "no_protected_topics": {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "Donna's questions focused on technical aspects of the candidate's work and hypothetical scenarios, avoiding any protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    },
+    "data_collection_results": {
+      "top_project_explained": {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The user explained their work on a Redis rate limiter, identifying a Lua script bottleneck and switching to a fixed window counter to improve performance from 15k to 50k requests per second."
+      },
+      "standout_quote": {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This sentence clearly articulates a problem, a solution, and a significant, quantifiable improvement in performance."
+      },
+      "red_flags": {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "The candidate did not directly answer what broke first when shipping the rate limiter or what went wrong with idempotency keys in production.",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not directly answer the agent's follow-up questions about what broke first when shipping the rate limiter or what went wrong with idempotency keys in production."
+      },
+      "evidence_shipped_real_systems": {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This quote describes load testing and optimizing a system to achieve a significant performance improvement, implying it was a real system being developed or deployed."
+      },
+      "evidence_depth_on_own_project": {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "The detail was that each call did a sorted-set trim, which is O(log n) plus the removals, and the fixed window just does one INCR and an EXPIRE.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This sentence provides a detailed, technical explanation of the performance difference between the two rate limiting approaches, demonstrating depth of understanding."
+      },
+      "evidence_communication": {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This sentence is direct and clearly explains the problem, solution, and outcome of their project work in a concise manner."
+      },
+      "feedback_strength_1": {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "You clearly articulated the technical details of how you optimized the Redis rate limiter, including the specific bottleneck and your solution.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate clearly explained the technical problem and solution for the rate limiter, demonstrating strong technical communication."
+      },
+      "feedback_strength_2": {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "You effectively quantified the impact of your work by stating the performance improvement from 15k to 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate provided a quantifiable result for their work on the rate limiter, which is a strong indicator of impact."
+      },
+      "feedback_sharpen": {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should practice elaborating on unexpected challenges or production issues encountered, as this demonstrates problem-solving and learning from real-world scenarios.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not directly answer questions about production issues or unexpected outcomes, which is crucial for a founding engineer role."
+      }
+    },
+    "evaluation_criteria_results_list": [
+      {
+        "criteria_id": "shipped_real_systems",
+        "result": "success",
+        "rationale": "The candidate described a specific project (Redis-backed rate limiter), provided numbers (15k to 50k requests/sec), identified a bottleneck (Lua script/sorted-set trim), and explained their personal solution (fixed window counter with INCR/EXPIRE). This demonstrates personal involvement in shipping a real system.",
+        "scoring_mode": "numeric_uniform",
+        "score": 9,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "depth_on_own_project",
+        "result": "success",
+        "rationale": "The candidate clearly explained the technical details of the rate limiter, including the bottleneck (Lua script's sorted-set trim) and the chosen solution (fixed window counter with INCR/EXPIRE), and the performance improvement. However, they did not directly answer the repeated question about what *broke* or *surprised* them in production.",
+        "scoring_mode": "numeric_uniform",
+        "score": 7,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "communication",
+        "result": "failure",
+        "rationale": "The candidate's initial answers about the rate limiter were clear. However, they repeatedly dodged the question about what broke in production. Later, when asked about idempotency keys and what went wrong with the payments team, they completely changed the subject to what they would do in a new role, which is evasive.",
+        "scoring_mode": "numeric_uniform",
+        "score": 4,
+        "max_score": 10
+      },
+      {
+        "criteria_id": "no_protected_topics",
+        "result": "success",
+        "rationale": "Donna's questions focused on technical aspects of the candidate's work and hypothetical scenarios, avoiding any protected topics such as age, family, origin, religion, or health.",
+        "scoring_mode": "binary",
+        "score": null,
+        "max_score": null
+      }
+    ],
+    "data_collection_results_list": [
+      {
+        "data_collection_id": "top_project_explained",
+        "name": "top_project_explained",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence: what the candidate said their top project does and their role in it",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The user explained their work on a Redis rate limiter, identifying a Lua script bottleneck and switching to a fixed window counter to improve performance from 15k to 50k requests per second."
+      },
+      {
+        "data_collection_id": "standout_quote",
+        "name": "standout_quote",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "The single most convincing sentence the candidate said, verbatim",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This sentence clearly articulates a problem, a solution, and a significant, quantifiable improvement in performance."
+      },
+      {
+        "data_collection_id": "red_flags",
+        "name": "red_flags",
+        "value": "The candidate did not directly answer what broke first when shipping the rate limiter or what went wrong with idempotency keys in production.",
+        "json_schema": {
+          "type": "string",
+          "description": "Any claim from the resume that the candidate couldn't back up; empty if none",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not directly answer the agent's follow-up questions about what broke first when shipping the rate limiter or what went wrong with idempotency keys in production."
+      },
+      {
+        "data_collection_id": "evidence_shipped_real_systems",
+        "name": "evidence_shipped_real_systems",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for having built and shipped a real system. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This quote describes load testing and optimizing a system to achieve a significant performance improvement, implying it was a real system being developed or deployed."
+      },
+      {
+        "data_collection_id": "evidence_depth_on_own_project",
+        "name": "evidence_depth_on_own_project",
+        "value": "The detail was that each call did a sorted-set trim, which is O(log n) plus the removals, and the fixed window just does one INCR and an EXPIRE.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for depth of understanding of their own project. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This sentence provides a detailed, technical explanation of the performance difference between the two rate limiting approaches, demonstrating depth of understanding."
+      },
+      {
+        "data_collection_id": "evidence_communication",
+        "name": "evidence_communication",
+        "value": "I load tested our Redis limiter with k6 and found the Lua script was the bottleneck, so I switched it to a fixed window counter and we got from about 15k to 50k requests per second on one node.",
+        "json_schema": {
+          "type": "string",
+          "description": "Copy, word for word, the single sentence the CANDIDATE said (the user, never Donna) that best supports your score for clarity and directness of communication. It must be an exact quote from the transcript. If the candidate said nothing relevant, copy the sentence where they failed to answer.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "This sentence is direct and clearly explains the problem, solution, and outcome of their project work in a concise manner."
+      },
+      {
+        "data_collection_id": "feedback_strength_1",
+        "name": "feedback_strength_1",
+        "value": "You clearly articulated the technical details of how you optimized the Redis rate limiter, including the specific bottleneck and your solution.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you', naming the most specific thing they did well on this call. If nothing stood out, say what they could show next time.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate clearly explained the technical problem and solution for the rate limiter, demonstrating strong technical communication."
+      },
+      {
+        "data_collection_id": "feedback_strength_2",
+        "name": "feedback_strength_2",
+        "value": "You effectively quantified the impact of your work by stating the performance improvement from 15k to 50k requests per second.",
+        "json_schema": {
+          "type": "string",
+          "description": "A second, different sentence addressed to the candidate as 'you' about something else they did well. If nothing else stood out, name the best part of how they communicated.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate provided a quantifiable result for their work on the rate limiter, which is a strong indicator of impact."
+      },
+      {
+        "data_collection_id": "feedback_sharpen",
+        "name": "feedback_sharpen",
+        "value": "You should practice elaborating on unexpected challenges or production issues encountered, as this demonstrates problem-solving and learning from real-world scenarios.",
+        "json_schema": {
+          "type": "string",
+          "description": "One sentence addressed to the candidate as 'you' with the single most useful thing to sharpen before their next interview.",
+          "enum": null,
+          "is_system_provided": false,
+          "dynamic_variable": "",
+          "allowed_values": null,
+          "allowed_values_dynamic_variable": "",
+          "constant_value": "",
+          "is_omitted": false
+        },
+        "rationale": "The candidate did not directly answer questions about production issues or unexpected outcomes, which is crucial for a founding engineer role."
+      }
+    ],
+    "call_successful": "failure",
+    "call_success_score": 75,
+    "transcript_summary": "The agent, Donna, conducted a screening call for a Founding Engineer role, discussing the user's Redis-backed rate limiter. The user explained optimizing it from 15k to 50k RPS by replacing a Lua script with a fixed window counter.\n\nThe conversation also touched on idempotency keys, where the agent challenged the user's approach of server-generated UUIDs for retries. Finally, the user outlined their plan for the first two weeks in a new role, focusing on code review, tracing, and on-call tickets. The agent concluded by stating notes would be passed on for potential next steps.",
+    "call_summary_title": "Founding Engineer Screen",
+    "scoped": [],
+    "sentiment_analysis": {
+      "overall_label": "positive",
+      "overall_sentiment_score": 0.3,
+      "overall_frustration_score": 0,
+      "min_user_sentiment_score": 0.1,
+      "max_user_frustration_score": 0,
+      "num_scored_user_turns": 4
+    },
+    "not_applicable": []
+  }
+}
