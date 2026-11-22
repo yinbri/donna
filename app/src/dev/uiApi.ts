@@ -16,7 +16,6 @@ import {
   useQuery,
 } from "wasp/client/operations";
 import type {
-  Approval,
   CandidateStatus,
   EvaluateResult,
   ResearchResult,
@@ -25,7 +24,7 @@ import type {
   TimelineEvent,
   TranscriptTurn,
 } from "../server/contracts";
-import type { CandidateView, IntegrationStatus } from "../server/views";
+import type { ApprovalView, CandidateView, IntegrationStatus } from "../server/views";
 
 /** The sandbox's UICandidate, plus `role` (replaces the sandbox's getRole(c.roleId)). */
 export interface UICandidate {
@@ -44,7 +43,7 @@ export interface UICandidate {
   transcript?: TranscriptTurn[];
   durationSecs?: number; // undefined until finalizeScreen has run
   evaluation?: EvaluateResult;
-  approval?: Approval; // the newest approval
+  approval?: ApprovalView; // the newest approval, with approvalUrl / calendarUrl when the gate returned them
   events: TimelineEvent[];
   audioUrl?: string; // absolute: the audio route is served by the Wasp server, not the client
   traceUrl?: string;
@@ -169,7 +168,7 @@ export async function finalizeScreen(id: string, call: { conversationId?: string
   return finalizeScreenOp({ candidateId: id, conversationId: call.conversationId });
 }
 
-export async function proposeBooking(id: string, slotIso?: string): Promise<Approval> {
+export async function proposeBooking(id: string, slotIso?: string): Promise<ApprovalView> {
   return proposeBookingOp({ candidateId: id, slotIso });
 }
 
