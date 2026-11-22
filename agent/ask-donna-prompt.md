@@ -1,6 +1,6 @@
 # Ask Donna (text chat) prompt
 
-System prompt for the text-only ElevenLabs agent behind the founder dashboard's "Ask Donna" chat. `app/scripts/create-chat-agent.mjs` reads everything below the marker. Edit here, then update the agent in the dashboard (or re-run the script and swap the ID).
+System prompt for the text-only ElevenLabs agent behind the founder dashboard's "Ask Donna" chat. `app/scripts/create-text-agent.mjs chat` reads everything below the marker. Edit here, then update the agent in the dashboard (or re-run the script and swap the ID).
 
 Dynamic variables, filled by the server on every question: `founder_name`, `scope`, `candidates`, `history`.
 

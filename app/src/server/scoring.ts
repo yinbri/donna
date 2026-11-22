@@ -1,11 +1,15 @@
 import type { CriterionScore, EvaluateResult, Recommendation, TranscriptTurn } from "./contracts";
 
+// Two ways to score a real call while the Donna box is not live:
+// - scoreFromScorer: the ElevenLabs scorer agent grades the transcript against agent/scoring-guidelines.md.
+// - scoreFromCallAnalysis: ElevenLabs' own post-call analysis, the fallback when the scorer is not set up.
+//
 // Builds a scorecard from ElevenLabs' own post-call analysis of a real call. Used while the Donna
 // box (the 3-persona panel) is not live, so a real person is never shown the fixture panel's scores.
 // Nothing here is invented: each score is the analysis's own 0-10 number, and each quote must be
 // found in a candidate turn of the stored transcript. A criterion that fails either test is left out.
 
-export type ScoreSource = "call_analysis" | "panel" | "fixture";
+export type ScoreSource = "llm_scorer" | "call_analysis" | "panel" | "fixture";
 export type CallScore = { scorecard: EvaluateResult } | { unusable: string };
 
 const PASS_AT = 7;
@@ -119,6 +123,85 @@ export function scoreFromCallAnalysis(analysis: unknown, transcript: TranscriptT
         ],
         sharpen: textValue(data, "feedback_sharpen") || byScore.at(-1)?.text || "",
       },
+    },
+  };
+}
+
+// ---------- ElevenLabs scorer agent (agent/scoring-guidelines.md) ----------
+
+// A criterion at or below this caps the recommendation at MAYBE: one missing pillar is not a PASS.
+const FLOOR_FOR_PASS = 2;
+const PERSONAS = ["Principal Engineer", "YC Founder", "BS Detector"] as const;
+
+type ScorerReply = {
+  criteria?: { name?: unknown; score?: unknown; evidenceTurn?: unknown; quote?: unknown; rationale?: unknown }[];
+  personas?: { name?: unknown; score?: unknown; rationale?: unknown }[];
+  redFlags?: unknown;
+  standoutQuote?: unknown;
+  feedback?: { strengths?: unknown; sharpen?: unknown };
+};
+
+const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+const clampScore = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? Math.round(Math.min(Math.max(v, 0), 10)) : null);
+
+/** The JSON object in the scorer's reply, tolerating code fences or a stray sentence around it. */
+function parseReply(raw: string): ScorerReply | null {
+  const start = raw.indexOf("{");
+  const end = raw.lastIndexOf("}");
+  if (start < 0 || end <= start) return null;
+  try {
+    return JSON.parse(raw.slice(start, end + 1)) as ScorerReply;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Turns the scorer agent's reply into a scorecard. The model scores; this code checks: each rubric
+ * criterion needs a 0-10 score and a quote found in a candidate turn (the transcript's own wording is
+ * kept), personas must be the three named reviewers, and the overall score and recommendation are
+ * computed here from the criteria, never taken from the model.
+ */
+export function scoreFromScorer(raw: string, transcript: TranscriptTurn[], rubric: string[]): CallScore {
+  const reply = parseReply(raw);
+  if (!reply) return { unusable: "the scorer's reply was not JSON" };
+
+  const given = Array.isArray(reply.criteria) ? reply.criteria : [];
+  const criteria: CriterionScore[] = [];
+  const skipped: string[] = [];
+  for (const name of rubric) {
+    const item = given.find((c) => toId(str(c?.name)) === toId(name));
+    const score = clampScore(item?.score);
+    const evidence = item ? locate(str(item.quote), transcript) : null;
+    if (!item || score === null || !evidence) {
+      skipped.push(`${name}: ${!item ? "not scored" : score === null ? "no numeric score" : "evidence quote not in the transcript"}`);
+      continue;
+    }
+    criteria.push({ name, score, evidenceTurn: evidence.turn, quote: evidence.quote });
+  }
+  if (criteria.length === 0) return { unusable: skipped.join("; ") || "the scorer returned no criteria" };
+  if (skipped.length) console.warn(`Scorer criteria left out: ${skipped.join("; ")}`);
+
+  const personas = PERSONAS.flatMap((name) => {
+    const p = (Array.isArray(reply.personas) ? reply.personas : []).find((x) => str(x?.name) === name);
+    const score = clampScore(p?.score);
+    return p && score !== null && str(p.rationale) ? [{ name, score, rationale: str(p.rationale) }] : [];
+  });
+
+  const overall = round1(criteria.reduce((sum, c) => sum + c.score, 0) / criteria.length);
+  let recommendation: Recommendation = overall >= PASS_AT ? "PASS" : overall >= MAYBE_AT ? "MAYBE" : "REJECT";
+  if (recommendation === "PASS" && criteria.some((c) => c.score <= FLOOR_FOR_PASS)) recommendation = "MAYBE";
+
+  const strengths = Array.isArray(reply.feedback?.strengths) ? reply.feedback!.strengths.map(str) : [];
+  return {
+    scorecard: {
+      recommendation,
+      overall,
+      personas,
+      criteria,
+      redFlags: Array.isArray(reply.redFlags) ? reply.redFlags.map(str).filter(Boolean) : [],
+      standoutQuote: locate(str(reply.standoutQuote), transcript)?.quote ?? "",
+      feedback: { strengths: [strengths[0] ?? "", strengths[1] ?? ""], sharpen: str(reply.feedback?.sharpen) },
     },
   };
 }

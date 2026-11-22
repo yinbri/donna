@@ -159,7 +159,9 @@ export function CandidatePage() {
                   </ul>
                 </div>
               )}
-              {e.source === 'call_analysis' ? (
+              {e.source === 'llm_scorer' ? (
+                <p className="fineprint">Scored by the ElevenLabs LLM against Donna's scoring guidelines. Every quote is checked against the transcript.</p>
+              ) : e.source === 'call_analysis' ? (
                 <p className="fineprint">The scores above come from ElevenLabs' analysis of this call. The 3-persona panel lands when the box is live.</p>
               ) : (
                 live && !live.box && <p className="fineprint"><Stub>fixture panel</Stub> Expected Parrot scores land when the box is live.</p>

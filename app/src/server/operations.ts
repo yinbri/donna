@@ -28,7 +28,7 @@ import * as github from "./integrations/github";
 import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
 import { FIXTURE_CONVERSATION } from "./fixtures";
-import { scoreFromCallAnalysis, type ScoreSource } from "./scoring";
+import { scoreFromCallAnalysis, scoreFromScorer, type ScoreSource } from "./scoring";
 import {
   candidateInclude,
   logEvent,
@@ -286,7 +286,19 @@ async function runFinalize(candidateId: string, conversationId: string): Promise
 
 type FinalizeProgress = { stage: "call_ended" | "evaluated" };
 
+function dossierSummary(d: ResearchResult): string {
+  return [
+    d.summary,
+    d.topProject && `Top project: ${d.topProject}.`,
+    d.highlights.length ? `Highlights: ${d.highlights.join("; ")}.` : "",
+    d.claimsToVerify.length ? `Claims to verify: ${d.claimsToVerify.join("; ")}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
 const SCORE_SOURCE_LABELS: Record<ScoreSource, string> = {
+  llm_scorer: "scored by the ElevenLabs LLM against the scoring guidelines",
   call_analysis: "scored from the call by ElevenLabs' analysis",
   panel: "3-persona panel",
   fixture: "fixture panel",
@@ -339,6 +351,24 @@ async function fetchAndScore(
   }
 
   let unscoredReason = "";
+  if (!evaluation && !elevenlabs.isScorerStubbed() && transcript.some((turn) => turn.role === "user")) {
+    try {
+      const raw = await traced("score_with_llm", { candidateId }, () =>
+        elevenlabs.scoreScreen({
+          roleTitle: role.title,
+          companyName: role.companyName,
+          rubric: role.rubric,
+          dossier: dossierSummary(dossier),
+          transcript,
+        }),
+      );
+      const scored = scoreFromScorer(raw, transcript, role.rubric);
+      if ("scorecard" in scored) evaluation = { ...scored.scorecard, source: "llm_scorer" };
+      else console.warn(`Scorer reply for candidate ${candidateId} was unusable (${scored.unusable}); using the call analysis`);
+    } catch (err) {
+      console.error(`Scoring candidate ${candidateId} with the ElevenLabs scorer failed; using the call analysis:`, err);
+    }
+  }
   if (!evaluation) {
     try {
       const fromCall = scoreFromCallAnalysis(conversation.analysis, transcript, role.rubric);
