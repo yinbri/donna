@@ -10,12 +10,12 @@ Fill the "Ran today?" column at 2:20 from the evidence column. If it is not a ye
 |---|---|---|---|
 | ElevenLabs | Donna's live voice screen (Agents, WebRTC), transcript with timestamps, call audio for the ▶ receipts | BUILDLOG 13:10: first real call, 21 turns, 144 s audio stored | yes (13:10) |
 | Wasp | The whole app: Wasp 0.26.1, SQLite, operations, founder view | BUILDLOG 12:35 onward | yes |
-| Alter | Holds the founder's Google Calendar grant. A calendar write without approval is held; approve releases it and Google emails the invite | `npm run check:approval` live: passed 13:22 (SDK 0.34.1) and 13:34 (SDK 0.33.0, main's pin), event jfc38og5ikdrh4rf9iq70qsqes invited the demo inbox. Needs `lane/trust-ops` merged to main again for the approve path | yes (13:34) |
-| Codevisor | Parallel coding agents, one per worktree | BUILDLOG says "Claude Code Opus agent … own worktree". **Ask Aarav whether these ran inside Codevisor.** Claim it only if yes, and only for that code | ask Aarav |
+| Alter | Holds the founder's Google Calendar grant. A calendar write without approval is held; approve releases it and Google emails the invite | `npm run check:approval` live: passed 13:22 (SDK 0.34.1) and 13:34 (SDK 0.33.0, main's pin), event jfc38og5ikdrh4rf9iq70qsqes invited the demo inbox. Approve path on main since merge #6 | yes (13:34) |
+| Codevisor | Parallel coding agents, each in its own workspace | Main README (Aarav, merge #6): three changes built at 13:33 by three agents side by side in Codevisor (approval gate merge, sponsor role seed, README status + runbook). The rest was Claude Code outside Codevisor | yes (13:33), claim only those changes |
 | Fiber AI | Applicant research (box `/research`) | README: box `/research` not checked yet | ask Sam |
 | Expected Parrot | 3-persona hiring panel (box `/evaluate`) | README: box `/evaluate` not checked yet | ask Sam |
 | Maritime | Hosts the box as an "isolated micro-VM that sleeps" | none yet | ask Sam |
-| TraceRoot | Trace of every step | not built (cut order: before Maritime) | no, unless it lands |
+| TraceRoot | Span per pipeline step (research, fetch_conversation, evaluate), grouped by candidate; ids only, no candidate data | `scripts/check-trace.ts` live at 13:44: span sent, flush accepted. Dev 4 confirmed the span in the TraceRoot dashboard. Tracing only, no detector | yes (13:44) |
 | Ploid, assistant-ui, Rowboat | Wave 2 only | none | no, unless they land |
 
 If Alter's live re-run fails: claim "in-app approval gate", drop Alter from the tool list, and switch the video shot in section 3.

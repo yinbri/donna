@@ -7,6 +7,7 @@ import type {
   TimelineEvent,
   TranscriptTurn,
 } from "./contracts";
+import type { ScoreSource } from "./scoring";
 
 // Wasp operation payloads must be SuperJSON values, and interfaces (as in contracts.ts) have no
 // index signature. Plain<T> rewrites an interface as an equivalent object type that does.
@@ -42,7 +43,7 @@ export type CandidateView = Plain<{
   dossier: ResearchResult | null;
   transcript: TranscriptTurn[] | null;
   durationSecs: number | null; // call length from ElevenLabs, set by finalizeScreen
-  scorecard: EvaluateResult | null;
+  scorecard: (EvaluateResult & { source?: ScoreSource }) | null; // source: where the scores came from
   role: RoleView;
   events: TimelineEvent[]; // oldest first
 }> & { approvals: ApprovalView[]; analysis: JsonValue }; // approvals oldest first; analysis: raw ElevenLabs analysis
