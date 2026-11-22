@@ -14,13 +14,19 @@ function isTimeout(err: unknown): boolean {
   return err instanceof Error && (err.name === "TimeoutError" || err.message.startsWith("Request timed out"));
 }
 
+function isInterruptedFinalize(err: unknown): boolean {
+  return isTimeout(err) || (
+    err instanceof Error && "statusCode" in err && (err.statusCode === 502 || err.statusCode === 504)
+  );
+}
+
 const pause = () => new Promise((resolve) => setTimeout(resolve, POLL_MS));
 
-export async function finalizeAndWait(candidateId: string, conversationId: string): Promise<EvaluateResult> {
+export async function finalizeAndWait(candidateId: string, conversationId: string): Promise<EvaluateResult | null> {
   try {
     return await finalizeScreen({ candidateId, conversationId });
   } catch (err) {
-    if (!isTimeout(err)) throw err;
+    if (!isInterruptedFinalize(err)) throw err;
   }
 
   const deadline = Date.now() + MAX_WAIT_MS;
@@ -28,7 +34,10 @@ export async function finalizeAndWait(candidateId: string, conversationId: strin
     await pause();
     const candidate = await getCandidate({ id: candidateId });
     if (candidate.status === "EVALUATING") continue;
-    if (candidate.scorecard && candidate.conversationId === conversationId) return candidate.scorecard;
+    if (candidate.conversationId === conversationId && candidate.status !== "CALLING") {
+      if (candidate.scorecard) return candidate.scorecard;
+      if (candidate.status === "AWAITING_APPROVAL" && candidate.transcript !== null) return null;
+    }
     // The server puts a failed screen back to CALLING and records why on the timeline.
     const failure = [...candidate.events].reverse().find((event) => event.detail.startsWith(FAILURE_PREFIX));
     throw new Error(failure ? failure.detail : `Scoring stopped with candidate ${candidateId} in ${candidate.status}`);

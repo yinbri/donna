@@ -158,7 +158,7 @@ export async function startScreen(id: string, fast: boolean): Promise<StartScree
 }
 
 /** The server reads transcript and duration from ElevenLabs; only conversationId is sent. */
-export async function finalizeScreen(id: string, call: { conversationId?: string }): Promise<EvaluateResult> {
+export async function finalizeScreen(id: string, call: { conversationId?: string }): Promise<EvaluateResult | null> {
   if (!call.conversationId) {
     throw new Error(
       `finalizeScreen(${id}) needs the ElevenLabs conversationId returned by startSession ` +
