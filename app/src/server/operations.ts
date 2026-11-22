@@ -5,6 +5,7 @@ import type {
   Decide,
   FinalizeScreen,
   GetCandidate,
+  GetIntegrationStatus,
   ListCandidates,
   ListRoles,
   ProposeBooking,
@@ -14,6 +15,7 @@ import type { Approval, EvaluateResult, ResearchResult, StartScreenResult, Trans
 import * as alter from "./integrations/alter";
 import * as box from "./integrations/box";
 import * as elevenlabs from "./integrations/elevenlabs";
+import * as traceroot from "./integrations/traceroot";
 import { traced, traceUrlFor } from "./integrations/traceroot";
 import {
   candidateInclude,
@@ -25,7 +27,7 @@ import {
   toCandidateView,
   toRoleView,
 } from "./pipeline";
-import type { CandidateView, Plain, RoleView } from "./views";
+import type { CandidateView, IntegrationStatus, Plain, RoleView } from "./views";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -92,6 +94,21 @@ export const getCandidate: GetCandidate<{ id: string }, CandidateView> = async (
   if (!row) throw new HttpError(404, `Candidate ${id} not found`);
   return toCandidateView(row);
 };
+
+// An integration counts as live only when its own module says so. box.ts, alter.ts and traceroot.ts
+// start as fixture stubs, so an env var being set does not mean the real call is wired: their
+// owners add `export function isStubbed()` when it is. Until then they are reported as stubbed.
+function reportsLive(integration: object): boolean {
+  const isStubbed = (integration as { isStubbed?: () => boolean }).isStubbed;
+  return typeof isStubbed === "function" && !isStubbed();
+}
+
+export const getIntegrationStatus: GetIntegrationStatus<void, IntegrationStatus> = async () => ({
+  elevenlabs: reportsLive(elevenlabs),
+  box: reportsLive(box),
+  alter: reportsLive(alter),
+  traceroot: reportsLive(traceroot),
+});
 
 // ---------- Actions ----------
 
@@ -223,6 +240,7 @@ export const finalizeScreen: FinalizeScreen<{ candidateId: string; conversationI
     where: { id: candidateId },
     data: {
       transcript: JSON.stringify(transcript),
+      durationSecs: conversation.durationSecs,
       analysis: JSON.stringify(conversation.analysis ?? null),
       audioPath,
     },

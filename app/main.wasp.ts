@@ -8,6 +8,7 @@ import {
   decide,
   finalizeScreen,
   getCandidate,
+  getIntegrationStatus,
   listCandidates,
   listRoles,
   proposeBooking,
@@ -31,6 +32,7 @@ export default app({
     query(listRoles, { entities: ["Role"] }),
     query(listCandidates, { entities: all }),
     query(getCandidate, { entities: all }),
+    query(getIntegrationStatus, { entities: [] }),
 
     action(createCandidate, { entities: all }),
     action(startScreen, { entities: all }),

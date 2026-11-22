@@ -28,6 +28,7 @@ export const seedDev: DbSeedFn = async (prisma) => {
     dossier: JSON.stringify(FIXTURE_DOSSIER),
     conversationId: FIXTURE_CONVERSATION.conversationId,
     transcript: JSON.stringify(FIXTURE_CONVERSATION.transcript),
+    durationSecs: FIXTURE_CONVERSATION.durationSecs,
     analysis: JSON.stringify(null),
     scorecard: JSON.stringify(FIXTURE_PANEL),
     audioPath: null,

@@ -38,6 +38,7 @@ model Candidate {
   dossier        String? // JSON: ResearchResult
   conversationId String?
   transcript     String? // JSON: TranscriptTurn[]
+  durationSecs   Int?
   analysis       String? // JSON: raw ElevenLabs analysis
   scorecard      String? // JSON: EvaluateResult
   audioPath      String?
