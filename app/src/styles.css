@@ -146,10 +146,107 @@ code { font: 12px var(--mono); background: var(--surface-2); padding: 1px 6px; b
 .card-head h3.label { color: var(--ink); font-size: 14px; font-weight: 600; }
 
 /* ---------- landing ---------- */
-.landing { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 2vh; }
-.landing .lede { margin-left: auto; margin-right: auto; }
-.landing-orb { margin-bottom: 8px; }
-.landing-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+/* The landing page runs full-bleed: the top bar floats over a dusk photo, then
+   the page fades into the theme background. Hero text stays light on the photo in both themes. */
+.shell-landing .topbar { position: absolute; left: 0; right: 0; background: transparent; backdrop-filter: none; color: #fff; }
+.shell-landing .topbar .brand-mark i { background: #fff; }
+.shell-landing .topbar .brand-mark i.hot { background: var(--accent); }
+.shell-landing .nav-links { background: rgba(10, 10, 10, .45); backdrop-filter: blur(14px); }
+.shell-landing .nav-links a { color: rgba(255, 255, 255, .72); }
+.shell-landing .nav-links a:hover { color: #fff; }
+.shell-landing .icon-btn { background: transparent; color: #fff; }
+.shell-landing .icon-btn:hover { background: rgba(255, 255, 255, .12); }
+.shell-landing .page { max-width: none; padding: 0; }
+
+.landing { --wrap: 1120px; --section: clamp(80px, 11vw, 136px); display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+.hero {
+  position: relative; width: 100%; color: #fff;
+  padding: clamp(120px, 16vh, 168px) clamp(16px, 4vw, 32px) 0;
+  background:
+    linear-gradient(180deg, rgba(8, 8, 10, .62) 0, rgba(8, 8, 10, .26) 300px, rgba(8, 8, 10, .16) calc(100% - 560px), var(--bg) calc(100% - 180px)),
+    var(--hero-photo) center 62% / cover no-repeat,
+    #1b1612;
+}
+.hero-inner { max-width: var(--wrap); margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+.hero-title { font-size: clamp(40px, 6.4vw, 72px); font-weight: 600; line-height: 1.02; letter-spacing: -0.04em; margin: 28px 0 20px; text-wrap: balance; }
+.hero-title span { display: block; color: rgba(255, 255, 255, .62); }
+.hero-lede { font-size: clamp(16px, 1.5vw, 18px); line-height: 1.6; color: rgba(255, 255, 255, .82); max-width: 540px; margin: 0 0 32px; text-wrap: pretty; }
+
+.btn-hero { background: #fff; color: #0a0a0a; padding: 0 6px 0 22px; min-height: 48px; gap: 14px; }
+.btn-hero:hover { background: #e9e9ea; }
+.btn-arrow { width: 36px; height: 36px; border-radius: 50%; background: #0a0a0a; color: #fff; display: grid; place-items: center; }
+.btn-arrow svg { width: 16px; height: 16px; }
+.btn-hero-ghost { background: rgba(10, 10, 10, .4); color: #fff; backdrop-filter: blur(14px); min-height: 48px; padding: 0 22px; }
+.btn-hero-ghost:hover { background: rgba(10, 10, 10, .6); }
+.landing-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* Accelerator marks: drawn in CSS, not copied logo files. YC keeps its orange; the rest stay monochrome. */
+.backers { display: flex; flex-direction: column; align-items: center; gap: 14px; font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, .7); }
+.backer-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 28px; color: #fff; }
+.backer { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; opacity: .82; line-height: 1; }
+.yc-box { width: 24px; height: 24px; border-radius: 3px; background: #f26522; color: #fff; font-size: 16px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+.backer-a16z { font-size: 18px; font-weight: 700; letter-spacing: -0.04em; }
+.backer-sequoia { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; letter-spacing: .22em; }
+.backer-techstars { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+.backer-spc { font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; }
+
+/* Glass product preview at the foot of the hero. */
+.hero-preview {
+  width: 100%; max-width: 880px; margin-top: clamp(56px, 8vw, 88px);
+  display: grid; grid-template-columns: 240px 1fr; gap: 16px; padding: 16px; text-align: left;
+  background: rgba(14, 14, 16, .8); border: 1px solid rgba(255, 255, 255, .1); border-radius: 24px;
+  backdrop-filter: blur(20px); box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
+}
+.hp-orb, .hp-card { background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .07); border-radius: 16px; }
+.hp-orb { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; --ink: #ececec; --accent: #f0743e; }
+.hp-caption { font-size: 12.5px; color: rgba(255, 255, 255, .6); }
+.hp-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+.hp-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; }
+.hp-head .pill-pass { color: #4ade80; background: rgba(74, 222, 128, .12); }
+.hp-scores { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.hp-scores li { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; padding: 11px 0; border-top: 1px solid rgba(255, 255, 255, .07); font-size: 14px; color: rgba(255, 255, 255, .78); }
+.hp-scores b { font-size: 18px; font-weight: 600; color: #fff; }
+.hp-play { font: 500 12px var(--mono); font-style: normal; color: #f0743e; background: rgba(240, 116, 62, .12); padding: 4px 9px; border-radius: 999px; }
+.hp-approve { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, .05); font-size: 13.5px; color: rgba(255, 255, 255, .82); }
+.hp-btns { display: flex; gap: 6px; }
+.hp-btns em, .hp-btns strong { font-style: normal; font-weight: 500; font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+.hp-btns em { background: rgba(255, 255, 255, .08); }
+.hp-btns strong { background: #fff; color: #0a0a0a; }
+
+/* Sections below the hero use the theme tokens. */
+.l-section { width: 100%; max-width: var(--wrap); padding: var(--section) clamp(16px, 4vw, 32px) 0; display: flex; flex-direction: column; align-items: center; gap: clamp(40px, 6vw, 64px); }
+.l-title { font-size: clamp(30px, 4.4vw, 48px); font-weight: 600; line-height: 1.08; letter-spacing: -0.035em; margin: 0; max-width: 16ch; text-wrap: balance; }
+.l-title span { color: var(--muted); }
+.l-section .btn-hero { background: var(--ink); color: var(--on-ink); }
+.l-section .btn-hero:hover { background: color-mix(in srgb, var(--ink) 85%, var(--bg)); }
+.l-section .btn-arrow { background: var(--on-ink); color: var(--ink); }
+.flow { width: 100%; max-width: 860px; display: flex; align-items: flex-start; --vis: 168px; }
+.flow-vis { height: var(--vis); display: grid; place-items: center; }
+.flow-node { flex: none; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.flow-vis > svg { width: 88px; height: 88px; padding: 28px; box-sizing: border-box; border-radius: 22px; background: var(--surface-2); color: var(--ink); }
+.flow-hub .dot-orb { padding: 18px; border-radius: 28px; background: var(--surface-2); box-shadow: 0 0 0 1px var(--line), 0 20px 60px rgba(0, 0, 0, .25); box-sizing: content-box; }
+.flow-line { flex: 1; height: 2px; margin: calc(var(--vis) / 2 - 1px) 12px 0; background: linear-gradient(90deg, var(--line), var(--muted), var(--line)); border-radius: 2px; }
+
+.facts { width: 100%; max-width: var(--wrap); padding: var(--section) clamp(16px, 4vw, 32px) 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; }
+.fact { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.fact-value { font-size: clamp(44px, 5.4vw, 64px); font-weight: 500; line-height: 1; letter-spacing: -0.045em; }
+.fact-value span { color: var(--muted); font-size: .5em; letter-spacing: -0.02em; margin-left: 4px; }
+.fact-label { font-size: 15px; color: var(--muted); max-width: 18ch; text-wrap: balance; }
+
+.l-foot { width: 100%; max-width: var(--wrap); margin-top: var(--section); padding: 28px clamp(16px, 4vw, 32px) 40px; border-top: 1px solid var(--line-soft); display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); }
+.l-foot p { margin: 0; }
+
+@media (max-width: 760px) {
+  .hero-preview { grid-template-columns: 1fr; padding: 12px; }
+  .hp-orb { flex-direction: row; justify-content: flex-start; padding: 10px 14px; }
+  .hp-orb .dot-orb { width: 64px !important; height: 64px !important; }
+  .flow-vis > svg { width: 64px; height: 64px; padding: 20px; border-radius: 18px; }
+  .flow-hub .dot-orb { width: 76px !important; height: 76px !important; padding: 12px; border-radius: 22px; }
+  .flow-line { flex: 0 0 12px; margin: calc(var(--vis) / 2 - 1px) 0 0; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .l-foot { justify-content: center; text-align: center; }
+}
 
 /* ---------- founder home ---------- */
 .founder-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 22px; }

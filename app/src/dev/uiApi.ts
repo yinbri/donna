@@ -23,6 +23,7 @@ import type {
   TimelineEvent,
   TranscriptTurn,
 } from "../server/contracts";
+import type { ScoreSource } from "../server/scoring";
 import type { ApprovalView, CandidateView, IntegrationStatus } from "../server/views";
 
 /** The sandbox's UICandidate, plus `role` (replaces the sandbox's getRole(c.roleId)). */
@@ -41,7 +42,7 @@ export interface UICandidate {
   conversationId?: string;
   transcript?: TranscriptTurn[];
   durationSecs?: number; // undefined until finalizeScreen has run
-  evaluation?: EvaluateResult;
+  evaluation?: EvaluateResult & { source?: ScoreSource };
   approval?: ApprovalView; // the newest approval, with approvalUrl / calendarUrl when the gate returned them
   events: TimelineEvent[];
   audioUrl?: string; // absolute: the audio route is served by the Wasp server, not the client
