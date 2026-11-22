@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { EvaluateResult, Role } from '../server/contracts';
 import type { UICandidate } from '../dev/uiApi';
+import { saveHiringPrefs } from 'wasp/client/operations';
 
 /**
  * The founder's own take on what "good" looks like for one role. Kept in this browser,
  * per role. Weights, must-haves and the bar re-rank the scores the panel already gave, and
  * tech stack matches (found in the dossier and transcript) add a small, visible boost.
- * Nothing here changes a panel score or what Donna asks on a call yet. The profile,
- * personality traits and notes are handed to Ask Donna so her answers lean the founder's way.
+ * Nothing here changes a panel score. The profile, personality traits and notes are handed
+ * to Ask Donna, and are also saved to the role on the server (saveHiringPrefs) so Donna can
+ * pick her follow-ups on the voice screen with them in mind.
  */
 
 export const SENIORITY = ['Any', 'Early career', 'Mid-level', 'Senior', 'Staff+'] as const;
@@ -100,12 +102,31 @@ function load(roleId: string): HiringPrefs {
 // Same-tab listeners, so the panel, the ranked list and Ask Donna stay in step.
 const listeners = new Set<() => void>();
 
+// Server copy for the voice screen. Debounced so dragging the bar or typing notes sends one
+// request; failures only log, because ranking and Ask Donna keep working from this browser.
+const pending = new Map<string, number>();
+function syncToServer(roleId: string, prefs: HiringPrefs, delay = 800) {
+  window.clearTimeout(pending.get(roleId));
+  pending.set(
+    roleId,
+    window.setTimeout(() => {
+      pending.delete(roleId);
+      saveHiringPrefs({ roleId, prefs }).catch((err: unknown) => console.warn('Could not save hiring preferences for the call', err));
+    }, delay),
+  );
+}
+// Preferences saved before the server copy existed get sent once per role per page load.
+const synced = new Set<string>();
+
 export function useHiringPrefs(roleId: string | undefined) {
   const [prefs, setState] = useState<HiringPrefs>(() => (roleId ? load(roleId) : defaultPrefs()));
 
   useEffect(() => {
     if (!roleId) return setState(defaultPrefs());
-    setState(load(roleId));
+    const initial = load(roleId);
+    setState(initial);
+    if (!synced.has(roleId) && !isDefault(initial)) syncToServer(roleId, initial, 0);
+    synced.add(roleId);
     const sync = () => setState(load(roleId));
     listeners.add(sync);
     return () => void listeners.delete(sync);
@@ -120,6 +141,7 @@ export function useHiringPrefs(roleId: string | undefined) {
       } catch {
         // Private window or blocked storage: keep the change for this view only.
       }
+      syncToServer(roleId, next);
       listeners.forEach((l) => l());
     },
     [roleId],

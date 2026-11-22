@@ -19,6 +19,7 @@ import {
   listCandidates,
   listRoles,
   proposeBooking,
+  saveHiringPrefs,
   startScreen,
 } from "./src/server/operations" with { type: "ref" };
 import { seedDev } from "./src/server/seed" with { type: "ref" };
@@ -53,6 +54,7 @@ export default app({
     action(attemptWithoutApproval, { entities: all }),
     action(decide, { entities: all }),
     action(askDonna, { entities: [] }),
+    action(saveHiringPrefs, { entities: ["Role"] }),
 
     api("GET", "/api/health", getHealth, { auth: false }),
     api("GET", "/api/audio/:candidateId", getAudio, { auth: false }),
