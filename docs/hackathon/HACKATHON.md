@@ -6,7 +6,7 @@ Compiled on Nov 22, 2026 from 11 emails, the Hacker Package PDF, the ElevenLabs 
 
 > **An AI coworker you'd actually hire.**
 
-Revealed at the opening ceremony. Project ideas are in [docs/ideas.md](docs/ideas.md).
+Revealed at the opening ceremony. Project ideas are in [docs/ideas.md](ideas.md).
 
 ## At a glance
 

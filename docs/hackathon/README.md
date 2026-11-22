@@ -24,11 +24,11 @@ Hosts: Konrad Tabay, Neel Laroiya, Owen Lee, Harmony Chen, Maritime AI, TraceRoo
 ## Docs
 
 - [Everything known](HACKATHON.md): the full compiled reference, including our team and the message timeline
-- [Sponsors](docs/sponsors.md): who is there and what each one builds
-- [Ideas](docs/ideas.md): project ideas for the challenge, "An AI coworker you'd actually hire"
-- [Use cases](docs/use-cases.md): small building blocks per sponsor, for brainstorming a project
-- [Prizes](docs/prizes.md): what is in the prize pool
-- [Checklist](docs/checklist.md): what to do and bring before 10 AM
+- [Sponsors](sponsors.md): who is there and what each one builds
+- [Ideas](ideas.md): project ideas for the challenge, "An AI coworker you'd actually hire"
+- [Use cases](use-cases.md): small building blocks per sponsor, for brainstorming a project
+- [Prizes](prizes.md): what is in the prize pool
+- [Checklist](checklist.md): what to do and bring before 10 AM
 
 ## Key facts for the day
 

@@ -21,4 +21,4 @@ Picked by partner CEOs from the top 4 live pitches:
 
 The Grand Prize winner cannot also win Best Use of ElevenLabs. Partner prizes stack with anything. List every partner tool used when submitting.
 
-Judging weights and the rest are in [HACKATHON.md](../HACKATHON.md).
+Judging weights and the rest are in [HACKATHON.md](HACKATHON.md).

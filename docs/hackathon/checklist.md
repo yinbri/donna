@@ -21,4 +21,4 @@
 - Hacking runs 11:00 AM to 3:00 PM, in a fresh repo created after 11:00 AM
 - Lunch at 12:30 PM
 - Submit by 3:00 PM: project link, 2-minute demo video, every partner tool used
-- Full schedule and judging are in [HACKATHON.md](../HACKATHON.md)
+- Full schedule and judging are in [HACKATHON.md](HACKATHON.md)
