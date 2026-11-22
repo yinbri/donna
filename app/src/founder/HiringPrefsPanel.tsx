@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import type { Role } from '../server/contracts';
-import { defaultPrefs, isDefault, MUST_HAVE_MIN, PACE, SENIORITY, SHAPE, WEIGHTS, type HiringPrefs } from './hiringPrefs';
+import { defaultPrefs, isDefault, MAX_TRAITS, MUST_HAVE_MIN, PACE, SENIORITY, SHAPE, STACK_BOOST, STACK_PRESETS, TRAITS, WEIGHTS, type HiringPrefs } from './hiringPrefs';
 
 function Seg<T extends string | number>({
   label,
@@ -27,6 +27,65 @@ function Seg<T extends string | number>({
 }
 
 const opts = <T extends string>(xs: readonly T[]) => xs.map((x) => ({ label: x, value: x }));
+
+/** Multi-select chips. `max` caps how many can be on; extra taps do nothing until one is cleared. */
+function Chips({ label, items, picked, onChange, max, removable }: { label: string; items: readonly string[]; picked: string[]; onChange: (next: string[]) => void; max?: number; removable?: boolean }) {
+  const full = max !== undefined && picked.length >= max;
+  return (
+    <div className="chips" role="group" aria-label={label}>
+      {items.map((x) => {
+        const on = picked.includes(x);
+        return (
+          <button
+            key={x}
+            type="button"
+            className={`pchip${on ? ' on' : ''}`}
+            aria-pressed={on}
+            disabled={!on && full}
+            onClick={() => onChange(on ? picked.filter((p) => p !== x) : [...picked, x])}
+          >
+            {on && (
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                <path d={removable ? 'M4 4l8 8M12 4l-8 8' : 'm3.5 8.5 3 3 6-7'} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+            {x}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Free-text add for anything not in the presets; Enter or the button adds a chip. */
+function AddChip({ onAdd, existing }: { onAdd: (x: string) => void; existing: string[] }) {
+  const [v, setV] = useState('');
+  const add = () => {
+    const x = v.trim().slice(0, 32);
+    if (x && !existing.some((e) => e.toLowerCase() === x.toLowerCase())) onAdd(x);
+    setV('');
+  };
+  return (
+    <div className="chip-add">
+      <input
+        type="text"
+        value={v}
+        placeholder="Add your own, e.g. Elixir"
+        aria-label="Add a tech stack item"
+        onChange={(e) => setV(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            add();
+          }
+        }}
+      />
+      <button type="button" className="btn btn-sm" onClick={add} disabled={!v.trim()}>
+        Add
+      </button>
+    </div>
+  );
+}
 
 /** One settings row: what it is on the left, the control on the right. */
 function Row({ title, help, htmlFor, stack, children }: { title: string; help: string; htmlFor?: string; stack?: boolean; children: ReactNode }) {
@@ -58,6 +117,8 @@ export function HiringPrefsPanel({ role, prefs, onChange }: { role: Role; prefs:
     prefs.seniority !== 'Any' && prefs.seniority,
     prefs.shape !== 'Any' && prefs.shape,
     prefs.pace !== 'Balanced' && prefs.pace,
+    prefs.stack.length > 0 && prefs.stack.slice(0, 3).join(', ') + (prefs.stack.length > 3 ? ` +${prefs.stack.length - 3}` : ''),
+    prefs.traits.length > 0 && `${prefs.traits.length} trait${prefs.traits.length === 1 ? '' : 's'}`,
     prefs.mustHave.length > 0 && `${prefs.mustHave.length} must-have${prefs.mustHave.length === 1 ? '' : 's'}`,
     `bar ${prefs.bar.toFixed(1)}`,
   ].filter(Boolean);
@@ -88,6 +149,29 @@ export function HiringPrefsPanel({ role, prefs, onChange }: { role: Role; prefs:
             <Row stack title="Working style" help="How you'd trade speed against rigor.">
               <Seg label="Working style" options={opts(PACE)} value={prefs.pace} onChange={(pace) => set({ pace })} />
             </Row>
+          </div>
+
+          <div className="prefs-group">
+            <h3 className="prefs-group-title">Tech stack</h3>
+            <p className="prefs-row-help">
+              Matched against what Donna found in research and heard on the call. A full match adds up to +{STACK_BOOST} to fit.
+            </p>
+            <Chips
+              label="Tech stack"
+              items={[...STACK_PRESETS, ...prefs.stack.filter((s) => !(STACK_PRESETS as readonly string[]).includes(s))]}
+              picked={prefs.stack}
+              onChange={(stack) => set({ stack })}
+            />
+            <AddChip existing={prefs.stack} onAdd={(x) => set({ stack: [...prefs.stack, x] })} />
+          </div>
+
+          <div className="prefs-group">
+            <h3 className="prefs-group-title">Personality and working style</h3>
+            <p className="prefs-row-help">
+              Pick up to {MAX_TRAITS}. Ask Donna looks for evidence of these in the call; they don't change scores. Work traits only, never
+              anything personal.
+            </p>
+            <Chips label="Personality traits" items={TRAITS} picked={prefs.traits} max={MAX_TRAITS} onChange={(traits) => set({ traits })} />
           </div>
 
           <div className="prefs-group">
@@ -152,7 +236,7 @@ export function HiringPrefsPanel({ role, prefs, onChange }: { role: Role; prefs:
           </div>
 
           <footer className="prefs-foot">
-            <p>Weights and must-haves re-rank the panel's scores. Ask Donna reads everything here. Saved in this browser.</p>
+            <p>Weights, must-haves and stack matches re-rank the panel's scores. Ask Donna reads everything here. Saved in this browser; Donna's call questions don't use it yet.</p>
             <div className="prefs-foot-actions">
               <button type="button" className="btn btn-sm" disabled={!custom} onClick={() => onChange(defaultPrefs())}>
                 Reset
