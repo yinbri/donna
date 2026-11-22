@@ -10,7 +10,7 @@ import { Timeline } from './Timeline';
 
 export function CandidateRoute() {
   return (
-    <Shell>
+    <Shell rail>
       <CandidatePage />
     </Shell>
   );

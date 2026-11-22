@@ -30,7 +30,7 @@ const SAMPLE_PLAN: [number, number, number, Kind][] = [
   [-3, 11, 0, 'interview'],
   [-1, 16, 0, 'debrief'],
   [1, 10, 0, 'interview'],
-  [2, 14, 30, 'onsite'],
+  [2, 10, 0, 'onsite'],
   [3, 11, 0, 'proposed'],
   [4, 16, 0, 'debrief'],
   [7, 9, 30, 'interview'],
@@ -78,6 +78,117 @@ function collect(candidates: UICandidate[], roles: Role[]): CalEvent[] {
   return [...out, ...sampleEvents(candidates, roles)].sort((x, y) => x.at.getTime() - y.at.getTime());
 }
 
+const TIMED = new Set<Kind>(['interview', 'proposed', 'onsite', 'debrief']);
+const DAY_START = 8; // week grid shows 8 AM to 7 PM; earlier/later events pin to the edges
+const DAY_END = 19;
+const HOUR_PX = 48;
+const SLOT_MIN = 60; // block height for an event with no end time
+
+const startOfWeek = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay());
+const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const hourLabel = (h: number) => new Date(2000, 0, 1, h).toLocaleTimeString([], { hour: 'numeric' });
+
+function weekTitle(start: Date) {
+  const end = addDays(start, 6);
+  const sameMonth = start.getMonth() === end.getMonth();
+  const a = start.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  const b = end.toLocaleDateString([], sameMonth ? { day: 'numeric' } : { month: 'short', day: 'numeric' });
+  return `${a} – ${b}, ${end.getFullYear()}`;
+}
+
+/** Greedy lanes so overlapping blocks sit side by side. */
+function layoutDay(evs: CalEvent[]) {
+  const ends: number[] = [];
+  const placed = evs.map((e) => {
+    const start = e.at.getHours() * 60 + e.at.getMinutes();
+    let lane = ends.findIndex((end) => end <= start);
+    if (lane === -1) lane = ends.push(0) - 1;
+    ends[lane] = start + SLOT_MIN;
+    return { e, start, lane };
+  });
+  return placed.map((p) => ({ ...p, lanes: ends.length }));
+}
+
+function WeekGrid({ week, byDay, today, picked, onPick }: { week: Date; byDay: Map<string, CalEvent[]>; today: Date; picked: Date; onPick: (d: Date) => void }) {
+  const days = Array.from({ length: 7 }, (_, i) => addDays(week, i));
+  const hours = Array.from({ length: DAY_END - DAY_START }, (_, i) => DAY_START + i);
+  const nowMin = today.getHours() * 60 + today.getMinutes();
+  const clampTop = (min: number) => Math.min(Math.max(min - DAY_START * 60, 0), (DAY_END - DAY_START) * 60 - SLOT_MIN) * (HOUR_PX / 60);
+
+  return (
+    <div className="wk" role="grid" aria-label="Hiring calendar, week view">
+      <div className="wk-row wk-heads" role="row">
+        <span className="wk-gutter" />
+        {days.map((d) => (
+          <button
+            key={d.toISOString()}
+            role="columnheader"
+            className={`wk-day-head${sameDay(d, today) ? ' today' : ''}${sameDay(d, picked) ? ' picked' : ''}`}
+            onClick={() => onPick(d)}
+            aria-pressed={sameDay(d, picked)}
+          >
+            <small>{WEEKDAYS[d.getDay()]}</small>
+            <strong>{d.getDate()}</strong>
+          </button>
+        ))}
+      </div>
+
+      <div className="wk-row wk-allday" role="row">
+        <span className="wk-gutter">activity</span>
+        {days.map((d) => {
+          const evs = (byDay.get(dayKey(d)) ?? []).filter((e) => !TIMED.has(e.kind));
+          const applied = evs.filter((e) => e.kind === 'applied').length;
+          const screened = evs.filter((e) => e.kind === 'screen').length;
+          return (
+            <button key={d.toISOString()} className="wk-allday-cell" onClick={() => onPick(d)} aria-label={`${applied} applied, ${screened} screened`}>
+              {applied > 0 && <span className="cal-chip k-applied">{applied} applied</span>}
+              {screened > 0 && <span className="cal-chip k-screen">{screened} screened</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="wk-body" style={{ height: (DAY_END - DAY_START) * HOUR_PX }}>
+        <div className="wk-hours" aria-hidden="true">
+          {hours.map((h) => (
+            <span key={h} style={{ top: (h - DAY_START) * HOUR_PX }}>
+              {hourLabel(h)}
+            </span>
+          ))}
+        </div>
+        {days.map((d) => {
+          const timed = (byDay.get(dayKey(d)) ?? []).filter((e) => TIMED.has(e.kind));
+          return (
+            <div key={d.toISOString()} className={`wk-col${sameDay(d, today) ? ' today' : ''}`} onClick={() => onPick(d)}>
+              {hours.map((h) => (
+                <i key={h} className="wk-line" style={{ top: (h - DAY_START) * HOUR_PX }} />
+              ))}
+              {sameDay(d, today) && nowMin >= DAY_START * 60 && nowMin <= DAY_END * 60 && (
+                <i className="wk-now" style={{ top: (nowMin - DAY_START * 60) * (HOUR_PX / 60) }} aria-hidden="true" />
+              )}
+              {layoutDay(timed).map(({ e, start, lane, lanes }) => (
+                <Link
+                  key={e.id}
+                  to={`/founder/candidates/${e.who.id}`}
+                  className={`wk-ev k-${e.kind}`}
+                  style={{ top: clampTop(start), height: SLOT_MIN * (HOUR_PX / 60) - 2, left: `calc(${(lane / lanes) * 100}% + 2px)`, width: `calc(${100 / lanes}% - 4px)` }}
+                  title={`${fmtTime(e.at)} · ${e.title}`}
+                  onClick={(ev) => ev.stopPropagation()}
+                >
+                  <strong>{e.who.name}</strong>
+                  <small>
+                    {fmtTime(e.at)} · {KIND_LABEL[e.kind]}
+                  </small>
+                </Link>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Six-row month grid starting on the Sunday on or before the 1st. */
 function monthGrid(month: Date) {
   const start = new Date(month.getFullYear(), month.getMonth(), 1);
@@ -96,8 +207,11 @@ function Chevron({ dir }: { dir: 'left' | 'right' }) {
 export function Schedule({ candidates, roles }: { candidates: UICandidate[]; roles: Role[] }) {
   const today = new Date();
   const events = useMemo(() => collect(candidates, roles), [candidates, roles]);
-  const [month, setMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+  const [view, setView] = useState<'week' | 'month'>('week');
+  const [anchor, setAnchor] = useState<Date>(() => startOfWeek(today)); // week start, or any day in the shown month
   const [picked, setPicked] = useState<Date>(today);
+  const month = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+  const week = startOfWeek(anchor);
 
   const byDay = useMemo(() => {
     const m = new Map<string, CalEvent[]>();
@@ -111,30 +225,45 @@ export function Schedule({ candidates, roles }: { candidates: UICandidate[]; rol
   const thisWeek = upcoming.filter((e) => e.at.getTime() - now < 7 * 86400000).length;
   const pending = upcoming.filter((e) => e.kind === 'proposed').length;
 
-  const shift = (n: number) => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + n, 1));
+  const shift = (n: number) =>
+    setAnchor((a) => (view === 'week' ? addDays(startOfWeek(a), 7 * n) : new Date(a.getFullYear(), a.getMonth() + n, 1)));
   const goToday = () => {
-    setMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+    setAnchor(view === 'week' ? startOfWeek(today) : today);
     setPicked(today);
+  };
+  const switchView = (v: 'week' | 'month') => {
+    setView(v);
+    setAnchor(v === 'week' ? startOfWeek(picked) : new Date(picked.getFullYear(), picked.getMonth(), 1));
   };
 
   return (
     <div className="schedule">
       <section className="ov-card cal-card">
         <header className="cal-head">
-          <h3>{month.toLocaleDateString([], { month: 'long', year: 'numeric' })}</h3>
+          <h3>{view === 'week' ? weekTitle(week) : month.toLocaleDateString([], { month: 'long', year: 'numeric' })}</h3>
           <div className="cal-nav">
+            <div className="seg" role="tablist" aria-label="Calendar view">
+              {(['week', 'month'] as const).map((v) => (
+                <button key={v} role="tab" aria-selected={view === v} className={view === v ? 'on' : ''} onClick={() => switchView(v)}>
+                  {v === 'week' ? 'Week' : 'Month'}
+                </button>
+              ))}
+            </div>
             <button className="cal-today" onClick={goToday}>
               Today
             </button>
-            <button className="cal-arrow" onClick={() => shift(-1)} aria-label="Previous month">
+            <button className="cal-arrow" onClick={() => shift(-1)} aria-label={`Previous ${view}`}>
               <Chevron dir="left" />
             </button>
-            <button className="cal-arrow" onClick={() => shift(1)} aria-label="Next month">
+            <button className="cal-arrow" onClick={() => shift(1)} aria-label={`Next ${view}`}>
               <Chevron dir="right" />
             </button>
           </div>
         </header>
 
+        {view === 'week' ? (
+          <WeekGrid week={week} byDay={byDay} today={today} picked={picked} onPick={setPicked} />
+        ) : (
         <div className="cal-grid" role="grid" aria-label="Hiring calendar">
           {WEEKDAYS.map((d) => (
             <span key={d} className="cal-wd" role="columnheader">
@@ -161,6 +290,7 @@ export function Schedule({ candidates, roles }: { candidates: UICandidate[]; rol
             );
           })}
         </div>
+        )}
 
         <footer className="cal-legend">
           <span><i className="k-interview" />Intro call</span>

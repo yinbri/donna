@@ -11,7 +11,7 @@ import { isDefault, MUST_HAVE_MIN, prefsContext, rankByFit, useHiringPrefs } fro
 
 export function FounderRoute() {
   return (
-    <Shell>
+    <Shell rail>
       <FounderHome />
     </Shell>
   );
