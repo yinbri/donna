@@ -1,10 +1,37 @@
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import type { DbSeedFn } from "wasp/server";
+import type { Role } from "./contracts";
 import { FIXTURE_APPROVAL, FIXTURE_CONVERSATION, FIXTURE_DOSSIER, FIXTURE_PANEL, FIXTURE_ROLES } from "./fixtures";
 
 const FIXTURE_CANDIDATE_ID = FIXTURE_APPROVAL.candidateId;
 
+// `wasp db seed` runs from under app/.wasp, so walk up to the folder holding main.wasp.ts (same walk as dataDir()).
+function sponsorRolesFile(): string {
+  let dir = process.cwd();
+  while (!existsSync(path.join(dir, "main.wasp.ts"))) {
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error(`Cannot find the Wasp app root above ${process.cwd()}`);
+    dir = parent;
+  }
+  return path.join(dir, "seed", "roles.json");
+}
+
+function loadSponsorRoles(): Role[] {
+  const file = sponsorRolesFile();
+  if (!existsSync(file)) throw new Error(`Sponsor roles file is missing: ${file}`);
+  let roles: unknown;
+  try {
+    roles = JSON.parse(readFileSync(file, "utf8"));
+  } catch (err) {
+    throw new Error(`Sponsor roles file is not valid JSON: ${file} (${(err as Error).message})`);
+  }
+  if (!Array.isArray(roles)) throw new Error(`Sponsor roles file must hold a JSON array: ${file}`);
+  return roles as Role[];
+}
+
 export const seedDev: DbSeedFn = async (prisma) => {
-  for (const role of FIXTURE_ROLES) {
+  for (const role of [...FIXTURE_ROLES, ...loadSponsorRoles()]) {
     const data = {
       title: role.title,
       companyName: role.companyName,
