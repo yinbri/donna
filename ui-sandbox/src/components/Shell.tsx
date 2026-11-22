@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 
 type Theme = 'light' | 'dark';
 
@@ -31,6 +31,7 @@ function BrandMark() {
 
 export function Shell() {
   const [theme, setTheme] = useState<Theme>(initialTheme);
+  const onLanding = useLocation().pathname === '/';
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     try {
@@ -41,7 +42,7 @@ export function Shell() {
   }, [theme]);
 
   return (
-    <div className="shell">
+    <div className={onLanding ? 'shell shell-landing' : 'shell'}>
       <nav className="topbar">
         <Link to="/" className="brand">
           <BrandMark />
