@@ -1,4 +1,4 @@
-# Lane: Wasp backbone + Codevisor lead (Mac teammate)
+# Dev 2: Wasp backbone + Codevisor lead (has the Mac)
 
 Read [AGENTS.md](../AGENTS.md) and [contracts/contracts.ts](../contracts/contracts.ts) first. Run this lane and its sub-agents inside Codevisor, one worktree per agent, and log every merge in `BUILDLOG.md`.
 

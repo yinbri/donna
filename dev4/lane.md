@@ -1,4 +1,4 @@
-# Lane: trust + ops + submission (Dev 4)
+# Dev 4: trust + ops + submission
 
 Read [AGENTS.md](../AGENTS.md) and [contracts/contracts.ts](../contracts/contracts.ts) first. You own the clock: say the time out loud at 1:20, 1:45 and 2:20.
 

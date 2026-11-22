@@ -1,6 +1,6 @@
-# Guide: Wasp backbone + Codevisor lead
+# Dev 2 guide: Wasp backbone + Codevisor lead
 
-How to build, run and hand off this lane. Requirements are in [prd/wasp-backbone.md](../prd/wasp-backbone.md).
+How to build, run and hand off this lane. Requirements are in [prd.md](prd.md).
 
 ## Setup (macOS, Apple silicon)
 
@@ -75,4 +75,4 @@ Run them in separate terminals. If the client calls the server on 3001, tunnel t
 
 ## Done-when checklist
 
-See [lanes/wasp-backbone.md](../../lanes/wasp-backbone.md) and the acceptance criteria in the PRD.
+See [lane.md](lane.md) and the acceptance criteria in the PRD.

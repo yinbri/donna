@@ -1,6 +1,6 @@
-# Guide: Donna box
+# Dev 3 guide: Donna box
 
-How to build, run, deploy and hand off this lane. Requirements are in [prd/donna-box.md](../prd/donna-box.md).
+How to build, run, deploy and hand off this lane. Requirements are in [prd.md](prd.md).
 
 ## Setup
 
@@ -77,7 +77,7 @@ From EDSL's docs (docs.expectedparrot.com); verify the class names there:
 1. Redeem the perk (code in the Hacker Package; card required, not charged).
 2. Install `maritime-cli` (`npm i -g maritime-cli`), then `maritime login`.
 3. Create from your repo (it needs the Dockerfile), and set secrets with `maritime env set`. The exact commands are in maritime.sh/docs/quickstart.
-4. Send `BOX_URL` and `BOX_SECRET` to the Mac teammate privately, not in git.
+4. Send `BOX_URL` and `BOX_SECRET` to the Dev 2 privately, not in git.
 5. Show the dossier files on the box during the demo. That's the "persistent agent with state" evidence.
 
 ## Hand off
@@ -87,4 +87,4 @@ From EDSL's docs (docs.expectedparrot.com); verify the class names there:
 
 ## Done-when checklist
 
-See [lanes/donna-box.md](../../lanes/donna-box.md) and the acceptance criteria in the PRD.
+See [lane.md](lane.md) and the acceptance criteria in the PRD.

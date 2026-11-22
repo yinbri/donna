@@ -1,6 +1,6 @@
-# PRD: Donna box (research + hiring panel)
+# Dev 3 PRD: Donna box (research + hiring panel)
 
-**Owner:** Dev 3 · **Branch:** `lane/donna-box` · **Guide:** [guides/donna-box.md](../guides/donna-box.md)
+**Owner:** Dev 3 · **Branch:** `lane/donna-box` · **Guide:** [guide.md](guide.md)
 
 ## Problem
 
@@ -58,7 +58,7 @@ The voice call, the UI, the calendar and email. No outreach to anyone: the Fiber
 | Fiber API key | Dev 3 (already has access) | 12:05 |
 | Expected Parrot perk (@uwaterloo.ca email) or your own model key | Dev 3 | 12:10 |
 | Maritime perk redeemed (card required, not charged) | Dev 3 | 12:30 |
-| Wasp scaffold for `box.ts` | Mac teammate | ~12:40 |
+| Wasp scaffold for `box.ts` | Dev 2 | ~12:40 |
 
 ## Risks
 

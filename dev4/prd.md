@@ -1,6 +1,6 @@
-# PRD: Trust + ops + submission
+# Dev 4 PRD: Trust + ops + submission
 
-**Owner:** Dev 4 · **Branch:** `lane/trust-ops` · **Guide:** [guides/trust-ops.md](../guides/trust-ops.md)
+**Owner:** Dev 4 · **Branch:** `lane/trust-ops` · **Guide:** [guide.md](guide.md)
 
 ## Problem
 
@@ -62,8 +62,8 @@ The UI for the approval card (Brian renders it; this lane supplies the logic), t
 |---|---|---|
 | Alter perk redeemed, test Google account | Dev 4 | 12:15 |
 | TraceRoot code (announced at kickoff) | Dev 4 | 12:15 |
-| Wasp scaffold for `alter.ts` and `traceroot.ts` | Mac teammate | ~12:40 |
-| Public URL for the pilot | Mac teammate | 1:20 |
+| Wasp scaffold for `alter.ts` and `traceroot.ts` | Dev 2 | ~12:40 |
+| Public URL for the pilot | Dev 2 | 1:20 |
 
 ## Risks
 

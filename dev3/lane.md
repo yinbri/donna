@@ -1,4 +1,4 @@
-# Lane: Donna box (Dev 3)
+# Dev 3: Donna box
 
 Read [AGENTS.md](../AGENTS.md) and [contracts/contracts.ts](../contracts/contracts.ts) first.
 

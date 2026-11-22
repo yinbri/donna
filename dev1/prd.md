@@ -1,6 +1,6 @@
-# PRD: UI + Donna's voice
+# Dev 1 PRD: UI + Donna's voice
 
-**Owner:** Brian · **Branch:** `lane/ui-voice` · **Guide:** [guides/ui-voice.md](../guides/ui-voice.md)
+**Owner:** Brian · **Branch:** `lane/ui-voice` · **Guide:** [guide.md](guide.md)
 
 ## Problem
 
@@ -40,7 +40,7 @@ Backend logic, scoring, research, and the Alter or calendar calls. This lane cal
 ## Functional requirements
 
 **Candidate pages**
-- `/apply`: role picker (from roles), form fields (name, email, githubUser, linkedinUrl; at least one of GitHub or LinkedIn), consent checkbox with the exact copy from [AGENTS.md](../../AGENTS.md), and the disclaimer "Unofficial hackathon demo. This is not an application to the company."
+- `/apply`: role picker (from roles), form fields (name, email, githubUser, linkedinUrl; at least one of GitHub or LinkedIn), consent checkbox with the exact copy from [AGENTS.md](../AGENTS.md), and the disclaimer "Unofficial hackathon demo. This is not an application to the company."
 - `/apply/:candidateId/research`: live steps driven by `ResearchResult.sources` (Fiber, GitHub, Ploid), each showing ✓, ✗ or a spinner.
 - `/apply/:candidateId/call`: a "Start call" button, call status, a mute toggle and "End call". Uses `@elevenlabs/react` with `StartScreenResult`. A fast-mode toggle shows when the URL has `?demo=1`.
 - `/apply/:candidateId/done`: `EvaluateResult.feedback`, with no numeric score.
@@ -76,9 +76,9 @@ Backend logic, scoring, research, and the Alter or calendar calls. This lane cal
 
 | Needs | From | By |
 |---|---|---|
-| Wasp scaffold to drop components into | Mac teammate | ~12:40 |
-| Real `startScreen` (signed URL) | Mac teammate | 12:50 |
-| `/api/audio/:id` for real call audio | Mac teammate | 1:00 |
+| Wasp scaffold to drop components into | Dev 2 | ~12:40 |
+| Real `startScreen` (signed URL) | Dev 2 | 12:50 |
+| `/api/audio/:id` for real call audio | Dev 2 | 1:00 |
 | ElevenLabs Creator perk redeemed | Brian | 12:05 |
 
 ## Risks

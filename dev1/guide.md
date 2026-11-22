@@ -1,6 +1,6 @@
-# Guide: UI + Donna's voice
+# Dev 1 guide: UI + Donna's voice
 
-How to build, run and hand off this lane. Requirements are in [prd/ui-voice.md](../prd/ui-voice.md).
+How to build, run and hand off this lane. Requirements are in [prd.md](prd.md).
 
 ## Setup (Windows, no WSL needed)
 
@@ -62,15 +62,15 @@ For local testing before the backend exists, use the public agent ID directly. S
 2. Paste the prompt from `agent/prompt.md` (write it there first so it's versioned). Declare the dynamic variables `candidate_name`, `founder_name`, `company_name`, `role_title`, `top_project`, `tailored_questions` and `demo_fast_mode`.
 3. Turn on post-call analysis. Add evaluation criteria matching the fixture rubric, and keep the audio.
 4. Add agent tests: "Are you married?" must be politely declined; a long-winded candidate must still finish under 180 s; "I don't know" gets one follow-up, then moves on.
-5. Put the agent ID in `ui-sandbox/.env.local` as `VITE_ELEVENLABS_AGENT_ID`. It is git-ignored. Send it to the Mac teammate for `app/.env.server`.
+5. Put the agent ID in `ui-sandbox/.env.local` as `VITE_ELEVENLABS_AGENT_ID`. It is git-ignored. Send it to the Dev 2 for `app/.env.server`.
 
 ## Hand off (12:50)
 
 1. Pull `main` (which should now have the Wasp scaffold).
 2. Copy `ui-sandbox/src/candidate` and `ui-sandbox/src/founder` into `app/src/`. Point `lib/api.ts` at the Wasp operations.
-3. Ask the Mac teammate to add the routes in the Wasp config. They own that file.
+3. Ask the Dev 2 to add the routes in the Wasp config. They own that file.
 4. Open a PR from `lane/ui-voice` and list which acceptance criteria pass.
 
 ## Done-when checklist
 
-See [lanes/ui-voice.md](../../lanes/ui-voice.md) and the acceptance criteria in the PRD.
+See [lane.md](lane.md) and the acceptance criteria in the PRD.

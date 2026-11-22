@@ -1,6 +1,6 @@
-# PRD: Wasp backbone + Codevisor lead
+# Dev 2 PRD: Wasp backbone + Codevisor lead
 
-**Owner:** Mac teammate · **Branch:** `lane/wasp-backbone` (Codevisor sub-branches `lane/wasp-backbone/<task>`) · **Guide:** [guides/wasp-backbone.md](../guides/wasp-backbone.md)
+**Owner:** Dev 2 · **Branch:** `lane/wasp-backbone` (Codevisor sub-branches `lane/wasp-backbone/<task>`) · **Guide:** [guide.md](guide.md)
 
 ## Problem
 
@@ -20,7 +20,7 @@ UI components (Brian), research and scoring (Dev 3), Alter and TraceRoot (Dev 4)
 ## Functional requirements
 
 **Data (Prisma, SQLite; JSON fields stored as strings)**
-- `Role`, `Candidate`, `Approval`, `Event`, as in [plan.md](../../plan.md) and `contracts/contracts.ts`
+- `Role`, `Candidate`, `Approval`, `Event`, as in [plan.md](../plan.md) and `contracts/contracts.ts`
 - A seed script loading `fixtures/roles.json` plus one fixture candidate in AWAITING_APPROVAL (with the dossier, transcript, panel and approval fixtures) so the founder view has data on first run
 
 **Operations** (Wasp actions and queries)

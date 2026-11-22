@@ -1,6 +1,6 @@
-# Guide: Trust + ops + submission
+# Dev 4 guide: Trust + ops + submission
 
-How to build, run and hand off this lane. Requirements are in [prd/trust-ops.md](../prd/trust-ops.md).
+How to build, run and hand off this lane. Requirements are in [prd.md](prd.md).
 
 ## Setup
 
@@ -36,7 +36,7 @@ For each sponsor, open ycombinator.com/companies/<slug>/jobs and copy one engine
 
 ## Pilot (after Gate 1)
 
-1. Get the public URL from the Mac teammate.
+1. Get the public URL from the Dev 2.
 2. Generate a QR code PNG into `pilot/qr.png`, using any offline generator.
 3. Put the disclaimer at the top of `/apply` (Brian's page) and confirm it shows.
 4. Hand Brian the post text; he posts it. Nothing is sent on anyone's behalf automatically.
@@ -61,4 +61,4 @@ Upload it as public or unlisted and open it in a private window before submittin
 
 ## Done-when checklist
 
-See [lanes/trust-ops.md](../../lanes/trust-ops.md) and the acceptance criteria in the PRD.
+See [lane.md](lane.md) and the acceptance criteria in the PRD.
