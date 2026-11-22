@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate, useSearchParams } from 'react-router';
 import { BrandMark, useTheme } from '../components/Shell';
+import { Avatar, founderAvatarId } from './Avatar';
 import type { Role } from '../server/contracts';
 import { panelSpread, PANEL_SPLIT, type UICandidate } from '../dev/uiApi';
 
@@ -166,6 +167,7 @@ export function FounderLayout({
               const hot = s.tone === 'accent' || s.tone === 'maybe';
               return (
                 <Link key={c.id} to={`/founder/candidates/${c.id}`} className={`rail-item text${on ? ' on' : ''}${s.tone === 'muted' && s.text === 'Closed' ? ' dim' : ''}`} title={`${c.name} · ${s.text}`} aria-current={on ? 'page' : undefined}>
+                  <Avatar id={c.id} name={c.name} size={22} />
                   <span className="rail-text">{c.name}</span>
                   {hot && <i className="rail-dot" aria-label={s.text} />}
                 </Link>
@@ -177,7 +179,7 @@ export function FounderLayout({
         <div className="rail-foot">
           {founder && (
             <span className="rail-me" title={`${founder.founderName}, founder`}>
-              <span className="rail-avatar round" aria-hidden="true">{initials(founder.founderName)}</span>
+              <Avatar id={founderAvatarId(founder.id)} name={founder.founderName} size={30} />
               <span className="rail-me-text rail-hide">
                 <strong>{founder.founderName}</strong>
                 <small>Founder · {founder.companyName}</small>

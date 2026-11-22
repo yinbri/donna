@@ -2,9 +2,10 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { fmtDuration, panelSpread, PANEL_SPLIT, useCandidates, useRoles, type UICandidate } from '../dev/uiApi';
 import { RecBadge, StatusDot } from '../components/ui';
 import { Shell } from '../components/Shell';
-import { FounderLayout, initials } from './FounderSidebar';
+import { FounderLayout } from './FounderSidebar';
 import { Overview } from './Overview';
 import { AskDonna } from './AskDonna';
+import { Avatar } from './Avatar';
 import { Schedule } from './Schedule';
 import { HiringPrefsPanel } from './HiringPrefsPanel';
 import { isDefault, MUST_HAVE_MIN, prefsContext, rankByFit, useHiringPrefs } from './hiringPrefs';
@@ -153,9 +154,7 @@ export function FounderHome() {
                         <button key={c.id} className="rk" role="row" onClick={() => navigate(`/founder/candidates/${c.id}`)}>
                           <span className="rank">{String(i + 1).padStart(2, '0')}</span>
                           <span className="who">
-                            <span className="avatar" aria-hidden="true">
-                              {initials(c.name)}
-                            </span>
+                            <Avatar id={c.id} name={c.name} />
                             <span className="who-text">
                               <strong>{c.name}</strong>
                               <small>{c.dossier?.topProject ?? c.email}</small>

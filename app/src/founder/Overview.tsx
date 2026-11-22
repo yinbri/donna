@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { panelSpread, PANEL_SPLIT, type UICandidate } from '../dev/uiApi';
 import type { Role } from '../server/contracts';
 import { RecBadge } from '../components/ui';
+import { Avatar } from './Avatar';
 
 /**
  * Overview across every role at one company. Built for small numbers: dot plots and
@@ -157,6 +158,7 @@ export function Overview({ candidates, roles, onOpenRole }: { candidates: UICand
               {waiting.map((c) => (
                 <li key={c.id}>
                   <Link to={`/founder/candidates/${c.id}`}>
+                    <Avatar id={c.id} name={c.name} size={30} />
                     <span className="q-who">
                       <strong>{c.name}</strong>
                       <small>
