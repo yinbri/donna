@@ -767,7 +767,7 @@ blockquote { margin: 6px 0; padding: 0; border: 0; font-size: 14.5px; line-heigh
 /* ---------- design board: founder sidebar layout ---------- */
 /* Founder rail: full-height left sidebar in the Claude / ChatGPT / Notion pattern.
    Tinted surface, icon nav on top, quiet section labels, dense text rows, profile pinned at the bottom. */
-.page-rail { max-width: none; padding: 0; }
+.page.page-rail { max-width: none; margin: 0; padding: 0; } /* beats .page:has(.dash) so the rail sits flush left at any width */
 .founder-layout { --rail-w: 264px; display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); min-height: 100vh; transition: grid-template-columns .18s ease; }
 .founder-layout.collapsed { --rail-w: 60px; }
 .founder-main { min-width: 0; padding: 28px clamp(16px, 3vw, 36px) 80px; }
