@@ -40,3 +40,12 @@ Only what runs is listed here, from [BUILDLOG.md](BUILDLOG.md). Updated at each 
 ## Run it
 
 Fresh clone to running app, public HTTPS URL for phones, and QR code: see [dev2/RUNBOOK.md](dev2/RUNBOOK.md). In short, from `app/`: `wasp install`, copy `.env.server.example` to `.env.server`, `wasp db migrate-dev`, `wasp db seed`, `wasp start`, then open http://localhost:3000/dev.
+
+## Built with
+
+Only tools that ran today, each with its evidence. Dev 4 updates this at the 2:20 freeze. A tool is added only when it has run.
+
+- **ElevenLabs:** Donna's live voice screen, plus the transcript and call audio behind every ▶ receipt. First real call at 13:10: 21 turns, 144 s stored.
+- **Wasp:** the whole app (Wasp 0.26.1, SQLite, operations, founder view).
+- **Alter:** holds the founder's Google Calendar grant. A calendar write without founder approval is held by Alter, and approving releases it, so Google sends the invite. `npm run check:approval` passed in live mode at 13:22 (invites go only to the team's demo inbox).
+- **Codevisor:** three changes were built at 13:33 by three agents running side by side in Codevisor, each in its own workspace: merging the newer approval gate with its settings docs, seeding the sponsor roles, and this README's status with the runbook. The rest of the code was built with Claude Code agents outside Codevisor.
