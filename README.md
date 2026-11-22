@@ -12,7 +12,10 @@ Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the 
 |---|---|
 | [plan.md](plan.md) | The approved plan: product, architecture, contracts, schedule, cut order |
 | [AGENTS.md](AGENTS.md) | Rules for every person and coding agent working in this repo. Read first |
-| [lanes/](lanes) | One brief per lane: what it owns and its "done when" check |
+| [docs/branching.md](docs/branching.md) | **Start here:** your branch name, how to merge into `main`, merge windows |
+| [docs/prd/](docs/prd) | One PRD per teammate: problem, user stories, requirements, acceptance criteria |
+| [docs/guides/](docs/guides) | One guide per teammate: setup, environment, commands, sponsor notes, handoff |
+| [lanes/](lanes) | One-page brief per lane: what it owns and its "done when" check |
 | [contracts/](contracts) | Frozen TypeScript types shared by all lanes |
 | [fixtures/](fixtures) | Sample data every stub returns, so lanes work before the others land |
 | [BUILDLOG.md](BUILDLOG.md) | One timestamped line per merge |
