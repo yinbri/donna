@@ -1,58 +1,133 @@
 # Donna
 
-A recruiting coordinator you can check in 12 seconds.
+**An AI recruiting coordinator you can check in 12 seconds.**
 
-Donna researches each applicant, runs a short voice screen with ElevenLabs, and has a 3-persona hiring panel grade the call. Every score comes with a ▶ button that plays the seconds of audio it is based on. She proposes an interview slot but cannot touch the founder's calendar or email anyone until the founder approves, and that rule is enforced outside the model.
+Donna researches each applicant, runs a short voice screen, and scores the call against the founder's rubric. Every score links to the exact seconds of audio it's based on, so you can check her work instead of trusting it. She proposes an interview slot, but she can't touch your calendar or email anyone until you approve, and that rule is enforced outside the model.
 
-Built at the YC Startups x ElevenLabs Hackathon, Waterloo, Nov 22 2026, for the challenge "An AI coworker you'd actually hire".
+Built in one day at the YC Startups x ElevenLabs Hackathon (Waterloo, Nov 22 2026) for the challenge "An AI coworker you'd actually hire".
 
-## Repo map
+> Unofficial hackathon demo. The sponsor roles in the app are not real job postings, and applying through Donna is not an application to any company.
 
-| Path | What |
+![Donna landing page with a sample scorecard](docs/screenshots/landing.png)
+
+## What it does
+
+### For the founder
+
+**One page for the whole pipeline.** Applicants, screens, advance rate and who's waiting on you, next to a week calendar of intro calls. Ask Donna (right) answers questions about anyone she has screened.
+
+![Founder overview with KPIs, a week calendar and the Ask Donna chat](docs/screenshots/founder-overview.png)
+
+**Ranked candidates per role.** Each candidate has Donna's recommendation, the reviewer panel's spread and an overall score. Hiring preferences (tech stack, work style, rubric weights) re-rank the list.
+
+![Ranked candidates for the Founding Engineer role](docs/screenshots/founder-ranking.png)
+
+**Receipts, not vibes.** A candidate page opens with a two-line brief and what didn't hold up. Each rubric score quotes the candidate word for word, and ▶ plays that moment of the call. The interview card holds a drafted invite until you approve it. *Try without approval* shows the write being blocked.
+
+![Candidate page with scorecard receipts, hiring panel, dossier, transcript and the approval card](docs/screenshots/candidate-receipts.png)
+
+### For the candidate
+
+The candidate picks a role, agrees to research, and talks to Donna for about 3 minutes in the browser. Afterward they get honest feedback: what came through and one thing to sharpen. They never see a score.
+
+| Apply | Feedback |
 |---|---|
-| [plan.md](plan.md) | The approved plan: product, architecture, contracts, schedule, cut order |
-| [AGENTS.md](AGENTS.md) | Rules for every person and coding agent working in this repo. Read first |
-| [docs/branching.md](docs/branching.md) | **Start here:** your branch name, how to merge into `main`, merge windows |
-| [dev1/](dev1) | **Brian:** UI + Donna's voice (`prd.md`, `guide.md`, `lane.md`) |
-| [dev2/](dev2) | **Dev 2 (Mac):** Wasp backbone + Codevisor lead |
-| [dev3/](dev3) | **Dev 3:** Donna box (Fiber AI, GitHub, EDSL, Maritime) |
-| [dev4/](dev4) | **Dev 4:** trust + ops (Alter, TraceRoot, pilot) |
-| [docs/wave-2.md](docs/wave-2.md) | Extras after Gate 1 |
-| [contracts/](contracts) | Frozen TypeScript types shared by all lanes |
-| [fixtures/](fixtures) | Sample data every stub returns, so lanes work before the others land |
-| [BUILDLOG.md](BUILDLOG.md) | One timestamped line per merge |
-| [docs/hackathon/](docs/hackathon) | Event notes, sponsor research and earlier ideas |
-| `app/` | Wasp app (scaffolded by the Wasp lane) |
-| `box/` | The Donna box: Python research and evaluation service (box lane) |
+| ![Apply page with role cards](docs/screenshots/apply.png) | ![Feedback page after the screen](docs/screenshots/candidate-feedback.png) |
 
-## Status
+## How it works
 
-Only what runs is listed here, from [BUILDLOG.md](BUILDLOG.md). Updated at each merge.
+```
+apply + consent ─► research ─► voice screen ─► scoring ─► founder review ─► approval gate ─► invite
+                  GitHub repos   ElevenLabs     scorer agent   receipts,      Alter (live) or
+                  (Fiber AI in   agent, WebRTC  + quote check  ranked table   in-app gate
+                   the box)
+```
 
-- [x] Wasp app scaffolded (Wasp 0.26.1, SQLite; any integration without a key falls back to fixtures)
-- [x] Donna agent in ElevenLabs. Real voice calls run through the app: transcript with timestamps, stored recording, and ▶ on a score plays the quoted seconds (first call 13:10)
-- [x] Candidate flow (`/apply`) and founder view (`/founder`) run on the real backend
-- [x] Real calls are scored from ElevenLabs' own analysis of the call: three rubric criteria, 0 to 10, each with the candidate's words quoted exactly. Checked on one voice call and on five scripted candidates talking to the real agent in text (`app/scripts/run-test-screens.mjs`: 10, 7.3, 6.7, 0 and 0 overall; the transcripts and scorecards are in [dev2/test-screens](dev2/test-screens/README.md)). Scores are coarse and move between runs: the same answers scored 7.3 and then 6.7
-- [x] A candidate who types a GitHub username is asked about their own public repos (GitHub API; checked on two real accounts and one scripted screen). Donna opens with one thinking question before the technical ones
-- [x] Approval gate: this checkout runs it in in-app mode (`npm run check:approval`). Dev 4 ran it against live Alter at 13:22 and 13:34
-- [x] TraceRoot spans for research, call fetch, evaluation and each approval step (`npm run check:trace` passes with a key set)
-- [ ] 3-persona panel and live research (the box, `/research` and `/evaluate`): not connected. Without a GitHub username research returns a fixture dossier, and each scorecard says where its scores came from
-- [ ] Gate 1: one full run on the real app with live Alter (apply → call → receipts play → blocked attempt → Approve → invite). Not confirmed yet
-- [ ] Test invites from 1:22 and 1:34 confirmed in the demo inbox
-- [ ] Pilot: waits on Gate 1, the consent-box fixes, the tunnel link, the QR code and a go before anything is posted
-- [ ] Repo public, so judges can open the project link
+1. **Research.** If the candidate gives a GitHub username, Donna reads their public repos and writes a dossier with claims to verify and three tailored questions. The Python "box" service ([box/](box)) adds a work-history lookup with Fiber AI when it's connected.
+2. **Voice screen.** An ElevenLabs Conversational AI agent runs the call over WebRTC from the browser. The server hands the browser a short-lived conversation token, plus dynamic variables (name, role, top project, tailored questions), so one agent runs a personal screen for every candidate.
+3. **Scoring.** After the call, the server pulls the transcript, recording and analysis from ElevenLabs. A text-only ElevenLabs scorer agent (Claude Sonnet, temperature 0) grades the call against [agent/scoring-guidelines.md](agent/scoring-guidelines.md). Code checks every quote against the transcript and computes the overall score. If the scorer isn't set up, ElevenLabs' own call analysis is the fallback.
+4. **Approval gate.** Booking an interview is a calendar write. In live mode it goes through Alter, which holds the founder's Google grant and keeps the write pending until a human approves. Approving lets Google send the invite. Without Alter, an in-app gate does the same job and is labelled as such.
+5. **Tracing.** TraceRoot records one span per step (research, call fetch, evaluation, each approval step), with IDs only and no candidate data.
 
-## Run it
+## Guardrails
 
-Fresh clone to running app, public HTTPS URL for phones, and QR code: see [dev2/RUNBOOK.md](dev2/RUNBOOK.md). In short, from `app/`: `wasp install`, copy `.env.server.example` to `.env.server`, `wasp db migrate-dev`, `wasp db seed`, `wasp start`, then open http://localhost:3000/dev.
+These are product rules, enforced in the agent prompt and the code:
+
+- Donna's first sentence says she is an AI and that the call is recorded.
+- She never asks about age, family, origin, religion, health or other protected topics, and never promises an outcome.
+- Research covers only the person who applied, uses only what they typed, and starts only after they tick the consent box.
+- Nothing is written to a calendar and no email is sent without a recorded founder approval.
+
+## Run it locally
+
+You need Node.js and [Wasp 0.26.1](https://wasp.sh). From `app/`:
+
+```bash
+wasp install
+```
+
+```bash
+cp .env.server.example .env.server
+```
+
+```bash
+wasp db migrate-dev && wasp db seed
+```
+
+```bash
+wasp start
+```
+
+Open http://localhost:3000. The founder view is at `/founder`, and `/dev` is a developer console. **Every integration falls back to fixtures when its key is empty**, so the app runs with no keys at all. The seed adds a demo company (Acme), a Founding Engineer role and eight sample candidates.
+
+To make real calls, set `ELEVENLABS_API_KEY` and `ELEVENLABS_AGENT_ID` (agent setup is in [agent/settings.md](agent/settings.md)). The other keys are documented line by line in [app/.env.server.example](app/.env.server.example). To share the app with phones over HTTPS, see [dev2/RUNBOOK.md](dev2/RUNBOOK.md).
+
+Checks, from `app/`:
+
+```bash
+npm run check:approval
+```
+
+```bash
+npm run check:screen
+```
 
 ## Built with
 
-Only tools that ran today, each with its evidence. A tool is added only when it has run.
+Only tools that ran during the hackathon are listed:
 
-- **ElevenLabs:** Donna's live voice screen, plus the transcript and call audio behind every ▶ receipt. First real call at 13:10: 21 turns, 144 s stored.
-- **Wasp:** the whole app (Wasp 0.26.1, SQLite, operations, founder view).
-- **Alter:** holds the founder's Google Calendar grant. A calendar write without founder approval is held by Alter, and approving releases it, so Google sends the invite. `npm run check:approval` passed in live mode at 13:22 and 13:34 (invites go only to the team's demo inbox).
-- **TraceRoot:** one span per pipeline step (research, fetching the call, evaluation), grouped by candidate, with IDs only and no candidate data. A live check at 13:44 sent a span, and it showed in the TraceRoot dashboard. This is tracing only; no detector is set up.
-- **Codevisor:** three changes were built at 13:33 by three agents running side by side in Codevisor, each in its own workspace: merging the newer approval gate with its settings docs, seeding the sponsor roles, and this README's status with the runbook. The rest of the code was built with Claude Code agents outside Codevisor.
-- **Fiber AI:** applicant research in the Donna box (Dev 3): looks up the work history of the person who applied, using only what they typed, after consent. It ran today in the box (a live lookup took 4.25 s; the code is in `box/`). The app calls the box only when `BOX_URL` and `BOX_SECRET` are set; without them its research step reads GitHub or uses a fixture and does not call Fiber AI.
+| Tool | What it does in Donna |
+|---|---|
+| [ElevenLabs](https://elevenlabs.io) | The live voice screen, the transcript and audio behind every ▶ receipt, the scorer agent and the Ask Donna chat agent |
+| [Wasp](https://wasp.sh) | The full-stack app: React client, Node server, Prisma on SQLite |
+| Alter | Holds the founder's Google Calendar grant and keeps the booking pending until approval (checked live; invites went only to the team's demo inbox) |
+| TraceRoot | A tracing span per pipeline step |
+| Fiber AI | Work-history lookup in the box service (ran live in the box; the app calls it only when `BOX_URL` is set) |
+| Codevisor | Three changes were built by parallel agents in Codevisor. The rest was built with Claude Code |
+
+## Status
+
+Working:
+
+- Real voice screens end to end: transcript with timestamps, stored recording, and ▶ on each score plays the quoted seconds.
+- Scoring with quotes checked against the transcript, tested on seven scripted candidates ([dev2/test-screens](dev2/test-screens/README.md)). Scores can still move by a few points between runs.
+- GitHub-based research and tailored questions.
+- Approval gate, both in-app and live through Alter.
+
+Not done yet:
+
+- The three-persona reviewer panel (Expected Parrot, in the box) isn't connected to the app. Pages show a labelled fixture panel instead.
+- Hiring preferences re-rank the dashboard but don't change Donna's questions yet.
+
+## Repo layout
+
+| Path | What |
+|---|---|
+| [app/](app) | The Wasp app: candidate flow (`src/candidate`), founder dashboard (`src/founder`), server and integrations (`src/server`) |
+| [agent/](agent) | Donna's ElevenLabs agent: system prompt, settings, scoring guidelines, Ask Donna prompt |
+| [box/](box) | Python research and evaluation service (Fiber AI, Expected Parrot panel) |
+| [contracts/](contracts) | Shared TypeScript types |
+| [fixtures/](fixtures) | Sample data every stubbed integration returns |
+| [docs/](docs) | Screenshots, branching and submission notes, hackathon research |
+| [plan.md](plan.md), [AGENTS.md](AGENTS.md), [BUILDLOG.md](BUILDLOG.md) | The hackathon plan, team rules for people and coding agents, and a timestamped log of every merge |
+| `dev1/` to `dev4/` | Each team lane's PRD, guide and handoff notes |
